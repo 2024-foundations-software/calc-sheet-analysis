@@ -135,7 +135,7 @@ describe("TokenProcessor", () => {
   describe("getCellReferences", () => {
     describe("when the formula is empty", () => {
       it("should return an empty array", () => {
-        let formula = [];
+        let formula:string[] = [];
         let cellsInFormula = TokenProcessor.getCellReferences(formula);
         expect(cellsInFormula).toEqual([]);
       });

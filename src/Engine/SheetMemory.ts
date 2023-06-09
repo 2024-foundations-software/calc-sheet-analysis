@@ -292,6 +292,26 @@ export class SheetMemory
     }
 
     /**
+     * Get Sheet display strings
+     * 
+     * returns a twoD array of display strings
+     */
+    getSheetDisplayStrings(): string[][]
+    {
+        let displayStrings: string[][] = [];
+        for (let column = 0; column < this.maxColumns; column++)
+        {
+            displayStrings[column] = [];
+            for (let row = 0; row < this.maxRows; row++)
+            {
+                displayStrings[column][row] = this.cells[column][row].getDisplayString();
+            }
+        }
+        return displayStrings;
+    }
+    
+
+    /**
      * Get Sheet Dependencies
      * 
      * returns a twoD array of dependencies

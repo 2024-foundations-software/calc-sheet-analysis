@@ -14,6 +14,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   const { machine } = props;
   const [formulaString, setFormulaString]  = useState(machine.getFormulaString())
   const [resultString, setResultString]  = useState(machine.getResultString())
+  const [cells, setCells] = useState(machine.getSheetDisplayStrings());
 
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
     const text = event.currentTarget.textContent;
@@ -48,7 +49,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   return (
     <div>
       <Formula formulaString = {formulaString} resultString={resultString} ></Formula>
-      { /*<SheetHolder  cellsValues = {cells} onClick={onCellClick}></SheetHolder>*/ }
+      { <SheetHolder  cellsValues = {cells} onClick={onCellClick}></SheetHolder> }
       <KeyPad onButtonClick={onButtonClick}></KeyPad>    
     </div>
   )

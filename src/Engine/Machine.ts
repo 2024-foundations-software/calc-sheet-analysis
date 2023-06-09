@@ -126,6 +126,15 @@ export class Machine{
 
   }
 
+  /**
+   * Get the Sheet Display Values
+   * 
+   * @returns string[][]
+   */
+  public getSheetDisplayStrings(): string[][]{
+    return this.memory.getSheetDisplayStrings();
+  }
+
 
 
 
