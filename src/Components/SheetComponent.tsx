@@ -32,15 +32,15 @@ function SheetComponent({ cellsValues, onClick, currentCell }: SheetComponentPro
         {cellsValues.map((row, rowIndex) => (
           
           <tr key={rowIndex}>
-            {Cell.rowNumberToName(rowIndex)}
+           <td> {Cell.rowNumberToName(rowIndex)}</td>
             {row.map((cell, colIndex) => (
-              <td key={rowIndex}>
+              <td key={colIndex}>
                 <button
 
                   onClick={onClick}
                   value={cell}
                   cell-label={Cell.columnRowToCell(rowIndex, colIndex)}
-                  className={(currentCell === Cell.columnRowToCell(colIndex, rowIndex)) ? "cell-selected" : "cell"}
+                  className={(currentCell === Cell.columnRowToCell(rowIndex, colIndex)) ? "cell-selected" : "cell"}
                  
                 >
                   {cell}
