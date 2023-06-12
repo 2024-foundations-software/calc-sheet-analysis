@@ -20,15 +20,26 @@ function SheetComponent({ cellsValues, onClick, currentCell }: SheetComponentPro
   return (
     <table className="table">
       <tbody>
-        {cellsValues.map((col, colIndex) => (
-          <tr key={colIndex}>
-            {col.map((cell, rowIndex) => (
+        {/*add a row with column cellsValues */}
+        <tr>
+          <th></th>
+          {cellsValues.map((col, colIndex) => (
+            <th key={colIndex}>
+              {Cell.columnNumberToName(colIndex)}
+            </th>
+          ))}
+        </tr>
+        {cellsValues.map((row, rowIndex) => (
+          
+          <tr key={rowIndex}>
+            {Cell.rowNumberToName(rowIndex)}
+            {row.map((cell, colIndex) => (
               <td key={rowIndex}>
                 <button
 
                   onClick={onClick}
                   value={cell}
-                  cell-label={Cell.columnRowToCell(colIndex, rowIndex)}
+                  cell-label={Cell.columnRowToCell(rowIndex, colIndex)}
                   className={(currentCell === Cell.columnRowToCell(colIndex, rowIndex)) ? "cell-selected" : "cell"}
                  
                 >

@@ -146,7 +146,44 @@ export class Cell {
             result += column.charCodeAt(i) - 65;
         }
         return result;
-    }
+      }
+
+
+  /**
+   * 
+   * @param column 
+   * @returns the column name in base 26 represented with A=0 and Z=25
+   */
+  public static columnNumberToName(column: number): string
+   {
+        /**
+     * 65 is the ASCII code for A
+     * 26 is the number of letters in the alphabet
+     * 
+     * we use do while loop to make sure that the loop runs at least once
+     */
+    let temp = column;
+    let result = "";
+    do{
+      let remainder = temp % 26;
+      temp = Math.floor(temp / 26);
+      result = String.fromCharCode(remainder + 65) + result;
+    } while(temp > 0);
+    return result;
+  }
+        
+  /**
+   * 
+   * @param row
+   * @returns the row name in base 10 represented with 0=0 and 9=9
+   * 
+   * The labels for the cells are 1 based so we add 1 to the row number
+   * 
+   */
+  public static rowNumberToName(row: number): string
+  {
+    return (row + 1).toString();
+  }
 
   /**
    * return the column and row for a cell 
@@ -184,27 +221,17 @@ export class Cell {
     // Convert the row to a string
     // Concatenate the column and row
     // Return the result
-    let result = "";
-    let temp = column;
-
-    /**
-     * 65 is the ASCII code for A
-     * 26 is the number of letters in the alphabet
-     * 
-     * we use do while loop to make sure that the loop runs at least once
-     */
-    do{
-      let remainder = temp % 26;
-      temp = Math.floor(temp / 26);
-      result = String.fromCharCode(remainder + 65) + result;
-    } while(temp > 0);
+    
+    let columnString = Cell.columnNumberToName(column);
 
     /**
      * the label for the cell starts at row 1, but the memory location is 0
      * so we add 1 to the row
      * an concatanate the row to the result
      */
-    result += (row + 1).toString();
+    let rowString = Cell.rowNumberToName(row);
+
+    let result = columnString + rowString;
     return result;
   }
 
