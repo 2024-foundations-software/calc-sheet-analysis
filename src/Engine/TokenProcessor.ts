@@ -109,6 +109,34 @@ export class TokenProcessor {
   }
 
   /**
+   * remove the last token from the formula
+   * 
+   * if the last token is a number with more than one character it should only remove the last character of that token
+   */
+  removeLastToken(): void{
+    // if there is no formula then do nothing
+    if (this.formula.length === 0) {
+      return;
+    }
+
+    // get the last token of the formula
+    let lastToken = this.formula[this.formula.length - 1];
+
+    // if the last token is a number with more than one character it should only remove the last character of that token
+    if (!isNaN(Number(lastToken)) && lastToken.length > 1) {
+      lastToken = lastToken.substring(0, lastToken.length - 1);
+      this.formula[this.formula.length - 1] = lastToken;
+    }
+    else{
+      // remove the last token from the formula
+      this.formula.pop();
+    }
+
+
+
+
+
+  /**
    * getFormulaString
    * return the formula as a string
    * add a space between each token
