@@ -104,6 +104,17 @@ export class Machine{
     this.setCurrentCellByCoordinates(column, row);
   }
 
+
+  /**
+   * get the current cell label
+   * 
+   * @returns the current cell label
+   * 
+   */
+  getCurrentCellLabel(): string{
+    return Cell.columnRowToCell(this.currentColumn, this.currentRow);
+  }
+  
   /**
    * Set the working cell
    * 
@@ -172,6 +183,16 @@ export class Machine{
   }
 
 
+/**
+ * update the current formula of the machine with the input cell formula
+ * 
+ * */
+  public updateCurrentFormula(cellLabel:string): void{
+    const cell = this.memory.getCellByLabel(cellLabel);
+    
+    const formula =   cell.getFormula();
+    this.tokenProcessor.setFormula(formula);
+  }
 
  
  

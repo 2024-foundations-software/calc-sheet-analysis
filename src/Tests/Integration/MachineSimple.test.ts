@@ -43,6 +43,61 @@ describe("Machine", () => {
       });
     }); 
 
+    describe("When the value in A1 is set to B2", () => {
+      describe("and the value of B2 is undefined", () => {
+        it("the value of the display string of A1 should be #REF!", () => {
+          const machine = new Machine(5,5);
+          machine.setCurrentCellByLabel("A1");
+          machine.addToken("B2");
+          expect(machine.getFormulaString()).toEqual("B2");
+          expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
+        });
+      });
+      describe("and the value of B2 is defined", () => {
+        it("the value of the display string of A1 should be the value of B2", () => {
+          const machine = new Machine(5,5);
+          machine.setCurrentCellByLabel("A1");
+          machine.addToken("B2");
+          machine.setCurrentCellByLabel("B2");
+          machine.addToken("1");
+          machine.setCurrentCellByLabel("A1");
+          expect(machine.getFormulaString()).toEqual("B2");
+          expect(machine.getResultString()).toEqual("1");
+        });
+      });
+      describe("and the value of B2 is definedt then", () => {
+        it("the value of the display string of 2 should be the value of B2", () => {
+          const machine = new Machine(5,5);
+          machine.setCurrentCellByLabel("A1");
+          machine.addToken("B2");
+          machine.setCurrentCellByLabel("B2");
+          machine.addToken("1");
+          
+          expect(machine.getFormulaString()).toEqual("1");
+          expect(machine.getResultString()).toEqual("1");
+        });
+      });
+    });
+
+    /**
+     * test the updateCurrentFormula method
+     */
+    describe("When the updateCurrentFormula method is used to set the current cell to B2", () => {
+      describe("and a token 1 is added to the machine", () => {
+        it("the value of the display string of B2 should be 1", () => {
+          const machine = new Machine(5,5);
+          machine.setCurrentCellByLabel("B2");
+          machine.addToken("1");
+          expect(machine.getFormulaString()).toEqual("1");
+          expect(machine.getResultString()).toEqual("1");
+          let sheetValues: Array<Array<string>> = machine.getSheetDisplayStrings();
+          expect(sheetValues[1][1]).toEqual("1");
+        });
+      });
+    });
+
+
+    
     
     describe("when the currentCellCoordinates change", () => {
       describe("And you then change the coordinates back", () => {

@@ -298,18 +298,22 @@ export class SheetMemory
      */
     getSheetDisplayStrings(): string[][]
     {
+        console.log("getSheetDisplayStrings");
         let displayStrings: string[][] = [];
         for (let column = 0; column < this.maxColumns; column++)
         {
             displayStrings[column] = [];
             for (let row = 0; row < this.maxRows; row++)
-            {
-                displayStrings[column][row] = this.cells[column][row].getDisplayString();
+            {   
+                const displayString = this.cells[column][row].getDisplayString();
+                //console.log("getSheetDisplayStrings: [" + column + "][" + row + "] = [" + displayString + "]");
+                displayStrings[column][row] = displayString;
+
             }
         }
         return displayStrings;
     }
-    
+
 
     /**
      * Get Sheet Dependencies

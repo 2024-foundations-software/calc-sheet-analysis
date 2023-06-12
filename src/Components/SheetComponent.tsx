@@ -27,7 +27,7 @@ function SheetComponent({ cellsValues, onClick }: SheetComponentProps) {
                   className="cell"
                   onClick={onClick}
                   value={cell}
-                  cell-label={Cell.columnRowToCell(colIndex, rowIndex)}
+                  cell-label={Cell.columnRowToCell(rowIndex, colIndex)}
                  
                 >
                   {cell}
