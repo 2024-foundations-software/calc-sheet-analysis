@@ -15,12 +15,13 @@ import "./SheetHolder.css";
 interface SheetHolderProps {
   cellsValues: Array<Array<string>>;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  currentCell: string;
 } // interface SheetHolderProps
 
-function SheetHolder({ cellsValues, onClick }: SheetHolderProps) {
+function SheetHolder({ cellsValues, onClick, currentCell }: SheetHolderProps) {
   return (
     <div className="sheet-holder">
-      <SheetComponent cellsValues={cellsValues} onClick={onClick} />
+      <SheetComponent cellsValues={cellsValues} onClick={onClick} currentCell={currentCell} />
     </div>
   );
 } // SheetHolder

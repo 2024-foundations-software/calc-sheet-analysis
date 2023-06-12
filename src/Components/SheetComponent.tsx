@@ -12,22 +12,24 @@ import "./SheetComponent.css";
 interface SheetComponentProps {
   cellsValues: Array<Array<string>>;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  currentCell: string;
 } // interface SheetComponentProps
 
 
-function SheetComponent({ cellsValues, onClick }: SheetComponentProps) {
+function SheetComponent({ cellsValues, onClick, currentCell }: SheetComponentProps) {
   return (
     <table className="table">
       <tbody>
-        {cellsValues.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {row.map((cell, colIndex) => (
-              <td key={colIndex}>
+        {cellsValues.map((col, colIndex) => (
+          <tr key={colIndex}>
+            {col.map((cell, rowIndex) => (
+              <td key={rowIndex}>
                 <button
-                  className="cell"
+
                   onClick={onClick}
                   value={cell}
-                  cell-label={Cell.columnRowToCell(rowIndex, colIndex)}
+                  cell-label={Cell.columnRowToCell(colIndex, rowIndex)}
+                  className={(currentCell === Cell.columnRowToCell(colIndex, rowIndex)) ? "cell-selected" : "cell"}
                  
                 >
                   {cell}
@@ -41,5 +43,8 @@ function SheetComponent({ cellsValues, onClick }: SheetComponentProps) {
     </table>
   );
 } // SheetComponent
+
+
+
 
 export default SheetComponent;

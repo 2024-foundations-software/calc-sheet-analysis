@@ -9,3 +9,8 @@ export const ErrorMessages =  {
   missingParentheses: "#ERR",
 
 }
+
+export const ButtonNames = {
+  edit: "edit",
+  done: "done",
+}

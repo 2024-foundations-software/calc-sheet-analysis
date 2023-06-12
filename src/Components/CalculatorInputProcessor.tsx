@@ -4,7 +4,8 @@ import Status from "./Status";
 import KeyPad from "./KeyPad";
 import Machine from "../Engine/Machine";
 import SheetHolder from "./SheetHolder";
-import { assert } from "console";
+
+import { ButtonNames } from "../Engine/GlobalDefinitions";
 
 
 interface CalculatorInputProcessorProps {
@@ -18,6 +19,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   const [resultString, setResultString]  = useState(machine.getResultString())
   const [cells, setCells] = useState(machine.getSheetDisplayStrings());
   const [statusString, setStatusString] = useState(machine.getEditStatusString());
+  const [currentCell, setCurrentCell] = useState(machine.getCurrentCellLabel());
 
 
   function updateDisplayValues(): void {
@@ -25,6 +27,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     setResultString(machine.getResultString());
     setStatusString(machine.getEditStatusString());
     setCells(machine.getSheetDisplayStrings());
+    setCurrentCell(machine.getCurrentCellLabel());
   }
 
 
@@ -33,29 +36,35 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     if (text) {
       let trueText = text ? text : "";
       machine.processCommandButton(trueText);
-      if (trueText === "edit") {
+      if (trueText === ButtonNames.edit) {
         machine.setEditStatus(true);
         setStatusString(machine.getEditStatusString());
-        console.log("Editing turned on");
       }
-      if (trueText === "=") {
+
+      if (trueText === ButtonNames.done) {
         machine.setEditStatus(false);
         setStatusString(machine.getEditStatusString());
-
-        console.log("Editing turned off");
       }
 
       updateDisplayValues();
     }
   }
 
+  /**
+   *  This function is the call back for the number buttons and the Parenthesis buttons
+   * 
+   * They all automatically start the editing of the current formula.
+   * 
+   * @param event
+   * 
+   * */
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
     const text = event.currentTarget.textContent;
    
     if (text) {
       let trueText = text ? text : "";
+      machine.setEditStatus(true);
       machine.addToken(trueText);
-      
 
       updateDisplayValues();
     }
@@ -72,19 +81,17 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   function onCellClick(event: React.MouseEvent<HTMLButtonElement>): void {
     const cellLabel = event.currentTarget.getAttribute("cell-label");
     // calculate the current row and column of the clicked on cell
-    console.log("onCellClick: [" + cellLabel + "]");
+ 
     const editStatus = machine.getEditStatus();
-    const cellLabelString = cellLabel ? cellLabel : "";
+
+    // if the edit status is true then add the token to the machine
     if (editStatus) {
-      console.log("onCellClick: editStatus is true, so we are adding a token ["+cellLabelString+"] to the forumula");
       machine.addToken(cellLabel ? cellLabel : "");
       updateDisplayValues();
-    }
+    } 
+    // if the edit status is false then set the current cell to the clicked on cell
     else {
-      console.log("onCellClick: editStatus is false, so we are updating the current formula to ["+cellLabelString+"]");
       machine.setCurrentCellByLabel(cellLabel ? cellLabel : "");
-      let currentLabel:string = machine.getCurrentCellLabel();
-      console.log("onCellClick: currentLabel is ["+currentLabel+"]");
       updateDisplayValues();
     }
     
@@ -96,7 +103,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     <div>
       <Formula formulaString = {formulaString} resultString={resultString} ></Formula>
       <Status statusString = {statusString}></Status>
-      { <SheetHolder  cellsValues = {cells} onClick={onCellClick}></SheetHolder> }
+      { <SheetHolder  cellsValues = {cells} onClick={onCellClick} currentCell={currentCell} ></SheetHolder> }
       <KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick}></KeyPad>    
     </div>
   )

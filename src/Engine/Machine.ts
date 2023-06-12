@@ -114,7 +114,7 @@ export class Machine{
   getCurrentCellLabel(): string{
     return Cell.columnRowToCell(this.currentColumn, this.currentRow);
   }
-  
+
   /**
    * Set the working cell
    * 
@@ -179,7 +179,11 @@ export class Machine{
    * 
    * */
   public getEditStatusString(): string{
-    return this.editStatus ? "editing" : "browsing";
+    if (this.editStatus)
+      {
+        return "editing " + this.getCurrentCellLabel();
+      }
+    return "current cell: " + this.getCurrentCellLabel();
   }
 
 
