@@ -16,14 +16,33 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   const [resultString, setResultString]  = useState(machine.getResultString())
   const [cells, setCells] = useState(machine.getSheetDisplayStrings());
 
+
+  function updateDisplayValues(): void {
+    setFormulaString(machine.getFormulaString());
+    setResultString(machine.getResultString());
+    setCells(machine.getSheetDisplayStrings());
+  }
+
+
+  function onCommandButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
+    const text = event.currentTarget.textContent;
+    if (text) {
+      let trueText = text ? text : "";
+      machine.processCommandButton(trueText);
+
+      updateDisplayValues();
+    }
+  }
+
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
     const text = event.currentTarget.textContent;
    
     if (text) {
       let trueText = text ? text : "";
       machine.addToken(trueText);
-      setFormulaString(machine.getFormulaString());
-      setResultString(machine.getResultString());
+      
+
+      updateDisplayValues();
     }
   }
 
@@ -35,13 +54,10 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
    * It will get the value of 
    */
   function onCellClick(event: React.MouseEvent<HTMLButtonElement>): void {
-    const text = event.currentTarget.textContent;
+    const cellLabel = event.currentTarget.getAttribute("cell-label");
     // calculate the current row and column of the clicked on cell
+    console.log("onCellClick: [" + cellLabel + "]");
     
-    if (text) {
-      let trueText = text ? text : "";
-      console.log("onCellClick: " + trueText);
-    }
   }
 
 
@@ -50,7 +66,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     <div>
       <Formula formulaString = {formulaString} resultString={resultString} ></Formula>
       { <SheetHolder  cellsValues = {cells} onClick={onCellClick}></SheetHolder> }
-      <KeyPad onButtonClick={onButtonClick}></KeyPad>    
+      <KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick}></KeyPad>    
     </div>
   )
 };

@@ -7,9 +7,10 @@ import "./Button.css";
 
 interface KeyPadProps {
   onButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onCommandButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 } // interface KeyPadProps
 
-function KeyPad ({ onButtonClick }: KeyPadProps) {
+function KeyPad ({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
 
 // the buttons use one of three classes
 // numberButton, operatorButton, and otherButton
@@ -19,10 +20,10 @@ return (
 
     <div className="buttons-row">
 
-      <Button text="+/-" isDigit={true}  onClick={onButtonClick} className="button-operator" />
-      <Button text="%" isDigit={true}  onClick={onButtonClick} className="button-operator" />
-      <Button text="C" isDigit={true}  onClick={onButtonClick} className="button-operator" />
-      <Button text="AC" isDigit={false} onClick={onButtonClick} className="button-operator" />
+      <Button text="edit" isDigit={true}  onClick={onCommandButtonClick} className="button-operator" />
+      <Button text="+/-" isDigit={true}  onClick={onCommandButtonClick} className="button-operator" />
+      <Button text="C" isDigit={true}  onClick={onCommandButtonClick} className="button-operator" />
+      <Button text="AC" isDigit={false} onClick={onCommandButtonClick} className="button-operator" />
     </div> 
     <div className="buttons-row">
 
@@ -49,7 +50,7 @@ return (
     <div className="buttons-row">
       <Button text="0" isDigit={true}  onClick={onButtonClick} className="button-number"/>
       <Button text="." isDigit={false} onClick={onButtonClick} className="button-number"/>
-      <Button text="=" isDigit={false} onClick={onButtonClick} className="button-equal"/>
+      <Button text="=" isDigit={false} onClick={onCommandButtonClick} className="button-equal"/>
       <Button text="/" isDigit={false} onClick={onButtonClick} className="button-operator"/>
     </div>
       

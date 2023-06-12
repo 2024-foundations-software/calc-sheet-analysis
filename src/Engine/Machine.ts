@@ -44,6 +44,12 @@ export class Machine{
     this.memory = new SheetMemory(columns,rows);
   }
 
+  /**
+   * processCommandButton
+   */
+  public processCommandButton(command: string): void{
+    console.log("processCommandButton: " + command);
+  }
  /**  
   *  add token to current formula
   * 
@@ -58,8 +64,6 @@ export class Machine{
 
     this.recalcDependency.evaluateSheet(this.memory);
 
-    // Calculate the new value of the formula
-    const [, displayString] = this.recalc.evaluate(this.tokenProcessor.getFormula(), this.memory );
     this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula()); 
   }
 

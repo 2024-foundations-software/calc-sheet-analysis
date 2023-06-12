@@ -1,5 +1,7 @@
 import React from "react";  
 
+import Cell from "../Engine/Cell";
+
 import "./SheetComponent.css";
 
 // a component that will render a two dimensional array of cells
@@ -25,9 +27,12 @@ function SheetComponent({ cellsValues, onClick }: SheetComponentProps) {
                   className="cell"
                   onClick={onClick}
                   value={cell}
+                  cell-label={Cell.columnRowToCell(colIndex, rowIndex)}
+                 
                 >
                   {cell}
                 </button>
+                
               </td>
             ))}
           </tr>
