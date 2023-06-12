@@ -49,8 +49,8 @@ return (
 
     <div className="buttons-row">
       <Button text="0" isDigit={true}  onClick={onButtonClick} className="button-number"/>
-      <Button text="." isDigit={false} onClick={onButtonClick} className="button-number"/>
-      <Button text="=" isDigit={false} onClick={onCommandButtonClick} className="button-equal"/>
+      <Button text="." isDigit={false} onClick={onCommandButtonClick} className="button-number"/>
+      <Button text="=" isDigit={false} onClick={onCommandButtonClick} className="button-operator"/>
       <Button text="/" isDigit={false} onClick={onButtonClick} className="button-operator"/>
     </div>
       

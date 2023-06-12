@@ -1,5 +1,6 @@
 import React , {useState} from "react";
 import Formula from "./Formula";
+import Status from "./Status";
 import KeyPad from "./KeyPad";
 import Machine from "../Engine/Machine";
 import SheetHolder from "./SheetHolder";
@@ -15,6 +16,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   const [formulaString, setFormulaString]  = useState(machine.getFormulaString())
   const [resultString, setResultString]  = useState(machine.getResultString())
   const [cells, setCells] = useState(machine.getSheetDisplayStrings());
+  const [statusString, setStatusString] = useState(machine.getEditStatusString());
 
 
   function updateDisplayValues(): void {
@@ -29,6 +31,16 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     if (text) {
       let trueText = text ? text : "";
       machine.processCommandButton(trueText);
+      if (trueText === "edit") {
+        machine.setEditStatus(true);
+        setStatusString(machine.getEditStatusString());
+        console.log("Editing turned on");
+      }
+      if (trueText === "=") {
+        machine.setEditStatus(false);
+        setStatusString(machine.getEditStatusString());
+        console.log("Editing turned off");
+      }
 
       updateDisplayValues();
     }
@@ -65,6 +77,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   return (
     <div>
       <Formula formulaString = {formulaString} resultString={resultString} ></Formula>
+      <Status statusString = {statusString}></Status>
       { <SheetHolder  cellsValues = {cells} onClick={onCellClick}></SheetHolder> }
       <KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick}></KeyPad>    
     </div>

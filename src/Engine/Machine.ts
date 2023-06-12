@@ -34,9 +34,11 @@ export class Machine{
   private recalc: Recalc = new Recalc();
   private currentRow = 0;
   private currentColumn = 0;
+  private editStatus:boolean = false;
 
   private tokenProcessor: TokenProcessor = new TokenProcessor();
   private recalcDependency: RecalcDependency = new RecalcDependency();
+
 
 
 
@@ -139,6 +141,35 @@ export class Machine{
     return this.memory.getSheetDisplayStrings();
   }
 
+  /**
+   * The edit status of the machine specifies what happens when a cell is clicked
+   * 
+   * @returns boolean
+   * 
+   * */
+  public getEditStatus(): boolean{
+    return this.editStatus;
+  }
+
+  /**
+   * Set the edit status of the machine
+   * 
+   * @param bool:boolean
+   * 
+   * */
+  public setEditStatus(bool: boolean): void{
+    this.editStatus = bool;
+  }
+
+  /**
+   * Get the edit status string
+   *  
+   * @returns string
+   * 
+   * */
+  public getEditStatusString(): string{
+    return this.editStatus ? "editing" : "browsing";
+  }
 
 
 
