@@ -65,6 +65,17 @@ describe("Machine", () => {
           expect(machine.getResultString()).toEqual("1");
         });
       });
+
+      describe("when the sheet is empty and the current cell is A1", () => {
+        it("attempting to add A1 to the formula should result in an empty formula", () => {
+          const machine = new Machine(5,5);
+          machine.setCurrentCellByLabel("A1");
+          machine.addToken("A1");
+          expect(machine.getFormulaString()).toEqual("");
+          expect(machine.getResultString()).toEqual("");
+        });
+      });
+
       describe("and the value of B2 is definedt then", () => {
         it("the value of the display string of 2 should be the value of B2", () => {
           const machine = new Machine(5,5);

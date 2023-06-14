@@ -77,8 +77,12 @@ export class Machine{
 
     this.tokenProcessor.addToken(token);
     this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula());
-
+    let validAddition = this.recalcDependency.updateDependencies(this.memory);
+    if (!validAddition){
+      this.removeToken();
+    }
     this.recalcDependency.evaluateSheet(this.memory);
+    
 
     
   }

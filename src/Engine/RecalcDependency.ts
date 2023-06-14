@@ -105,7 +105,7 @@ export default class RecalcDependency
      * @returns {void}
      * 
      * */
-    public updateDependencies(sheetMemory:SheetMemory): void
+    public updateDependencies(sheetMemory:SheetMemory): boolean
     {
         for(let column = 0; column < sheetMemory.getMaxColumns(); column++)
         {
@@ -120,6 +120,12 @@ export default class RecalcDependency
                 // always read the top level depensOn from the formula
                 let currentDependsOn = TokenProcessor.getCellReferences(currentFormula);
                 currentCell.setDependsOn(currentDependsOn);
+                // if the current cell is in the formula then we are done
+                if (currentDependsOn.includes(cellLabel))
+                {
+                    return false;
+                }
+
                 sheetMemory.setCellByLabel(cellLabel, currentCell);
                
                
@@ -143,13 +149,15 @@ export default class RecalcDependency
                 // and thus if we find it here we have failed at that task 
                 if (isCircular)
                 {
-                  throw new Error("Circular dependency detected");
+                  return false;
                 }
 
                 currentCell.setDependsOn(discoveredDependencies);
                 sheetMemory.setCellByLabel(cellLabel, currentCell);
+                
             }
         }
+        return true;
     }
 
 
