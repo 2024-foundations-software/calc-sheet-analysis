@@ -13,4 +13,9 @@ export const ErrorMessages =  {
 export const ButtonNames = {
   edit: "edit",
   done: "done",
+  allClear: "AC",
+  clear: "C",
+  restart: "new",
+  save: "save",
+  load: "load",
 }

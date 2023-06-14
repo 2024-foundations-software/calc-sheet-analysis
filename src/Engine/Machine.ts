@@ -3,6 +3,7 @@ import Recalc from "./Recalc"
 import RecalcDependency from "./RecalcDependency"
 import TokenProcessor from "./TokenProcessor";
 import Cell from "./Cell";
+import { memo } from "react";
 
 
 /**
@@ -47,6 +48,19 @@ export class Machine{
   }
 
   /**
+   * restart the machine
+   */
+  public restart(): void{
+    this.memory = new SheetMemory(this.memory.getMaxColumns(),this.memory.getMaxRows());
+    this.currentRow = 0;
+    this.currentColumn = 0;
+    this.editStatus = false;
+    this.tokenProcessor = new TokenProcessor();
+    this.recalcDependency = new RecalcDependency();
+  }
+
+  
+  /**
    * processCommandButton
    */
   public processCommandButton(command: string): void{
@@ -66,7 +80,30 @@ export class Machine{
 
     this.recalcDependency.evaluateSheet(this.memory);
 
-    this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula()); 
+    
+  }
+
+
+  /**
+   * 
+   * remove the last token from the current formula
+   * 
+   */
+  removeToken(): void{
+    this.tokenProcessor.removeToken();
+    this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula());
+    this.recalcDependency.evaluateSheet(this.memory);
+  }
+
+  /**
+   * 
+   * clear the current formula
+   * 
+   */ 
+  clearFormula(): void{
+    this.tokenProcessor.setFormula([]);
+    this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula());
+    this.recalcDependency.evaluateSheet(this.memory);
   }
 
   /**
@@ -145,12 +182,36 @@ export class Machine{
 
   /**
    * Get the Sheet Display Values
-   * 
+   *  
    * @returns string[][]
    */
   public getSheetDisplayStrings(): string[][]{
     return this.memory.getSheetDisplayStrings();
   }
+
+ /**
+   * Get the Sheet Display Values
+   * the GUI needs the data to be in row major order
+   * 
+   * @returns string[][]
+   */
+ public getSheetDisplayStringsForGUI(): string[][]{ 
+  let memoryDisplayValues = this.memory.getSheetDisplayStrings();
+  let guiDisplayValues: string[][] = [];
+  let inputRows = memoryDisplayValues.length;
+  let inputColumns = memoryDisplayValues[0].length;
+
+  for (let outputRow = 0; outputRow < inputColumns; outputRow++){
+    guiDisplayValues[outputRow] = [];
+    for (let outputColumn = 0; outputColumn < inputRows; outputColumn++){
+      guiDisplayValues[outputRow][outputColumn] = memoryDisplayValues[outputColumn][outputRow];
+    }
+  }
+
+
+  return guiDisplayValues;
+
+}
 
   /**
    * The edit status of the machine specifies what happens when a cell is clicked

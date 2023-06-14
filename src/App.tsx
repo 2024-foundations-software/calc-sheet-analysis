@@ -4,7 +4,7 @@ import Machine from './Engine/Machine';
 import CalculatorInputProcessor from './Components/CalculatorInputProcessor';
 
 function App() {
-  const machine = new Machine(5,5);
+  const machine = new Machine(5,8);
   return (
     <div className="App">
       <header className="App-header">

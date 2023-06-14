@@ -17,17 +17,19 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   const { machine } = props;
   const [formulaString, setFormulaString]  = useState(machine.getFormulaString())
   const [resultString, setResultString]  = useState(machine.getResultString())
-  const [cells, setCells] = useState(machine.getSheetDisplayStrings());
+  const [cells, setCells] = useState(machine.getSheetDisplayStringsForGUI());
   const [statusString, setStatusString] = useState(machine.getEditStatusString());
   const [currentCell, setCurrentCell] = useState(machine.getCurrentCellLabel());
+  const [currentlyEditing, setCurrentlyEditing] = useState(machine.getEditStatus());
 
 
   function updateDisplayValues(): void {
     setFormulaString(machine.getFormulaString());
     setResultString(machine.getResultString());
     setStatusString(machine.getEditStatusString());
-    setCells(machine.getSheetDisplayStrings());
+    setCells(machine.getSheetDisplayStringsForGUI());
     setCurrentCell(machine.getCurrentCellLabel());
+    setCurrentlyEditing(machine.getEditStatus());
   }
 
 
@@ -45,6 +47,19 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
         machine.setEditStatus(false);
         setStatusString(machine.getEditStatusString());
       }
+
+      if (trueText === ButtonNames.clear) {
+        machine.removeToken();
+      }
+
+      if (trueText === ButtonNames.allClear) {
+        machine.clearFormula();
+      }
+
+      if (trueText === ButtonNames.restart) {
+        machine.restart();
+      }
+   
 
       updateDisplayValues();
     }
@@ -103,7 +118,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     <div>
       <Formula formulaString = {formulaString} resultString={resultString} ></Formula>
       <Status statusString = {statusString}></Status>
-      { <SheetHolder  cellsValues = {cells} onClick={onCellClick} currentCell={currentCell} ></SheetHolder> }
+      { <SheetHolder  cellsValues = {cells} onClick={onCellClick} currentCell={currentCell} currentlyEditing={currentlyEditing} ></SheetHolder> }
       <KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick}></KeyPad>    
     </div>
   )

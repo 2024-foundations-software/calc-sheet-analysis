@@ -113,7 +113,7 @@ export class TokenProcessor {
    * 
    * if the last token is a number with more than one character it should only remove the last character of that token
    */
-  removeLastToken(): void{
+  removeToken(): void{
     // if there is no formula then do nothing
     if (this.formula.length === 0) {
       return;
@@ -131,6 +131,7 @@ export class TokenProcessor {
       // remove the last token from the formula
       this.formula.pop();
     }
+  }
 
 
 

@@ -183,6 +183,17 @@ describe("Machine", () => {
       });
     });
   });
+
+  describe("getSheetDisplayStringsForGUI when the original sheet is 2 columns and 4 rows", () => {
+    it("should return the sheet display strings as an arrya of 4 rows and two columns", () => 
+    {
+      const machine = new Machine(2,4);
+      let sheetValues: Array<Array<string>> = machine.getSheetDisplayStringsForGUI();
+      expect(sheetValues.length).toEqual(4);
+      expect(sheetValues[0].length).toEqual(2);
+    }
+    );
+  });
 });
 
 

@@ -132,6 +132,63 @@ describe("TokenProcessor", () => {
       );
     });
   });
+  describe("removeToken", () => {
+    describe("when the formula is empty", () => {
+      it("should not remove a token", () => {
+        const tokenProcessor = new TokenProcessor();
+        tokenProcessor.removeToken();
+        expect(tokenProcessor.getFormula()).toEqual([]);
+      });
+    });
+    describe("when the formula is not empty", () => {
+      describe("when the formula has one token", () => {
+        describe("when the token is a number of one digit", () => {
+          it("should remove the token", () => {
+            const tokenProcessor = new TokenProcessor();
+            tokenProcessor.setFormula(["1"]);
+            tokenProcessor.removeToken();
+            expect(tokenProcessor.getFormula()).toEqual([]);
+
+          });
+        });
+        describe("when the token is a number of more than one digit", () => {
+          it("should remove the last digit", () => {
+            const tokenProcessor = new TokenProcessor();
+            tokenProcessor.setFormula(["12"]);
+            tokenProcessor.removeToken();
+            expect(tokenProcessor.getFormula()).toEqual(["1"]);
+
+          });
+        });
+        describe("when the token is a number of more than one digit with a period in it", () => {
+          it("should remove the last digit", () => {
+            const tokenProcessor = new TokenProcessor();
+            tokenProcessor.setFormula(["1.2"]);
+            tokenProcessor.removeToken();
+            expect(tokenProcessor.getFormula()).toEqual(["1."]);
+             
+          });
+        });
+        describe("when the token is a period", () => {
+          it("should remove the token", () => {
+            const tokenProcessor = new TokenProcessor();
+            tokenProcessor.setFormula(["."]);
+            tokenProcessor.removeToken();
+            expect(tokenProcessor.getFormula()).toEqual([]);
+          });
+        });
+        describe("When the formula has a number and an operator", () => {
+          it("should remove the operator", () => {
+            const tokenProcessor = new TokenProcessor();
+            tokenProcessor.setFormula(["1", "+"]);
+            tokenProcessor.removeToken();
+            expect(tokenProcessor.getFormula()).toEqual(["1"]);
+          });
+        });
+      });
+    });
+  });
+
   describe("getCellReferences", () => {
     describe("when the formula is empty", () => {
       it("should return an empty array", () => {
@@ -161,6 +218,14 @@ describe("TokenProcessor", () => {
         expect(cellsInFormula).toEqual(["A1", "A2"]);
       });
     });
+    describe("when the formula is A2 + A2 +A3", () => {
+      it("should return an array of cell references", () => {
+        let formula = ["A2", "+", "A2", "+", "A3"];
+        let cellsInFormula = TokenProcessor.getCellReferences(formula);
+        expect(cellsInFormula).toEqual(["A2", "A3"]);
+      });
+    });
+
   });
 });
 

@@ -226,8 +226,7 @@ export class Recalc {
     }
     let value = cell.getValue();
     return [value, ""];
-   
-
+  
   }
 
 

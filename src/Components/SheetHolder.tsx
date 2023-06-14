@@ -16,12 +16,13 @@ interface SheetHolderProps {
   cellsValues: Array<Array<string>>;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   currentCell: string;
-} // interface SheetHolderProps
+  currentlyEditing:boolean
+}
 
-function SheetHolder({ cellsValues, onClick, currentCell }: SheetHolderProps) {
+function SheetHolder({ cellsValues, onClick, currentCell, currentlyEditing}: SheetHolderProps) {
   return (
     <div className="sheet-holder">
-      <SheetComponent cellsValues={cellsValues} onClick={onClick} currentCell={currentCell} />
+      <SheetComponent cellsValues={cellsValues} onClick={onClick} currentCell={currentCell}  currentlyEditing={currentlyEditing}  />
     </div>
   );
 } // SheetHolder

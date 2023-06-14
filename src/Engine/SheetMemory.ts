@@ -363,7 +363,7 @@ export class SheetMemory
      * */
     evaluateFormulaNumber(formula: FormulaType): number
     {
-        const [value, displayString] = this.recalc.evaluate(formula, this);
+        const [, displayString] = this.recalc.evaluate(formula, this);
         const result = parseFloat(displayString);
         return result
     }
