@@ -7,6 +7,7 @@ import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
 
 
 
+
 /**
  *  The main object of the SpreadSheet
  * 
@@ -38,12 +39,15 @@ export class Machine {
   private currentColumn = 0;
   private editStatus: boolean = false;
 
-  private portForServer: number = 3001;
+  private portForServer: number = 3005;
 
   private calcSheetServerClient: CalcSheetServerClient = new CalcSheetServerClient(this.portForServer);
 
+
   private tokenProcessor: TokenProcessor = new TokenProcessor();
   private recalcDependency: RecalcDependency = new RecalcDependency();
+
+
 
 
 
@@ -98,12 +102,47 @@ export class Machine {
     console.log("processKey: " + key);
   }
 
-  /**
-   * processCommandButton
-   */
-  public processCommandButton(command: string): void {
-    console.log("processCommandButton: " + command);
+
+  public async processCommandButton(command: string): Promise<void> {
+    if (command === 'save') {
+      let documentToSend: CalcSheetDocument = {
+        numberOfRows: this.memory.getMaxRows(),
+        numberOfColumns: this.memory.getMaxColumns(),
+        formulas: this.memory.getSheetFormulas(),
+      };
+      try {
+        let documentID = await this.calcSheetServerClient.sendDocument(
+          documentToSend
+        );
+        console.log('documentID: ' + documentID);
+      } catch (error) {
+        console.log('error-------->: ' + error);
+      }
+    }
+    if (command === 'load') {
+      let documentID = '5366e13f-929b-464e-a408-31c14250daee';
+      try {
+        let result = await this.calcSheetServerClient.getDocument(documentID);
+        if (result) {
+          let newFormulas = result.formulas;
+          console.log('document found' + newFormulas);
+
+          this.memory.setSheetFormulas(newFormulas);
+
+          this.recalcDependency.updateDependencies(this.memory);
+          this.recalcDependency.evaluateSheet(this.memory);
+          console.log('new formulas::' + this.memory.getSheetFormulas());
+        } else {
+          console.log('document not found');
+        }
+      } catch (error) {
+        console.log('error-------->: ' + error);
+      }
+    }
+
+    console.log('processCommandButton: ' + command);
   }
+
   /**  
    *  add token to current formula
    * 
@@ -238,6 +277,10 @@ export class Machine {
     * @returns string[][]
     */
   public getSheetDisplayStringsForGUI(): string[][] {
+    this.recalcDependency.updateComputationOrder(this.memory);
+    this.recalcDependency.evaluateSheet(this.memory);
+    console.log("getSheetDisplayStringsForGUI");
+    console.log("getSheetDisplayStringsForGUI" + this.memory.getSheetDisplayStrings());
     let memoryDisplayValues = this.memory.getSheetDisplayStrings();
     let guiDisplayValues: string[][] = [];
     let inputRows = memoryDisplayValues.length;

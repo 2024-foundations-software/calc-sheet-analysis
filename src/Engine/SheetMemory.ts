@@ -28,8 +28,7 @@
 import Recalc from "./Recalc";
 import Cell from "./Cell";
 
-export class SheetMemory
-{
+export class SheetMemory {
     private cells: Cell[][];
     private maxRows = 8;
     private maxColumns = 8;
@@ -39,18 +38,15 @@ export class SheetMemory
 
     private recalc: Recalc = new Recalc();
 
-    constructor(columns: number, rows: number)
-    {
-        
+    constructor(columns: number, rows: number) {
+
         this.maxColumns = columns;
         this.maxRows = rows;
 
         this.cells = [];
-        for (let column = 0; column < this.maxColumns; column++)
-        {
+        for (let column = 0; column < this.maxColumns; column++) {
             this.cells[column] = [];
-            for (let row = 0; row < this.maxRows; row++)
-            {
+            for (let row = 0; row < this.maxRows; row++) {
                 this.cells[column][row] = new Cell();
             }
         }
@@ -62,8 +58,7 @@ export class SheetMemory
      * @returns the max rows
      *  
      * */
-    getMaxRows(): number
-    {
+    getMaxRows(): number {
         return this.maxRows;
     }
 
@@ -73,9 +68,8 @@ export class SheetMemory
     * @returns the max columns
     * 
     * */
-    getMaxColumns(): number
-    {
-        return this.maxColumns; 
+    getMaxColumns(): number {
+        return this.maxColumns;
     }
 
 
@@ -84,8 +78,7 @@ export class SheetMemory
      * 
      * returns an array of [row, column]
      * */
-    getCurrentCellCoordinates(): number[]
-    {
+    getCurrentCellCoordinates(): number[] {
         return [this.currentColumn, this.currentRow];
     }
 
@@ -96,8 +89,7 @@ export class SheetMemory
      * @param column
      * @param cell
      * */
-    setCurrentCellCoordinates(column: number, row:number): void
-    {
+    setCurrentCellCoordinates(column: number, row: number): void {
         this.currentRow = row;
         this.currentColumn = column;
     }
@@ -107,8 +99,7 @@ export class SheetMemory
      * 
      * @param cell
      */
-    setCurrentCell(cell: Cell): void
-    {
+    setCurrentCell(cell: Cell): void {
         this.cells[this.currentColumn][this.currentRow] = cell;
     }
 
@@ -118,8 +109,7 @@ export class SheetMemory
      * @returns the value of the current cell
      * 
      * */
-    getCurrentCell(): Cell
-    {
+    getCurrentCell(): Cell {
         return this.cells[this.currentColumn][this.currentRow];
     }
 
@@ -134,12 +124,11 @@ export class SheetMemory
      * @param label
      * 
      */
-    
-    getCellByLabel(label: string): Cell
-    {
+
+    getCellByLabel(label: string): Cell {
         const [column, row] = Cell.cellToColumnRow(label);
-       // console.log("getCellByLabel: " + label);
-       // console.log("getCellByLabel: (" +label+ ") depends on [" + this.cells[column][row].getDependsOn() + "]");
+        // console.log("getCellByLabel: " + label);
+        // console.log("getCellByLabel: (" +label+ ") depends on [" + this.cells[column][row].getDependsOn() + "]");
         return this.cells[column][row];
     }
 
@@ -149,8 +138,7 @@ export class SheetMemory
      * @param label the coordinates of the cell
      * @param cell the cell to set
      */
-    setCellByLabel(label: string, cell: Cell): void
-    {
+    setCellByLabel(label: string, cell: Cell): void {
         const [column, row] = Cell.cellToColumnRow(label);
         this.cells[column][row] = cell;
     }
@@ -163,8 +151,7 @@ export class SheetMemory
 
      *  
      * */
-    getCellByCoordinates(column:number, row:number): Cell
-    {
+    getCellByCoordinates(column: number, row: number): Cell {
         return this.cells[column][row];
     }
 
@@ -176,8 +163,7 @@ export class SheetMemory
      * @param cell the cell to set
      * 
      */
-    setCellByCoordinates( column: number, row: number, cell: Cell): void
-    {
+    setCellByCoordinates(column: number, row: number, cell: Cell): void {
         this.cells[column][row] = cell;
     }
 
@@ -188,8 +174,7 @@ export class SheetMemory
      * @param formula
      *  
      * */
-    setCurrentCellFormula(formula: FormulaType): void
-    {
+    setCurrentCellFormula(formula: FormulaType): void {
         this.cells[this.currentColumn][this.currentRow].setFormula(formula);
     }
 
@@ -200,8 +185,7 @@ export class SheetMemory
      * @returns the formula of the current cell
      * 
      */
-    getCurrentCellFormula(): FormulaType
-    {
+    getCurrentCellFormula(): FormulaType {
         return this.cells[this.currentColumn][this.currentRow].getFormula()
     }
 
@@ -211,8 +195,7 @@ export class SheetMemory
      * @param displayString
      * 
      * */
-    setCurrentCellDisplayString(displayString: string): void
-    {
+    setCurrentCellDisplayString(displayString: string): void {
         this.cells[this.currentColumn][this.currentRow].setDisplayString(displayString);
     }
     /**
@@ -221,8 +204,7 @@ export class SheetMemory
      * @returns the display string of the current cell
      * 
      * */
-    getCurrentCellDisplayString(): string
-    {
+    getCurrentCellDisplayString(): string {
         return this.cells[this.currentColumn][this.currentRow].getDisplayString();
     }
 
@@ -232,8 +214,7 @@ export class SheetMemory
      * @param value
      *  
      * */
-    setCurrentCellValue(value: number): void
-    {
+    setCurrentCellValue(value: number): void {
         let workingCell: Cell = this.cells[this.currentColumn][this.currentRow];
         workingCell.setValue(value);
     }
@@ -244,27 +225,23 @@ export class SheetMemory
      * @returns the value of the current cell
      *  
      * */
-    getCurrentCellValue(): number
-    {
-        const cell:Cell = this.cells[this.currentColumn][this.currentRow];
+    getCurrentCellValue(): number {
+        const cell: Cell = this.cells[this.currentColumn][this.currentRow];
         return cell.getValue();
     }
 
-    
+
     /**
      * Get Sheet formulas
      * 
      * returns a twoD array of formulas
      * 
      * */
-    getSheetFormulas(): FormulaType[][]
-    {
+    getSheetFormulas(): FormulaType[][] {
         let formulas: FormulaType[][] = [];
-        for (let column = 0; column < this.maxColumns; column++)
-        {
+        for (let column = 0; column < this.maxColumns; column++) {
             formulas[column] = [];
-            for (let row = 0; row < this.maxRows; row++)
-            {
+            for (let row = 0; row < this.maxRows; row++) {
                 formulas[column][row] = this.cells[column][row].getFormula();
             }
         }
@@ -272,19 +249,36 @@ export class SheetMemory
     }
 
     /**
+     * 
+     * set sheet formulas
+     * 
+     * @param formulas
+     * 
+     */
+    setSheetFormulas(formulas: FormulaType[][]): void {
+        console.log("setSheetFormulas");
+        for (let column = 0; column < this.maxColumns; column++) {
+            for (let row = 0; row < this.maxRows; row++) {
+                let cell = new Cell();
+                console.log("[" + column + "][" + row + "] = " + formulas[column][row]);
+                cell.setFormula(formulas[column][row]);
+                this.cells[column][row] = cell;
+            }
+        }
+
+
+    }
+    /**
      * Get Sheet values
      * 
      * returns a twoD array of values
      * 
      * */
-    getSheetValues(): number[][]
-    {
+    getSheetValues(): number[][] {
         let values: number[][] = [];
-        for (let column = 0; column < this.maxColumns; column++)
-        {
+        for (let column = 0; column < this.maxColumns; column++) {
             values[column] = [];
-            for (let row = 0; row < this.maxRows; row++)
-            {
+            for (let row = 0; row < this.maxRows; row++) {
                 values[column][row] = this.cells[column][row].getValue();
             }
         }
@@ -296,15 +290,12 @@ export class SheetMemory
      * 
      * returns a twoD array of display strings
      */
-    getSheetDisplayStrings(): string[][]
-    {
+    getSheetDisplayStrings(): string[][] {
         console.log("getSheetDisplayStrings");
         let displayStrings: string[][] = [];
-        for (let column = 0; column < this.maxColumns; column++)
-        {
+        for (let column = 0; column < this.maxColumns; column++) {
             displayStrings[column] = [];
-            for (let row = 0; row < this.maxRows; row++)
-            {   
+            for (let row = 0; row < this.maxRows; row++) {
                 const displayString = this.cells[column][row].getDisplayString();
                 //console.log("getSheetDisplayStrings: [" + column + "][" + row + "] = [" + displayString + "]");
                 displayStrings[column][row] = displayString;
@@ -321,21 +312,18 @@ export class SheetMemory
      * returns a twoD array of dependencies
      * 
      * */
-    getDependsOn(): string[][][]
-    {
+    getDependsOn(): string[][][] {
         let dependencies: string[][][] = [];
-        for (let column = 0; column < this.maxColumns; column++)
-        {
+        for (let column = 0; column < this.maxColumns; column++) {
             dependencies[column] = [];
-            for (let row = 0; row < this.maxRows; row++)
-            {
+            for (let row = 0; row < this.maxRows; row++) {
                 dependencies[column][row] = this.cells[column][row].getDependsOn();
             }
         }
 
         return dependencies;
     }
-    
+
 
 
     /**
@@ -344,8 +332,7 @@ export class SheetMemory
      * @returns the value of the current cell
      * 
      */
-    evaluateCurrentCell(): number
-    {
+    evaluateCurrentCell(): number {
         const formula = this.getCurrentCell().getFormula()
         const value = this.evaluateFormulaNumber(formula);
         this.setCurrentCellValue(value);
@@ -361,8 +348,7 @@ export class SheetMemory
      * @returns the value of the formula
      * 
      * */
-    evaluateFormulaNumber(formula: FormulaType): number
-    {
+    evaluateFormulaNumber(formula: FormulaType): number {
         const [, displayString] = this.recalc.evaluate(formula, this);
         const result = parseFloat(displayString);
         return result
@@ -371,6 +357,6 @@ export class SheetMemory
 
 
 
-  }
+}
 
-  export default SheetMemory;
+export default SheetMemory;
