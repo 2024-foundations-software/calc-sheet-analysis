@@ -9,7 +9,7 @@ type ButtonElement = React.MouseEvent<HTMLButtonElement>;
 interface Button {
   text: string;
   isDigint: boolean;
-  onClick: (button:ButtonElement) => void;
+  onClick: (button: ButtonElement) => void;
 }
 
 
@@ -33,3 +33,9 @@ interface SheetType {
   [key: string]: CellType;
 }
 
+// Define the interface for the JSON document
+interface CalcSheetDocument {
+  numberOfColumns: number;
+  numberOfRows: number;
+  formulas: string[][][];
+}

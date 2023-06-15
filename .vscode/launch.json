@@ -1,12 +1,39 @@
 {
   "version": "0.2.0",
   "configurations": [
-    
     {
       "type": "node",
       "request": "attach",
       "name": "Attach",
       "port": 9229
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: start",
+      "request": "launch",
+      "command": "npm run start",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: build",
+      "request": "launch",
+      "command": "npm run build",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Start Data Server",
+      "request": "launch",
+      "command": "npm run start-server",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: eject",
+      "request": "launch",
+      "command": "npm run eject",
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import React , {useState} from "react";
+import React, { useState } from "react";
 import Formula from "./Formula";
 import Status from "./Status";
 import KeyPad from "./KeyPad";
@@ -12,11 +12,20 @@ interface CalculatorInputProcessorProps {
   machine: Machine;
 }
 
+
+
+
+
+
+// This component is the main component for the calculator
+
+
+
 function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
 
   const { machine } = props;
-  const [formulaString, setFormulaString]  = useState(machine.getFormulaString())
-  const [resultString, setResultString]  = useState(machine.getResultString())
+  const [formulaString, setFormulaString] = useState(machine.getFormulaString())
+  const [resultString, setResultString] = useState(machine.getResultString())
   const [cells, setCells] = useState(machine.getSheetDisplayStringsForGUI());
   const [statusString, setStatusString] = useState(machine.getEditStatusString());
   const [currentCell, setCurrentCell] = useState(machine.getCurrentCellLabel());
@@ -59,7 +68,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
       if (trueText === ButtonNames.restart) {
         machine.restart();
       }
-   
+
 
       updateDisplayValues();
     }
@@ -75,7 +84,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
    * */
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
     const text = event.currentTarget.textContent;
-   
+
     if (text) {
       let trueText = text ? text : "";
       machine.setEditStatus(true);
@@ -84,6 +93,8 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
       updateDisplayValues();
     }
   }
+
+
 
   /**
    * 
@@ -96,30 +107,30 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   function onCellClick(event: React.MouseEvent<HTMLButtonElement>): void {
     const cellLabel = event.currentTarget.getAttribute("cell-label");
     // calculate the current row and column of the clicked on cell
- 
+
     const editStatus = machine.getEditStatus();
 
     // if the edit status is true then add the token to the machine
     if (editStatus) {
       machine.addToken(cellLabel ? cellLabel : "");
       updateDisplayValues();
-    } 
+    }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
       machine.setCurrentCellByLabel(cellLabel ? cellLabel : "");
       updateDisplayValues();
     }
-    
+
   }
 
 
-     
+
   return (
     <div>
-      <Formula formulaString = {formulaString} resultString={resultString} ></Formula>
-      <Status statusString = {statusString}></Status>
-      { <SheetHolder  cellsValues = {cells} onClick={onCellClick} currentCell={currentCell} currentlyEditing={currentlyEditing} ></SheetHolder> }
-      <KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick}></KeyPad>    
+      <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
+      <Status statusString={statusString}></Status>
+      {<SheetHolder cellsValues={cells} onClick={onCellClick} currentCell={currentCell} currentlyEditing={currentlyEditing} ></SheetHolder>}
+      <KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick}></KeyPad>
     </div>
   )
 };

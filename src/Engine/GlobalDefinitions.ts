@@ -1,5 +1,5 @@
 
-export const ErrorMessages =  {
+export const ErrorMessages = {
   partial: "#ERR",
   divideByZero: "#DIV/0!",
   invalidCell: "#REF!",
@@ -19,3 +19,6 @@ export const ButtonNames = {
   save: "save",
   load: "load",
 }
+
+
+
