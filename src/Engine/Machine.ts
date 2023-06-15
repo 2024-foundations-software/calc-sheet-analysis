@@ -74,7 +74,7 @@ export class Machine {
    *  @param key:string
    */
   public processKey(key: string): void {
-    console.log("processKey: " + key);
+
     // if the key is a number or a parenthesis or a decimal point add it to the formula
     if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "(", ")"].includes(key)) {
       this.addToken(key);
@@ -99,7 +99,7 @@ export class Machine {
       return;
     }
 
-    console.log("processKey: " + key);
+
   }
 
 
@@ -111,12 +111,9 @@ export class Machine {
         formulas: this.memory.getSheetFormulas(),
       };
       try {
-        let documentID = await this.calcSheetServerClient.sendDocument(
-          documentToSend
-        );
-        console.log('documentID: ' + documentID);
+        await this.calcSheetServerClient.sendDocument(documentToSend);
       } catch (error) {
-        console.log('error-------->: ' + error);
+        console.error('error-------->: ' + error);
       }
     }
     if (command === 'load') {
@@ -125,22 +122,18 @@ export class Machine {
         let result = await this.calcSheetServerClient.getDocument(documentID);
         if (result) {
           let newFormulas = result.formulas;
-          console.log('document found' + newFormulas);
 
           this.memory.setSheetFormulas(newFormulas);
 
           this.recalcDependency.updateDependencies(this.memory);
           this.recalcDependency.evaluateSheet(this.memory);
-          console.log('new formulas::' + this.memory.getSheetFormulas());
         } else {
-          console.log('document not found');
+          console.error('document not found');
         }
       } catch (error) {
-        console.log('error-------->: ' + error);
+        console.error('error-------->: ' + error);
       }
     }
-
-    console.log('processCommandButton: ' + command);
   }
 
   /**  
@@ -279,8 +272,7 @@ export class Machine {
   public getSheetDisplayStringsForGUI(): string[][] {
     this.recalcDependency.updateComputationOrder(this.memory);
     this.recalcDependency.evaluateSheet(this.memory);
-    console.log("getSheetDisplayStringsForGUI");
-    console.log("getSheetDisplayStringsForGUI" + this.memory.getSheetDisplayStrings());
+
     let memoryDisplayValues = this.memory.getSheetDisplayStrings();
     let guiDisplayValues: string[][] = [];
     let inputRows = memoryDisplayValues.length;

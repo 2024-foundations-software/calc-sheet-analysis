@@ -6,7 +6,7 @@ describe('SheetMemory', () => {
     describe('when the sheet memory is created', () => {
       describe('when the max rows and columns are not set', () => {
         it('getMaxRows should return 5, and getMaxColumns should return 5', () => {
-          const sheetMemory = new SheetMemory(5,5);
+          const sheetMemory = new SheetMemory(5, 5);
           const testMaxRows = sheetMemory.getMaxRows();
           const testMaxColumns = sheetMemory.getMaxColumns();
           expect(testMaxRows).toEqual(5);
@@ -17,7 +17,7 @@ describe('SheetMemory', () => {
         it('getMaxRows should return 8, and getMaxColumns should return 7', () => {
           const testMaxRows = 8;
           const testMaxColumns = 7;
-          const sheetMemory = new SheetMemory(testMaxColumns, testMaxRows );
+          const sheetMemory = new SheetMemory(testMaxColumns, testMaxRows);
           const testSetMaxRows = sheetMemory.getMaxRows();
           const testSetMaxColumns = sheetMemory.getMaxColumns();
           expect(testSetMaxRows).toEqual(testMaxRows);
@@ -29,7 +29,7 @@ describe('SheetMemory', () => {
 
   describe("getCellByLabel", () => {
     it("should return the cell", () => {
-      const sheetMemory = new SheetMemory(10,10);
+      const sheetMemory = new SheetMemory(10, 10);
       sheetMemory.setCurrentCellCoordinates(1, 1);
       let testWriteCell = new Cell();
       testWriteCell.setFormula(["1234"]);
@@ -47,8 +47,8 @@ describe('SheetMemory', () => {
 
   describe('setCurrentCellCoordinates', () => {
     describe('when the current cell coordinates are set', () => {
-     it('getCurrentCellCoordinates shoul return the same values', () => {
-        const sheetMemory = new SheetMemory(5,5);
+      it('getCurrentCellCoordinates shoul return the same values', () => {
+        const sheetMemory = new SheetMemory(5, 5);
         const testRow = 0;
         const testColumn = 0;
         sheetMemory.setCurrentCellCoordinates(testRow, testColumn);
@@ -57,13 +57,13 @@ describe('SheetMemory', () => {
       }
       );
     });
-    
+
   }
   );
   describe('getCurrentCellCoordinates', () => {
     describe('when the current cell coordinates are not set', () => {
       it('getCurrentCellCoordinates should return [0, 0]', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testCoordinates = sheetMemory.getCurrentCellCoordinates();
         expect(testCoordinates).toEqual([0, 0]);
       }
@@ -74,7 +74,7 @@ describe('SheetMemory', () => {
   describe('setCurrentCell', () => {
     describe('when the current cell is set', () => {
       it('getCurrentCell should return the same cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testCell = new Cell();
         testCell.setFormula(["1"]);
         testCell.setDisplayString("1");
@@ -95,7 +95,7 @@ describe('SheetMemory', () => {
   describe('getCurrentCell', () => {
     describe('when the current cell is not set', () => {
       it('getCurrentCell should return the default cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testCell = new Cell();
         const testGetCell = sheetMemory.getCurrentCell();
         expect(testGetCell).toEqual(testCell);
@@ -107,7 +107,7 @@ describe('SheetMemory', () => {
   describe('setCurrentCellFormula', () => {
     describe('when the current cell formula is set', () => {
       it('getCurrentCell should return the same cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testFormula = ["1"];
         sheetMemory.setCurrentCellFormula(testFormula);
         const testSetFormula = sheetMemory.getCurrentCell();
@@ -120,8 +120,8 @@ describe('SheetMemory', () => {
   describe('getCurrentCellFormula', () => {
     describe('when the current cell formula is not set', () => {
       it('getCurrentCell should return the default cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
-        const testFormula:FormulaType = [];
+        const sheetMemory = new SheetMemory(5, 5);
+        const testFormula: FormulaType = [];
         const testGetFormula = sheetMemory.getCurrentCell();
         expect(testGetFormula.getFormula()).toEqual(testFormula);
       }
@@ -132,7 +132,7 @@ describe('SheetMemory', () => {
   describe('setCurrentCellValue', () => {
     describe('when the current cell value is set', () => {
       it('getCurrentCell should return the same cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testValue = 1;
         sheetMemory.setCurrentCellValue(testValue);
         const testSetValue = sheetMemory.getCurrentCell();
@@ -145,7 +145,7 @@ describe('SheetMemory', () => {
   describe('getCurrentCellValue', () => {
     describe('when the current cell value is not set', () => {
       it('getCurrentCell should return the default cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testValue = 0;
         const testGetValue = sheetMemory.getCurrentCell();
         expect(testGetValue.getValue()).toEqual(testValue);
@@ -157,7 +157,7 @@ describe('SheetMemory', () => {
   describe('setCurrentCellDisplayString', () => {
     describe('when the current cell display string is set', () => {
       it('getCurrentCell should return the same cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testDisplayString = "1";
         sheetMemory.setCurrentCellDisplayString(testDisplayString);
         const testSetDisplayString = sheetMemory.getCurrentCell();
@@ -170,7 +170,7 @@ describe('SheetMemory', () => {
   describe('getCurrentCellDisplayString', () => {
     describe('when the current cell display string is not set', () => {
       it('getCurrentCell should return the default cell', () => {
-        const sheetMemory = new SheetMemory(5,5);
+        const sheetMemory = new SheetMemory(5, 5);
         const testDisplayString = "";
         const testGetDisplayString = sheetMemory.getCurrentCell();
         expect(testGetDisplayString.getDisplayString()).toEqual(testDisplayString);
@@ -179,7 +179,22 @@ describe('SheetMemory', () => {
     });
   }
   );
+  describe('setSheetFormulas', () => {
+    describe('when the sheet formulas are set', () => {
+      it('getSheetFormulas should return the same formulas', () => {
+        const sheetMemory = new SheetMemory(2, 2);
+        // define testFormulas to be a 2 b 2 array of formulas
+
+        const testFormulas: FormulaType[][] = [[["1", "+", "3"], ["2"]], [["3"], ["4"]]];
+        sheetMemory.setSheetFormulas(testFormulas);
+        const testSetFormulas = sheetMemory.getSheetFormulas();
+        expect(testSetFormulas).toEqual(testFormulas);
+      }
+      );
+    });
+  });
 }
+
 );
 
 

@@ -127,8 +127,7 @@ export class SheetMemory {
 
     getCellByLabel(label: string): Cell {
         const [column, row] = Cell.cellToColumnRow(label);
-        // console.log("getCellByLabel: " + label);
-        // console.log("getCellByLabel: (" +label+ ") depends on [" + this.cells[column][row].getDependsOn() + "]");
+
         return this.cells[column][row];
     }
 
@@ -256,11 +255,9 @@ export class SheetMemory {
      * 
      */
     setSheetFormulas(formulas: FormulaType[][]): void {
-        console.log("setSheetFormulas");
         for (let column = 0; column < this.maxColumns; column++) {
             for (let row = 0; row < this.maxRows; row++) {
                 let cell = new Cell();
-                console.log("[" + column + "][" + row + "] = " + formulas[column][row]);
                 cell.setFormula(formulas[column][row]);
                 this.cells[column][row] = cell;
             }
@@ -291,13 +288,11 @@ export class SheetMemory {
      * returns a twoD array of display strings
      */
     getSheetDisplayStrings(): string[][] {
-        console.log("getSheetDisplayStrings");
         let displayStrings: string[][] = [];
         for (let column = 0; column < this.maxColumns; column++) {
             displayStrings[column] = [];
             for (let row = 0; row < this.maxRows; row++) {
                 const displayString = this.cells[column][row].getDisplayString();
-                //console.log("getSheetDisplayStrings: [" + column + "][" + row + "] = [" + displayString + "]");
                 displayStrings[column][row] = displayString;
 
             }

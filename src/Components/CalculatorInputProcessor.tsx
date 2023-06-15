@@ -33,43 +33,50 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
 
 
   function updateDisplayValues(): void {
+
     setFormulaString(machine.getFormulaString());
     setResultString(machine.getResultString());
     setStatusString(machine.getEditStatusString());
     setCells(machine.getSheetDisplayStringsForGUI());
+
     setCurrentCell(machine.getCurrentCellLabel());
     setCurrentlyEditing(machine.getEditStatus());
   }
 
 
-  function onCommandButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
+  async function onCommandButtonClick(event: React.MouseEvent<HTMLButtonElement>): Promise<void> {
     const text = event.currentTarget.textContent;
     if (text) {
       let trueText = text ? text : "";
-      machine.processCommandButton(trueText);
-      if (trueText === ButtonNames.edit) {
-        machine.setEditStatus(true);
-        setStatusString(machine.getEditStatusString());
+
+      switch (trueText) {
+        case ButtonNames.edit:
+          machine.setEditStatus(true);
+          setStatusString(machine.getEditStatusString());
+          break;
+
+
+        case ButtonNames.done:
+          machine.setEditStatus(false);
+          setStatusString(machine.getEditStatusString());
+          break;
+
+        case ButtonNames.clear:
+          machine.removeToken();
+          break;
+
+        case ButtonNames.allClear:
+          machine.clearFormula();
+          break;
+
+        case ButtonNames.restart:
+          machine.restart();
+          break;
+
+        default:
+          await machine.processCommandButton(trueText);
+          break
       }
-
-      if (trueText === ButtonNames.done) {
-        machine.setEditStatus(false);
-        setStatusString(machine.getEditStatusString());
-      }
-
-      if (trueText === ButtonNames.clear) {
-        machine.removeToken();
-      }
-
-      if (trueText === ButtonNames.allClear) {
-        machine.clearFormula();
-      }
-
-      if (trueText === ButtonNames.restart) {
-        machine.restart();
-      }
-
-
       updateDisplayValues();
     }
   }
