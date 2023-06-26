@@ -1,4 +1,4 @@
-import React from "react";  
+import React from "react";
 
 import Cell from "../Engine/Cell";
 
@@ -19,7 +19,7 @@ interface SheetComponentProps {
 
 
 
-function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing}: SheetComponentProps) {
+function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }: SheetComponentProps) {
 
   /**
    * 
@@ -37,7 +37,7 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing}: 
   function getCellClass(cell: string) {
     if (cell === currentCell && currentlyEditing) {
       return "cell-editing";
-    } 
+    }
     if (cell === currentCell) {
       return "cell-selected";
     }
@@ -56,20 +56,21 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing}: 
             </th>
           ))}
         </tr>
-        {cellsValues.map((row, rowIndex) => (   
+        {cellsValues.map((row, rowIndex) => (
           <tr key={rowIndex}>
-           <td> {Cell.rowNumberToName(rowIndex)}</td>
+            <td> {Cell.rowNumberToName(rowIndex)}</td>
             {row.map((cell, colIndex) => (
               <td key={colIndex}>
                 <button
                   onClick={onClick}
                   value={cell}
                   cell-label={Cell.columnRowToCell(colIndex, rowIndex)}
+                  data-testid={Cell.columnRowToCell(colIndex, rowIndex)}
                   className={(getCellClass(Cell.columnRowToCell(colIndex, rowIndex)))}
                 >
-                {cell}
+                  {cell}
                 </button>
-                
+
               </td>
             ))}
           </tr>

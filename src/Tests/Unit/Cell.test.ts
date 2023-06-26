@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- 
- */
 import { Cell } from "../../Engine/Cell";
 
 describe("Cell", () => {
@@ -15,6 +11,7 @@ describe("Cell", () => {
     });
   }
   );
+
   describe("copy constructor", () => {
     it("should copy the cell", () => {
       const cell = new Cell();
@@ -30,6 +27,7 @@ describe("Cell", () => {
     });
   }
   );
+
   describe("getFormula", () => {
     it("should return the formula", () => {
       const cell = new Cell();
@@ -37,7 +35,7 @@ describe("Cell", () => {
     });
   }
   );
-  
+
   describe("setFormula", () => {
     it("should set the formula", () => {
       const cell = new Cell();
@@ -47,6 +45,7 @@ describe("Cell", () => {
     });
   }
   );
+
   describe("getValue", () => {
     it("should return the value", () => {
       const cell = new Cell();
@@ -54,6 +53,7 @@ describe("Cell", () => {
     });
   }
   );
+
   describe("setValue", () => {
     it("should set the value", () => {
       const cell = new Cell();
@@ -62,6 +62,7 @@ describe("Cell", () => {
     });
   }
   );
+
   describe("getDisplayString", () => {
     it("should return the display string", () => {
       const cell = new Cell();
@@ -69,6 +70,7 @@ describe("Cell", () => {
     });
   }
   );
+
   describe("setDisplayString", () => {
     it("should set the display string", () => {
       const cell = new Cell();
@@ -77,9 +79,7 @@ describe("Cell", () => {
     });
   }
   );
- 
+
 }
 );
-
-
 

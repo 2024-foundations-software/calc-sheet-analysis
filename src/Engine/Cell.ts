@@ -43,7 +43,7 @@ export class Cell {
       this.dependsOn = [];
     }
   }
-  
+
   /** 
    * get the formula of the cell
    * @returns {string[]} The formula of the cell
@@ -120,10 +120,10 @@ export class Cell {
   setDependsOn(dependsOn: string[]): void {
     this.dependsOn = dependsOn;
   }
-  
-  
 
-//** static methods. */
+
+
+  //** static methods. */
 
 
   /**
@@ -137,16 +137,14 @@ export class Cell {
     return regex.test(cell);
   }
 
-  static convertFromBase26ToBase10(column: string): number
-    {
-        let result = 0;
-        for (let i = 0; i < column.length; i++)
-        {
-            result *= 26;
-            result += column.charCodeAt(i) - 65;
-        }
-        return result;
-      }
+  static convertFromBase26ToBase10(column: string): number {
+    let result = 0;
+    for (let i = 0; i < column.length; i++) {
+      result *= 26;
+      result += column.charCodeAt(i) - 65;
+    }
+    return result;
+  }
 
 
   /**
@@ -154,24 +152,23 @@ export class Cell {
    * @param column 
    * @returns the column name in base 26 represented with A=0 and Z=25
    */
-  public static columnNumberToName(column: number): string
-   {
-        /**
-     * 65 is the ASCII code for A
-     * 26 is the number of letters in the alphabet
-     * 
-     * we use do while loop to make sure that the loop runs at least once
-     */
+  public static columnNumberToName(column: number): string {
+    /**
+ * 65 is the ASCII code for A
+ * 26 is the number of letters in the alphabet
+ * 
+ * we use do while loop to make sure that the loop runs at least once
+ */
     let temp = column;
     let result = "";
-    do{
+    do {
       let remainder = temp % 26;
       temp = Math.floor(temp / 26);
       result = String.fromCharCode(remainder + 65) + result;
-    } while(temp > 0);
+    } while (temp > 0);
     return result;
   }
-        
+
   /**
    * 
    * @param row
@@ -180,8 +177,7 @@ export class Cell {
    * The labels for the cells are 1 based so we add 1 to the row number
    * 
    */
-  public static rowNumberToName(row: number): string
-  {
+  public static rowNumberToName(row: number): string {
     return (row + 1).toString();
   }
 
@@ -192,21 +188,21 @@ export class Cell {
    * 
    * */
   public static cellToColumnRow(label: string): number[] {
-        // Split the label into the column and row
-        // The column is the first characters of the label (the letters)
-        // The row is the last characters of the label (the numbers)
-        
+    // Split the label into the column and row
+    // The column is the first characters of the label (the letters)
+    // The row is the last characters of the label (the numbers)
 
-        const labelREGEX = (/^([A-Z]+)([0-9]+)$/);
-        const matches = label.match(labelREGEX);
 
-        if (matches === null) {
-            throw new Error("Invalid cell name");
-        }
-        const column = Cell.convertFromBase26ToBase10(matches[1]);
-        const row = parseInt(matches[2])-1;
-       
-        return [column, row];
+    const labelREGEX = (/^([A-Z]+)([0-9]+)$/);
+    const matches = label.match(labelREGEX);
+
+    if (matches === null) {
+      throw new Error("Invalid cell name");
+    }
+    const column = Cell.convertFromBase26ToBase10(matches[1]);
+    const row = parseInt(matches[2]) - 1;
+
+    return [column, row];
   }
 
   /**
@@ -221,7 +217,7 @@ export class Cell {
     // Convert the row to a string
     // Concatenate the column and row
     // Return the result
-    
+
     let columnString = Cell.columnNumberToName(column);
 
     /**

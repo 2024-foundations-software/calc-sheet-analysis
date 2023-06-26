@@ -43,11 +43,25 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     setCurrentlyEditing(machine.getEditStatus());
   }
 
-
+  /**
+   * 
+   * @param event 
+   * 
+   * This function is the call back for the command buttons
+   * 
+   * It will call the machine to process the command button
+   * 
+   * the buttons done, edit, clear, all clear, and restart do not require asynchronous processing
+   * 
+   * the other buttons do require asynchronous processing and so the function is marked async
+   */
   async function onCommandButtonClick(event: React.MouseEvent<HTMLButtonElement>): Promise<void> {
     const text = event.currentTarget.textContent;
+
     if (text) {
       let trueText = text ? text : "";
+
+
 
       switch (trueText) {
         case ButtonNames.edit:
@@ -77,6 +91,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
           await machine.processCommandButton(trueText);
           break
       }
+      // update the display values
       updateDisplayValues();
     }
   }
@@ -90,10 +105,13 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
    * 
    * */
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
+
     const text = event.currentTarget.textContent;
 
     if (text) {
       let trueText = text ? text : "";
+
+
       machine.setEditStatus(true);
       machine.addToken(trueText);
 
@@ -116,15 +134,17 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     // calculate the current row and column of the clicked on cell
 
     const editStatus = machine.getEditStatus();
+    let realCellLabel = cellLabel ? cellLabel : "";
+    console.warn("onCellClick: cellLabel = ", realCellLabel, " editStatus = ", editStatus);
 
     // if the edit status is true then add the token to the machine
     if (editStatus) {
-      machine.addToken(cellLabel ? cellLabel : "");
+      machine.addCell(realCellLabel);  // this will never be ""
       updateDisplayValues();
     }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
-      machine.setCurrentCellByLabel(cellLabel ? cellLabel : "");
+      machine.setCurrentCellByLabel(realCellLabel);
       updateDisplayValues();
     }
 

@@ -9,14 +9,14 @@
     },
     {
       "type": "node-terminal",
-      "name": "Run Script: start",
+      "name": "Start Calculator",
       "request": "launch",
       "command": "npm run start",
       "cwd": "${workspaceFolder}"
     },
     {
       "type": "node-terminal",
-      "name": "Run Script: build",
+      "name": "Build code",
       "request": "launch",
       "command": "npm run build",
       "cwd": "${workspaceFolder}"
@@ -34,6 +34,21 @@
       "request": "launch",
       "command": "npm run eject",
       "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Jest tests",
+      "request": "launch",
+      "command": "npx jest InputProcessor",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Jest tests 2",
+      "request": "launch",
+      "command": "node --inspect-brk ./node_modules/.bin/jest Processor",
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

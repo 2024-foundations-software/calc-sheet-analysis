@@ -157,6 +157,34 @@ export class Machine {
 
   }
 
+  /**  
+   *  add cell reference to current formula
+   * 
+   * @param cell:string
+   * Assuming that the dependents have been updated
+   * we will look at the dependsOn array for the cell being inserted
+   * if the current cell is in the dependsOn array then we have a circular reference
+   * 
+   */
+  addCell(cell_reference: string): void {
+
+    // get the dependents for the cell being inserted
+
+    let cell: Cell = this.memory.getCellByLabel(cell_reference);
+    // get the dependents for the current cell
+    let dependents = cell.getDependsOn();
+
+    let currentLabel = Cell.columnRowToCell(this.currentColumn, this.currentRow);
+
+
+    // if the cell reference is not in the dependents use add token
+    if (!dependents.includes(currentLabel)) {
+      this.addToken(cell_reference);
+    } else {
+      console.log('circular reference[' + cell_reference + '] not added');
+    }
+  }
+
 
   /**
    * 
@@ -318,7 +346,7 @@ export class Machine {
    * */
   public getEditStatusString(): string {
     if (this.editStatus) {
-      return "editing " + this.getCurrentCellLabel();
+      return "editing: " + this.getCurrentCellLabel();
     }
     return "current cell: " + this.getCurrentCellLabel();
   }

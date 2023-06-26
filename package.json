@@ -13,7 +13,10 @@
     "crypto": "^1.0.1",
     "flask": "^0.2.10",
     "fs": "^0.0.1-security",
+    "html": "^1.0.0",
     "http": "^0.0.1-security",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
     "net": "^1.0.2",
     "path": "^0.12.7",
     "querystring": "^0.2.1",
@@ -59,7 +62,6 @@
     "@types/node": "^20.3.1",
     "@types/uuid": "^9.0.2",
     "axios": "^1.4.0",
-    "jest": "^29.5.0",
     "ts-jest": "^29.1.0",
     "uuid": "^9.0.0"
   }

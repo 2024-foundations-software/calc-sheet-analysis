@@ -18,6 +18,7 @@ export const ButtonNames = {
   restart: "new",
   save: "save",
   load: "load",
+
 }
 
 

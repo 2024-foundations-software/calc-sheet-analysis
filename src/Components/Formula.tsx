@@ -15,19 +15,22 @@ type FormulaProps = {
 
 
 
-const Formula: React.FC<FormulaProps> = ({ formulaString, resultString}) => {
+const Formula: React.FC<FormulaProps> = ({ formulaString, resultString }) => {
   return (
     <div>
-      "Formula"<br></br>
+      <span data-testid="FormulaTitle">Formula </span>
+      <br />
       <div className="formula">
-        {formulaString} 
-      </div> <br></br>
-      "Result"<br></br>
+        <span data-testid="FormulaValue">{formulaString} </span>
+      </div>
+      <br />
+      <span data-testid="Result">Result</span>
+      <br />
       <div className="formula">
-        {resultString} 
+        <span data-testid="FormulaResult">{resultString}</span>
       </div>
     </div>
-    
+
   );
 } // const Formula 
 
