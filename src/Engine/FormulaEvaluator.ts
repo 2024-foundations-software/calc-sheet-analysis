@@ -4,7 +4,7 @@ import { ErrorMessages } from "./GlobalDefinitions";
 
 
 
-export class Recalc {
+export class FormulaEvaluator {
   // Define a function called update that takes a string parameter and returns a number
   private errorOccured: boolean = false;
   private errorMessage: string = "";
@@ -45,7 +45,7 @@ export class Recalc {
    * This means that recalc can simply read the value from the memory when it encounters a cellReference
    * 
    */
-  evaluate(formula: FormulaType, memory: SheetMemory): [number,string] {
+  evaluate(formula: FormulaType, memory: SheetMemory): [number, string] {
 
     // make a copy of the formula
     //
@@ -53,16 +53,16 @@ export class Recalc {
     // we do this because the parser consumes the value in currentFormula 
     this.currentFormula = formula.slice();
     this.sheetMemory = memory;
-    
+
 
     // set the value of result to ""
     let result = "";
     this.lastResult = 0;
 
     // if the formula is empty return ""
-    if (formula.length === 0) { 
-      return [this.lastResult,result];
-    } 
+    if (formula.length === 0) {
+      return [this.lastResult, result];
+    }
     // set the errorOccured flag
     this.errorOccured = false;
 
@@ -72,7 +72,7 @@ export class Recalc {
     // if an error occured  and the message is PARTIAL return the last resul
     if (this.errorOccured && this.errorMessage === ErrorMessages.partial) {
       const displayString = this.lastResult.toString();
-      return  [this.lastResult, displayString];
+      return [this.lastResult, displayString];
     }
 
     // if an error occured return the error message
@@ -85,7 +85,7 @@ export class Recalc {
     const displayString = resultNumber.toString();
     return [resultNumber, displayString];
   }
-  
+
   /**
    * 
    * @returns The value of the factor in the tokenized formula
@@ -97,7 +97,7 @@ export class Recalc {
       let term = this.term();
       if (operator === "+") {
         result += term;
-        
+
       } else {
         result -= term;
       }
@@ -120,14 +120,14 @@ export class Recalc {
       if (operator === "*") {
         result *= factor;
       } else {
-         result /= factor;
-         if (result === Infinity || result === -Infinity) {
-            this.errorOccured = true;
-            this.errorMessage = "#DIV/0!";
-            this.lastResult = NaN;
-         }
-        
-        
+        result /= factor;
+        if (result === Infinity || result === -Infinity) {
+          this.errorOccured = true;
+          this.errorMessage = "#DIV/0!";
+          this.lastResult = NaN;
+        }
+
+
       }
     }
     // set the lastResult to the result
@@ -139,7 +139,7 @@ export class Recalc {
    *  
    * @returns The value of the factor in the tokenized formula
    * 
-   */ 
+   */
   factor(): number {
     let result = 0;
     // if the formula is empty set errorOccured to true 
@@ -159,8 +159,8 @@ export class Recalc {
     if (this.isNumber(token)) {
       result = Number(token);
       this.lastResult = result;
-    
-    // if the token is a "(" get the value of the expression
+
+      // if the token is a "(" get the value of the expression
     } else if (token === "(") {
       result = this.expression();
       if (this.currentFormula.length === 0 || this.currentFormula.shift() !== ")") {
@@ -169,7 +169,7 @@ export class Recalc {
         this.lastResult = result
       }
 
-    // if the token is a cell reference get the value of the cell
+      // if the token is a cell reference get the value of the cell
     } else if (this.isCellReference(token)) {
       [result, this.errorMessage] = this.getCellValue(token);
 
@@ -177,9 +177,9 @@ export class Recalc {
       if (this.errorMessage !== "") {
         this.errorOccured = true;
         this.lastResult = result;
-      }      
+      }
 
-    // otherwise set the errorOccured flag to true  
+      // otherwise set the errorOccured flag to true  
     } else {
       this.errorOccured = true;
       this.errorMessage = ErrorMessages.invalidFormula;
@@ -203,10 +203,10 @@ export class Recalc {
    * 
    */
   isCellReference(token: TokenType): boolean {
-    
+
     return Cell.isValidCellLabel(token);
   }
-  
+
   /**
    * 
    * @param token
@@ -215,7 +215,7 @@ export class Recalc {
    * 
    */
   getCellValue(token: TokenType): [number, string] {
-    
+
     if (this.sheetMemory === undefined) {
       throw new Error("Sheet memory is undefined");
     }
@@ -226,10 +226,10 @@ export class Recalc {
     }
     let value = cell.getValue();
     return [value, ""];
-  
+
   }
 
 
 }
 
-export default Recalc;
+export default FormulaEvaluator;

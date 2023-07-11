@@ -39,16 +39,15 @@
       "type": "node-terminal",
       "name": "Jest tests",
       "request": "launch",
-      "command": "npx jest InputProcessor",
+      "command": "npx jest ",
       "cwd": "${workspaceFolder}"
     },
     {
       "type": "node-terminal",
-      "name": "Jest tests 2",
+      "name": "Jest coverage",
       "request": "launch",
-      "command": "node --inspect-brk ./node_modules/.bin/jest Processor",
-      "cwd": "${workspaceFolder}",
-      "internalConsoleOptions": "neverOpen"
-    }
+      "command": "npx jest --coverage",
+      "cwd": "${workspaceFolder}"
+    },
   ]
 }

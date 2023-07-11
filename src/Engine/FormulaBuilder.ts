@@ -14,7 +14,7 @@
  */
 import Cell from "./Cell";
 
-export class TokenProcessor {
+export class FormulaBuilder {
 
   // the current formula
   private formula: FormulaType = [];
@@ -29,15 +29,15 @@ export class TokenProcessor {
    * @returns the value of the formula
    * 
    * */
-  getFormula(): FormulaType{
+  getFormula(): FormulaType {
     return this.formula;
   }
 
   /**
    *  Set the formula
    */
-  setFormula(formula: FormulaType): void{
-    
+  setFormula(formula: FormulaType): void {
+
     this.formula = [...formula];
   }
 
@@ -53,7 +53,7 @@ export class TokenProcessor {
    * 
   
    */
-  addToken(token: TokenType): void{
+  addToken(token: TokenType): void {
     let lastTokenUpdated = false;
     let ignoringToken = false;
     // if there is no formula then add the token to the formula
@@ -91,7 +91,7 @@ export class TokenProcessor {
       lastTokenUpdated = true;
     }
 
-    
+
     // If we updated the last token then replace the last token in the formula with the updated token
     // if the ignoringToken flag is set to true then do not update the last token
     if (lastTokenUpdated) {
@@ -100,12 +100,12 @@ export class TokenProcessor {
     else if (!ignoringToken) {// add the token to the formula
       this.formula = [...this.formula, token];
     }
-    else{
+    else {
       // do nothing but leave the else here for clarity
       // this is where we would handle the case where we are ignoring the token
       // fortunately we do not need to do anything here
     }
-    
+
   }
 
   /**
@@ -113,7 +113,7 @@ export class TokenProcessor {
    * 
    * if the last token is a number with more than one character it should only remove the last character of that token
    */
-  removeToken(): void{
+  removeToken(): void {
     // if there is no formula then do nothing
     if (this.formula.length === 0) {
       return;
@@ -127,7 +127,7 @@ export class TokenProcessor {
       lastToken = lastToken.substring(0, lastToken.length - 1);
       this.formula[this.formula.length - 1] = lastToken;
     }
-    else{
+    else {
       // remove the last token from the formula
       this.formula.pop();
     }
@@ -143,10 +143,10 @@ export class TokenProcessor {
    * add a space between each token
    * remove the last space if there is one
    */
-  getFormulaString(): string{
-    
+  getFormulaString(): string {
+
     let result = "";
-    
+
     for (let i = 0; i < this.formula.length; i++) {
       result += this.formula[i] + " ";
     }
@@ -162,25 +162,25 @@ export class TokenProcessor {
    * parse the formula and return a list of cell references (deduped)
    * 
    * @returns a list of cell references 
-   * */ 
-  public static getCellReferences(formula:string[]): string[]{
+   * */
+  public static getCellReferences(formula: string[]): string[] {
     let result: string[] = [];
     for (let i = 0; i < formula.length; i++) {
       let token = formula[i];
 
       // if the token is a cell reference then add it to the list
       // and make sure it is not already in the list
-      if( Cell.isValidCellLabel(token)  && !result.includes(token)) {
+      if (Cell.isValidCellLabel(token) && !result.includes(token)) {
         result.push(token);
-      } 
+      }
     }
-    
+
     return result;
   }
-  
+
 }
 
-export default TokenProcessor;
+export default FormulaBuilder;
 
 
 

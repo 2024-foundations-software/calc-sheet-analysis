@@ -4,11 +4,11 @@
 
 import React from 'react';
 import './App.css';
-import Machine from './Engine/Machine';
+import SpreadSheetEngine from './Engine/SpreadSheetEngine';
 import CalculatorInputProcessor from './Components/CalculatorInputProcessor';
 
 function App() {
-  const machine = new Machine(5, 8);
+  const machine = new SpreadSheetEngine(5, 8);
   return (
     <div className="App">
       <header className="App-header">

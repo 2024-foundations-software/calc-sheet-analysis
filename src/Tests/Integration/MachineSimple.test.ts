@@ -1,4 +1,4 @@
-import Machine from "../../Engine/Machine";
+import SpreadSheetEngine from "../../Engine/SpreadSheetEngine";
 
 import { ErrorMessages } from "../../Engine/GlobalDefinitions";
 
@@ -21,10 +21,10 @@ import { ErrorMessages } from "../../Engine/GlobalDefinitions";
 
 describe("Machine", () => {
   describe("addToken", () => {
-  
+
     describe("when the formula is empty", () => {
       it("should add the token to the formula", () => {
-        const machine = new Machine(5,5);
+        const machine = new SpreadSheetEngine(5, 5);
         machine.addToken("1");
 
         expect(machine.getFormulaString()).toEqual("1");
@@ -34,19 +34,19 @@ describe("Machine", () => {
 
     describe("when the formula is not empty", () => {
       it("should add the token to the formula", () => {
-        const machine = new Machine(5,5);
+        const machine = new SpreadSheetEngine(5, 5);
         machine.addToken("1");
         machine.addToken("+");
         machine.addToken("2");
         expect(machine.getFormulaString()).toEqual("1 + 2");
         expect(machine.getResultString()).toEqual("3");
       });
-    }); 
+    });
 
     describe("When the value in A1 is set to B2", () => {
       describe("and the value of B2 is undefined", () => {
         it("the value of the display string of A1 should be #REF!", () => {
-          const machine = new Machine(5,5);
+          const machine = new SpreadSheetEngine(5, 5);
           machine.setCurrentCellByLabel("A1");
           machine.addToken("B2");
           expect(machine.getFormulaString()).toEqual("B2");
@@ -55,7 +55,7 @@ describe("Machine", () => {
       });
       describe("and the value of B2 is defined", () => {
         it("the value of the display string of A1 should be the value of B2", () => {
-          const machine = new Machine(5,5);
+          const machine = new SpreadSheetEngine(5, 5);
           machine.setCurrentCellByLabel("A1");
           machine.addToken("B2");
           machine.setCurrentCellByLabel("B2");
@@ -68,7 +68,7 @@ describe("Machine", () => {
 
       describe("when the sheet is empty and the current cell is A1", () => {
         it("attempting to add A1 to the formula should result in an empty formula", () => {
-          const machine = new Machine(5,5);
+          const machine = new SpreadSheetEngine(5, 5);
           machine.setCurrentCellByLabel("A1");
           machine.addToken("A1");
           expect(machine.getFormulaString()).toEqual("");
@@ -78,12 +78,12 @@ describe("Machine", () => {
 
       describe("and the value of B2 is definedt then", () => {
         it("the value of the display string of 2 should be the value of B2", () => {
-          const machine = new Machine(5,5);
+          const machine = new SpreadSheetEngine(5, 5);
           machine.setCurrentCellByLabel("A1");
           machine.addToken("B2");
           machine.setCurrentCellByLabel("B2");
           machine.addToken("1");
-          
+
           expect(machine.getFormulaString()).toEqual("1");
           expect(machine.getResultString()).toEqual("1");
         });
@@ -96,7 +96,7 @@ describe("Machine", () => {
     describe("When the updateCurrentFormula method is used to set the current cell to B2", () => {
       describe("and a token 1 is added to the machine", () => {
         it("the value of the display string of B2 should be 1", () => {
-          const machine = new Machine(5,5);
+          const machine = new SpreadSheetEngine(5, 5);
           machine.setCurrentCellByLabel("B2");
           machine.addToken("1");
           expect(machine.getFormulaString()).toEqual("1");
@@ -108,12 +108,12 @@ describe("Machine", () => {
     });
 
 
-    
-    
+
+
     describe("when the currentCellCoordinates change", () => {
       describe("And you then change the coordinates back", () => {
         it("should result in the same formula being in the tokenProcessor", () => {
-          const machine = new Machine(5,5);
+          const machine = new SpreadSheetEngine(5, 5);
           machine.setCurrentCellByLabel("B1");
           machine.addToken("1");
           machine.addToken("+");
@@ -132,11 +132,11 @@ describe("Machine", () => {
         });
       });
     });
-   
-    
+
+
     describe("when the formula references another cell", () => {
       it("should return the value of the other cell", () => {
-        const machine = new Machine(5,5);
+        const machine = new SpreadSheetEngine(5, 5);
 
         machine.setCurrentCellByLabel("B1");
         machine.addToken("22");
@@ -152,9 +152,9 @@ describe("Machine", () => {
 
     describe("when the token B3 is entered and the current cell is A1 and B3 is empty", () => {
       it("should return an 0 string", () => {
-        const machine = new Machine(5,5);
+        const machine = new SpreadSheetEngine(5, 5);
 
-        machine.setCurrentCellByLabel("A1"); 
+        machine.setCurrentCellByLabel("A1");
         machine.addToken("B3");
         expect(machine.getFormulaString()).toEqual("B3");
         expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
@@ -169,7 +169,7 @@ describe("Machine", () => {
 
     describe("when the formula references another cell long formula", () => {
       it("should return the value of the other cell", () => {
-        const machine = new Machine(5,5);
+        const machine = new SpreadSheetEngine(5, 5);
 
         machine.setCurrentCellByLabel("A1");
         machine.addToken("1");
@@ -196,9 +196,8 @@ describe("Machine", () => {
   });
 
   describe("getSheetDisplayStringsForGUI when the original sheet is 2 columns and 4 rows", () => {
-    it("should return the sheet display strings as an arrya of 4 rows and two columns", () => 
-    {
-      const machine = new Machine(2,4);
+    it("should return the sheet display strings as an arrya of 4 rows and two columns", () => {
+      const machine = new SpreadSheetEngine(2, 4);
       let sheetValues: Array<Array<string>> = machine.getSheetDisplayStringsForGUI();
       expect(sheetValues.length).toEqual(4);
       expect(sheetValues[0].length).toEqual(2);

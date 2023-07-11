@@ -8,7 +8,7 @@
 //   private machine: Machine;
 //   private errorOccured: boolean = false;
 
-import { Recalc } from "../../Engine/Recalc";
+import { FormulaEvaluator } from "../../Engine/FormulaEvaluator";
 import SheetMemory from "../../Engine/SheetMemory";
 import Cell from "../../Engine/Cell";
 
@@ -47,7 +47,7 @@ describe("Recalc", () => {
   describe("update", () => {
     describe("when the contains a single number", () => {
       it("returns the number", () => {
-        const recalc = new Recalc();
+        const recalc = new FormulaEvaluator();
         const formula: FormulaType = ["1"];
         const memory = new SheetMemory(5, 5);
         const [, result] = recalc.evaluate(formula, memory);
@@ -59,7 +59,7 @@ describe("Recalc", () => {
     );
     describe("when the formula contains two tokens, number, operator", () => {
       it("returns the number", () => {
-        const recalc = new Recalc();
+        const recalc = new FormulaEvaluator();
         const formula: FormulaType = ["1", "+"];
         const memory = new SheetMemory(5, 5);
         const [, result] = recalc.evaluate(formula, memory);
@@ -72,7 +72,7 @@ describe("Recalc", () => {
     describe("when the formula contains three tokens, number, operator, number", () => {
       describe("when the operator is +", () => {
         it("returns the sum of the numbers", () => {
-          const recalc = new Recalc();
+          const recalc = new FormulaEvaluator();
           const formula: FormulaType = ["1", "+", "2"];
           const memory = new SheetMemory(5, 5);
           const [, result] = recalc.evaluate(formula, memory);
@@ -84,7 +84,7 @@ describe("Recalc", () => {
       );
       describe("when the operator is -", () => {
         it("returns the difference of the numbers", () => {
-          const recalc = new Recalc();
+          const recalc = new FormulaEvaluator();
           const formula: FormulaType = ["1", "-", "2"];
           const memory = new SheetMemory(5, 5);
           const [, result] = recalc.evaluate(formula, memory);
@@ -96,7 +96,7 @@ describe("Recalc", () => {
       );
       describe("when the operator is *", () => {
         it("returns the product of the numbers", () => {
-          const recalc = new Recalc();
+          const recalc = new FormulaEvaluator();
           const formula: FormulaType = ["1", "*", "2"];
           const memory = new SheetMemory(5, 5);
           const [, result] = recalc.evaluate(formula, memory);
@@ -109,7 +109,7 @@ describe("Recalc", () => {
       describe("when the operator is /", () => {
         describe("when the divisor is not zero", () => {
           it("returns the quotient of the numbers", () => {
-            const recalc = new Recalc();
+            const recalc = new FormulaEvaluator();
             const formula: FormulaType = ["1", "/", "2"];
             const memory = new SheetMemory(5, 5);
             const [, result] = recalc.evaluate(formula, memory);
@@ -122,7 +122,7 @@ describe("Recalc", () => {
 
         describe("when the divisor is zero", () => {
           it("returns an error", () => {
-            const recalc = new Recalc();
+            const recalc = new FormulaEvaluator();
             const formula: FormulaType = ["1", "/", "0"];
             const memory = new SheetMemory(5, 5);
             const [, result] = recalc.evaluate(formula, memory);
@@ -139,7 +139,7 @@ describe("Recalc", () => {
     describe("when the formula contains five tokens, number, operator, number, operator, number", () => {
       describe("when the operators are +, +", () => {
         it("returns the sum of all three numbers", () => {
-          const recalc = new Recalc();
+          const recalc = new FormulaEvaluator();
           const formula: FormulaType = ["1", "+", "2", "+", "3"];
           const memory = new SheetMemory(5, 5);
           const [, result] = recalc.evaluate(formula, memory);
@@ -152,7 +152,7 @@ describe("Recalc", () => {
 
       describe("when the operators are +, -", () => {
         it("returns the sum of the first two numbers minus the third number", () => {
-          const recalc = new Recalc();
+          const recalc = new FormulaEvaluator();
           const formula: FormulaType = ["1", "+", "2", "-", "3"];
           const memory = new SheetMemory(5, 5);
           const [, result] = recalc.evaluate(formula, memory);
@@ -164,7 +164,7 @@ describe("Recalc", () => {
       );
       describe("when the operators are +, *", () => {
         it("returns the product of the second and third number added to the first number", () => {
-          const recalc = new Recalc();
+          const recalc = new FormulaEvaluator();
           const formula: FormulaType = ["1", "+", "2", "*", "3"];
           const memory = new SheetMemory(5, 5);
           const [, result] = recalc.evaluate(formula, memory);
@@ -177,7 +177,7 @@ describe("Recalc", () => {
       );
       describe("when the operators are +, /", () => {
         it("returns the quotient of the second and third number added to the first number", () => {
-          const recalc = new Recalc();
+          const recalc = new FormulaEvaluator();
           const formula: FormulaType = ["1", "+", "10", "/", "5"];
           const memory = new SheetMemory(5, 5);
           const [, result] = recalc.evaluate(formula, memory);
@@ -192,7 +192,7 @@ describe("Recalc", () => {
     );
     describe("when the formula contains four tokens, number, operator, number, operator", () => {
       it("returns the result of the first three tokens", () => {
-        const recalc = new Recalc();
+        const recalc = new FormulaEvaluator();
         const formula: FormulaType = ["1", "+", "2", "+"];
         const memory = new SheetMemory(5, 5);
         const [, result] = recalc.evaluate(formula, memory);
@@ -205,7 +205,7 @@ describe("Recalc", () => {
     describe("when the formula A1 + A1", () => {
 
       it("returns the number", () => {
-        const recalc = new Recalc();
+        const recalc = new FormulaEvaluator();
 
         const evaluateFormula = ["A1", "+", "A1"];
 
@@ -218,7 +218,7 @@ describe("Recalc", () => {
     describe("when the formula A1 + A2", () => {
 
       it("returns the number", () => {
-        const recalc = new Recalc();
+        const recalc = new FormulaEvaluator();
 
         const evaluateFormula = ["A1", "+", "A2"];
 
@@ -230,7 +230,7 @@ describe("Recalc", () => {
     describe("when the formula A1 + A2 + 50", () => {
 
       it("returns the number", () => {
-        const recalc = new Recalc();
+        const recalc = new FormulaEvaluator();
 
         const evaluateFormula = ["A1", "+", "A2", "+", "50"];
 

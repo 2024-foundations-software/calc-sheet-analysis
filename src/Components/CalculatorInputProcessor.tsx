@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import Formula from "./Formula";
 import Status from "./Status";
 import KeyPad from "./KeyPad";
-import Machine from "../Engine/Machine";
+import SpreadSheetEngine from "../Engine/SpreadSheetEngine";
 import SheetHolder from "./SheetHolder";
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 
 
 interface CalculatorInputProcessorProps {
-  machine: Machine;
+  machine: SpreadSheetEngine;
 }
 
 
@@ -61,14 +61,11 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     if (text) {
       let trueText = text ? text : "";
 
-
-
       switch (trueText) {
         case ButtonNames.edit:
           machine.setEditStatus(true);
           setStatusString(machine.getEditStatusString());
           break;
-
 
         case ButtonNames.done:
           machine.setEditStatus(false);
@@ -135,7 +132,7 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
 
     const editStatus = machine.getEditStatus();
     let realCellLabel = cellLabel ? cellLabel : "";
-    console.warn("onCellClick: cellLabel = ", realCellLabel, " editStatus = ", editStatus);
+
 
     // if the edit status is true then add the token to the machine
     if (editStatus) {
@@ -149,8 +146,6 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     }
 
   }
-
-
 
   return (
     <div>

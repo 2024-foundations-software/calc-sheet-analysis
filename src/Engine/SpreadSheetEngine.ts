@@ -1,7 +1,7 @@
 import SheetMemory from "./SheetMemory"
-import Recalc from "./Recalc"
-import RecalcDependency from "./RecalcDependency"
-import TokenProcessor from "./TokenProcessor";
+import FormulaEvaluator from "./FormulaEvaluator"
+import DependencyManager from "./DependencyManager"
+import FormulaBuilder from "./FormulaBuilder";
 import Cell from "./Cell";
 import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
 
@@ -26,46 +26,65 @@ import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
  * 
  * 
  */
-export class Machine {
+export class SpreadSheetEngine {
 
   /** all the private members
    * 
    */
 
   /** The memory for the sheet */
-  private memory: SheetMemory;
-  private recalc: Recalc = new Recalc();
-  private currentRow = 0;
-  private currentColumn = 0;
-  private editStatus: boolean = false;
+  private _memory: SheetMemory;
+
+  /** The current cell */
+  private _currentRow = 0;
+  private _currentColumn = 0;
+
+
+  /**
+   * The components that the SpreadSheetEngine uses to manage the sheet
+   * 
+   */
+
+  // The formula evaluator, this is used to evaluate the formula for the current cell
+  // it is only called for a cell when all cells it depends on have been evaluated
+  private _formulaEvaluator: FormulaEvaluator = new FormulaEvaluator();
+
+  // The formula builder, this is used to build the formula for the current cell
+  // it is used when the user is editing the formula for the current cell
+  private _formulaBuilder: FormulaBuilder = new FormulaBuilder();
+
+  // The current cell is being edited
+  private _cellIsBeingEdited: boolean = false;
+
+  // The dependency manager, this is used to manage the dependencies between cells
+  // The main job of this is to compute the order in which the cells should be evaluated
+  private _dependencyManager: DependencyManager = new DependencyManager();
+
+
 
   private portForServer: number = 3005;
 
   private calcSheetServerClient: CalcSheetServerClient = new CalcSheetServerClient(this.portForServer);
 
 
-  private tokenProcessor: TokenProcessor = new TokenProcessor();
-  private recalcDependency: RecalcDependency = new RecalcDependency();
 
-
-
-
-
-
+  /**
+   * constructor
+   * */
   constructor(columns: number, rows: number) {
-    this.memory = new SheetMemory(columns, rows);
+    this._memory = new SheetMemory(columns, rows);
   }
 
   /**
    * restart the machine
    */
   public restart(): void {
-    this.memory = new SheetMemory(this.memory.getMaxColumns(), this.memory.getMaxRows());
-    this.currentRow = 0;
-    this.currentColumn = 0;
-    this.editStatus = false;
-    this.tokenProcessor = new TokenProcessor();
-    this.recalcDependency = new RecalcDependency();
+    this._memory = new SheetMemory(this._memory.getMaxColumns(), this._memory.getMaxRows());
+    this._currentRow = 0;
+    this._currentColumn = 0;
+    this._cellIsBeingEdited = false;
+    this._formulaBuilder = new FormulaBuilder();
+    this._dependencyManager = new DependencyManager();
   }
 
   /**
@@ -78,24 +97,24 @@ export class Machine {
     // if the key is a number or a parenthesis or a decimal point add it to the formula
     if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "(", ")"].includes(key)) {
       this.addToken(key);
-      this.editStatus = true;
-      this.recalcDependency.evaluateSheet(this.memory);
+      this._cellIsBeingEdited = true;
+      this._dependencyManager.evaluateSheet(this._memory);
       return;
     }
 
     // if the key is an operator add it to the formula
     if (["+", "-", "*", "/"].includes(key)) {
       this.addToken(key);
-      this.editStatus = true;
-      this.recalcDependency.evaluateSheet(this.memory);
+      this._cellIsBeingEdited = true;
+      this._dependencyManager.evaluateSheet(this._memory);
       return;
     }
 
     // if the key is backspace or delete remove the last token from the formula
     if (["Backspace", "Delete"].includes(key)) {
       this.removeToken();
-      this.editStatus = true;
-      this.recalcDependency.evaluateSheet(this.memory);
+      this._cellIsBeingEdited = true;
+      this._dependencyManager.evaluateSheet(this._memory);
       return;
     }
 
@@ -106,9 +125,9 @@ export class Machine {
   public async processCommandButton(command: string): Promise<void> {
     if (command === 'save') {
       let documentToSend: CalcSheetDocument = {
-        numberOfRows: this.memory.getMaxRows(),
-        numberOfColumns: this.memory.getMaxColumns(),
-        formulas: this.memory.getSheetFormulas(),
+        numberOfRows: this._memory.getMaxRows(),
+        numberOfColumns: this._memory.getMaxColumns(),
+        formulas: this._memory.getSheetFormulas(),
       };
       try {
         await this.calcSheetServerClient.sendDocument(documentToSend);
@@ -123,10 +142,10 @@ export class Machine {
         if (result) {
           let newFormulas = result.formulas;
 
-          this.memory.setSheetFormulas(newFormulas);
+          this._memory.setSheetFormulas(newFormulas);
 
-          this.recalcDependency.updateDependencies(this.memory);
-          this.recalcDependency.evaluateSheet(this.memory);
+          this._dependencyManager.updateDependencies(this._memory);
+          this._dependencyManager.evaluateSheet(this._memory);
         } else {
           console.error('document not found');
         }
@@ -137,7 +156,7 @@ export class Machine {
   }
 
   /**  
-   *  add token to current formula
+   *  add token to current formula, this is not a cell and thus no dependency updating is needed
    * 
    * @param token:string
    * Inform the memory that the current cell formula has changed
@@ -145,16 +164,8 @@ export class Machine {
    */
   addToken(token: string): void {
 
-    this.tokenProcessor.addToken(token);
-    this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula());
-    let validAddition = this.recalcDependency.updateDependencies(this.memory);
-    if (!validAddition) {
-      this.removeToken();
-    }
-    this.recalcDependency.evaluateSheet(this.memory);
-
-
-
+    this._formulaBuilder.addToken(token);
+    this._dependencyManager.evaluateSheet(this._memory);
   }
 
   /**  
@@ -170,18 +181,18 @@ export class Machine {
 
     // get the dependents for the cell being inserted
 
-    let cell: Cell = this.memory.getCellByLabel(cell_reference);
+    let cell: Cell = this._memory.getCellByLabel(cell_reference);
     // get the dependents for the current cell
     let dependents = cell.getDependsOn();
 
-    let currentLabel = Cell.columnRowToCell(this.currentColumn, this.currentRow);
+    let currentLabel = Cell.columnRowToCell(this._currentColumn, this._currentRow);
 
 
     // if the cell reference is not in the dependents use add token
     if (!dependents.includes(currentLabel)) {
       this.addToken(cell_reference);
     } else {
-      console.log('circular reference[' + cell_reference + '] not added');
+      // do nothing
     }
   }
 
@@ -192,9 +203,9 @@ export class Machine {
    * 
    */
   removeToken(): void {
-    this.tokenProcessor.removeToken();
-    this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula());
-    this.recalcDependency.evaluateSheet(this.memory);
+    this._formulaBuilder.removeToken();
+    this._memory.setCurrentCellFormula(this._formulaBuilder.getFormula());
+    this._dependencyManager.evaluateSheet(this._memory);
   }
 
   /**
@@ -203,9 +214,9 @@ export class Machine {
    * 
    */
   clearFormula(): void {
-    this.tokenProcessor.setFormula([]);
-    this.memory.setCurrentCellFormula(this.tokenProcessor.getFormula());
-    this.recalcDependency.evaluateSheet(this.memory);
+    this._formulaBuilder.setFormula([]);
+    this._memory.setCurrentCellFormula(this._formulaBuilder.getFormula());
+    this._dependencyManager.evaluateSheet(this._memory);
   }
 
   /**
@@ -215,7 +226,7 @@ export class Machine {
    * 
    * */
   getFormulaString(): string {
-    return this.tokenProcessor.getFormulaString();
+    return this._formulaBuilder.getFormulaString();
   }
 
   /** 
@@ -225,8 +236,8 @@ export class Machine {
    * 
    * */
   getResultString(): string {
-    let currentFormula = this.tokenProcessor.getFormula();
-    const [, displayString] = this.recalc.evaluate(currentFormula, this.memory);
+    let currentFormula = this._formulaBuilder.getFormula();
+    const [, displayString] = this._formulaEvaluator.evaluate(currentFormula, this._memory);
     return displayString;
   }
 
@@ -251,7 +262,7 @@ export class Machine {
    * 
    */
   getCurrentCellLabel(): string {
-    return Cell.columnRowToCell(this.currentColumn, this.currentRow);
+    return Cell.columnRowToCell(this._currentColumn, this._currentRow);
   }
 
   /**
@@ -266,19 +277,19 @@ export class Machine {
    * 
    * */
   setCurrentCellByCoordinates(column: number, row: number): void {
-    if (column === this.currentColumn && row === this.currentRow) return;
+    if (column === this._currentColumn && row === this._currentRow) return;
 
-    let currentFormula = this.tokenProcessor.getFormula();
-    this.memory.setCurrentCellFormula(currentFormula);
+    let currentFormula = this._formulaBuilder.getFormula();
+    this._memory.setCurrentCellFormula(currentFormula);
 
-    this.memory.setCurrentCellCoordinates(column, row);
-    currentFormula = this.memory.getCurrentCellFormula();
-    this.tokenProcessor.setFormula(currentFormula);
+    this._memory.setCurrentCellCoordinates(column, row);
+    currentFormula = this._memory.getCurrentCellFormula();
+    this._formulaBuilder.setFormula(currentFormula);
 
-    this.currentColumn = column;
-    this.currentRow = row;
+    this._currentColumn = column;
+    this._currentRow = row;
 
-    this.memory.setCurrentCellCoordinates(column, row);
+    this._memory.setCurrentCellCoordinates(column, row);
 
   }
 
@@ -288,7 +299,7 @@ export class Machine {
    * @returns string[][]
    */
   public getSheetDisplayStrings(): string[][] {
-    return this.memory.getSheetDisplayStrings();
+    return this._memory.getSheetDisplayStrings();
   }
 
   /**
@@ -298,10 +309,10 @@ export class Machine {
     * @returns string[][]
     */
   public getSheetDisplayStringsForGUI(): string[][] {
-    this.recalcDependency.updateComputationOrder(this.memory);
-    this.recalcDependency.evaluateSheet(this.memory);
+    this._dependencyManager.updateComputationOrder(this._memory);
+    this._dependencyManager.evaluateSheet(this._memory);
 
-    let memoryDisplayValues = this.memory.getSheetDisplayStrings();
+    let memoryDisplayValues = this._memory.getSheetDisplayStrings();
     let guiDisplayValues: string[][] = [];
     let inputRows = memoryDisplayValues.length;
     let inputColumns = memoryDisplayValues[0].length;
@@ -325,7 +336,7 @@ export class Machine {
    * 
    * */
   public getEditStatus(): boolean {
-    return this.editStatus;
+    return this._cellIsBeingEdited;
   }
 
   /**
@@ -335,7 +346,7 @@ export class Machine {
    * 
    * */
   public setEditStatus(bool: boolean): void {
-    this.editStatus = bool;
+    this._cellIsBeingEdited = bool;
   }
 
   /**
@@ -345,7 +356,7 @@ export class Machine {
    * 
    * */
   public getEditStatusString(): string {
-    if (this.editStatus) {
+    if (this._cellIsBeingEdited) {
       return "editing: " + this.getCurrentCellLabel();
     }
     return "current cell: " + this.getCurrentCellLabel();
@@ -357,10 +368,10 @@ export class Machine {
    * 
    * */
   public updateCurrentFormula(cellLabel: string): void {
-    const cell = this.memory.getCellByLabel(cellLabel);
+    const cell = this._memory.getCellByLabel(cellLabel);
 
     const formula = cell.getFormula();
-    this.tokenProcessor.setFormula(formula);
+    this._formulaBuilder.setFormula(formula);
   }
 
 
@@ -368,4 +379,4 @@ export class Machine {
 
 }
 
-export default Machine;
+export default SpreadSheetEngine;

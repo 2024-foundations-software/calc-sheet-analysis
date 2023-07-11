@@ -5,20 +5,14 @@
  * @export Cell
  * @module src/Engine/Cell
  * 
- * @version 1.0.0
- * @since 1.0.0
- * @param {string[]} formula - The formula of the cell
- * @param {number} value - The value of the cell
- * @param {string} displayString - The display string of the cell
- * @param {string[]} dependsOn - The cells that the cell depends on
  * 
  */
 export class Cell {
   // private members
-  private formula: string[] = [];
-  private value: number = 0;
-  private displayString: string = "";
-  private dependsOn: string[] = [];
+  private _formula: string[] = [];
+  private _value: number = 0;
+  private _displayString: string = "";
+  private _dependsOn: string[] = [];
 
   /**
    * constructor
@@ -31,16 +25,16 @@ export class Cell {
   constructor(cell?: Cell) {
     if (cell) {
       // copy constructor logic
-      this.formula = [...cell.formula];
-      this.value = cell.value;
-      this.displayString = cell.displayString.slice();
-      this.dependsOn = [...cell.dependsOn];
+      this._formula = [...cell._formula];
+      this._value = cell._value;
+      this._displayString = cell._displayString.slice();
+      this._dependsOn = [...cell._dependsOn];
     } else {
       // default constructor logic
-      this.formula = [];
-      this.value = 0;
-      this.displayString = "";
-      this.dependsOn = [];
+      this._formula = [];
+      this._value = 0;
+      this._displayString = "";
+      this._dependsOn = [];
     }
   }
 
@@ -50,7 +44,7 @@ export class Cell {
    *  
    * */
   getFormula(): string[] {
-    return this.formula;
+    return this._formula;
   }
 
   /**
@@ -60,7 +54,7 @@ export class Cell {
    *  
    * */
   setFormula(formula: string[]): void {
-    this.formula = formula;
+    this._formula = formula;
   }
 
   /**
@@ -69,7 +63,7 @@ export class Cell {
    *  
    * */
   getValue(): number {
-    return this.value;
+    return this._value;
   }
 
   /**
@@ -79,7 +73,7 @@ export class Cell {
    * 
    * */
   setValue(value: number): void {
-    this.value = value;
+    this._value = value;
   }
 
   /**
@@ -88,7 +82,7 @@ export class Cell {
    *  
    * */
   getDisplayString(): string {
-    return this.displayString;
+    return this._displayString;
   }
 
   /**
@@ -99,7 +93,7 @@ export class Cell {
    *  
    * */
   setDisplayString(displayString: string): void {
-    this.displayString = displayString;
+    this._displayString = displayString;
   }
 
   /**
@@ -108,7 +102,7 @@ export class Cell {
    *  
    * */
   getDependsOn(): string[] {
-    return this.dependsOn;
+    return this._dependsOn;
   }
 
   /**
@@ -118,7 +112,7 @@ export class Cell {
    *  
    * */
   setDependsOn(dependsOn: string[]): void {
-    this.dependsOn = dependsOn;
+    this._dependsOn = dependsOn;
   }
 
 

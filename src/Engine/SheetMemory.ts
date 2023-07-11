@@ -25,7 +25,7 @@
  * 
  */
 
-import Recalc from "./Recalc";
+import FormulaEvaluator from "./FormulaEvaluator";
 import Cell from "./Cell";
 
 export class SheetMemory {
@@ -36,7 +36,7 @@ export class SheetMemory {
     private currentRow = 0;
     private currentColumn = 0;
 
-    private recalc: Recalc = new Recalc();
+    private recalc: FormulaEvaluator = new FormulaEvaluator();
 
     constructor(columns: number, rows: number) {
 
@@ -74,8 +74,7 @@ export class SheetMemory {
 
 
     /**
-     *  get the cell coordinates currently being worked on
-     * 
+     *  get coordinates of current cell
      * returns an array of [row, column]
      * */
     getCurrentCellCoordinates(): number[] {
@@ -83,7 +82,7 @@ export class SheetMemory {
     }
 
     /**
-     * set the cell at the given row and column
+     * sets the current cell to be the cell at the coordinates
      * 
      * @param row
      * @param column
@@ -92,6 +91,24 @@ export class SheetMemory {
     setCurrentCellCoordinates(column: number, row: number): void {
         this.currentRow = row;
         this.currentColumn = column;
+    }
+
+    /**
+     * sets the current cell to be the cell at label
+     * 
+     * @param label
+     * 
+     */
+    setCurrentCellLabel(label: string): void {
+        const [column, row] = Cell.cellToColumnRow(label);
+        this.setCurrentCellCoordinates(column, row);
+    }
+
+    /**
+     * get the label of the current working cell
+     */
+    getCurrentCellLabel(): string {
+        return Cell.columnRowToCell(this.currentColumn, this.currentRow);
     }
 
     /**

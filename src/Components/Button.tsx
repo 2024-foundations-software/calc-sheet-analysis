@@ -1,6 +1,10 @@
 import React from "react";
 import "./Button.css";
 
+/**
+ * Button component
+ */
+
 
 interface ButtonProps {
   text: string;
