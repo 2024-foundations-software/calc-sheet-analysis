@@ -19,7 +19,7 @@ import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
  * 
  * getFormulaValue(void): string
  * 
- * setCurrentCell( column:number, row_number)): void
+ * setWorkingCell( column:number, row_number)): void
  * 
  * getSheetValues(void): string[][]
  * 
@@ -27,17 +27,12 @@ import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
  * 
  */
 export class SpreadSheetEngine {
-
-  /** all the private members
-   * 
-   */
-
   /** The memory for the sheet */
   private _memory: SheetMemory;
 
   /** The current cell */
-  private _currentRow = 0;
-  private _currentColumn = 0;
+  private _currentWorkingRow = 0;
+  private _currentWorkingColumn = 0;
 
 
   /**
@@ -80,8 +75,8 @@ export class SpreadSheetEngine {
    */
   public restart(): void {
     this._memory = new SheetMemory(this._memory.getMaxColumns(), this._memory.getMaxRows());
-    this._currentRow = 0;
-    this._currentColumn = 0;
+    this._currentWorkingRow = 0;
+    this._currentWorkingColumn = 0;
     this._cellIsBeingEdited = false;
     this._formulaBuilder = new FormulaBuilder();
     this._dependencyManager = new DependencyManager();
@@ -163,8 +158,12 @@ export class SpreadSheetEngine {
    * 
    */
   addToken(token: string): void {
-
+    // add the token to the formula
     this._formulaBuilder.addToken(token);
+    // update the memory with the new formula
+    let formula = this._formulaBuilder.getFormula();
+    this._memory.setCurrentCellFormula(formula);
+    // Do a recalc
     this._dependencyManager.evaluateSheet(this._memory);
   }
 
@@ -181,11 +180,17 @@ export class SpreadSheetEngine {
 
     // get the dependents for the cell being inserted
 
+    if (cell_reference === this.getCurrentCellLabel()) {
+      // do nothing
+      return;
+    }
+
     let cell: Cell = this._memory.getCellByLabel(cell_reference);
+
     // get the dependents for the current cell
     let dependents = cell.getDependsOn();
 
-    let currentLabel = Cell.columnRowToCell(this._currentColumn, this._currentRow);
+    let currentLabel = Cell.columnRowToCell(this._currentWorkingColumn, this._currentWorkingRow);
 
 
     // if the cell reference is not in the dependents use add token
@@ -262,7 +267,7 @@ export class SpreadSheetEngine {
    * 
    */
   getCurrentCellLabel(): string {
-    return Cell.columnRowToCell(this._currentColumn, this._currentRow);
+    return Cell.columnRowToCell(this._currentWorkingColumn, this._currentWorkingRow);
   }
 
   /**
@@ -271,23 +276,26 @@ export class SpreadSheetEngine {
    * @param row:number ß
    * @param column:number
    * 
-   * save the formula that is in the tokenProcessor to the current cell
+   * save the formula that is in the formulaBuilder to the current cell
    * 
-   * copy the formula from the new cell into the tokenProcessor
+   * copy the formula from the new cell into the formulaBuilder
    * 
    * */
   setCurrentCellByCoordinates(column: number, row: number): void {
-    if (column === this._currentColumn && row === this._currentRow) return;
+    // if the cell is the same as the current cell do nothing
+    if (column === this._currentWorkingColumn && row === this._currentWorkingRow) return;
 
+    // get the current formula from the formula builder
     let currentFormula = this._formulaBuilder.getFormula();
     this._memory.setCurrentCellFormula(currentFormula);
 
+    // get the formula from the new cell
     this._memory.setCurrentCellCoordinates(column, row);
     currentFormula = this._memory.getCurrentCellFormula();
     this._formulaBuilder.setFormula(currentFormula);
 
-    this._currentColumn = column;
-    this._currentRow = row;
+    this._currentWorkingColumn = column;
+    this._currentWorkingRow = row;
 
     this._memory.setCurrentCellCoordinates(column, row);
 
