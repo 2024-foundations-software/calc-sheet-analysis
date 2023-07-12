@@ -8,22 +8,24 @@ import SheetHolder from "./SheetHolder";
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 
 
-interface SpreadSheetProps {
-  machine: SpreadSheetEngine;
-}
+
+
+/**
+ * the main component for the Spreadsheet.  It is the parent of all the other components
+ * 
+ *
+ * */
+
+
+
+// make this a variable so we can resize it later (this would necessitate a new machine)
+let spreadSheetEngine: SpreadSheetEngine = new SpreadSheetEngine(5, 8);
+
+function SpreadSheet() {
 
 
 
 
-
-
-// This component is the main component for the calculator
-
-
-
-function SpreadSheet(props: SpreadSheetProps) {
-
-  const { machine: spreadSheetEngine } = props;
   const [formulaString, setFormulaString] = useState(spreadSheetEngine.getFormulaString())
   const [resultString, setResultString] = useState(spreadSheetEngine.getResultString())
   const [cells, setCells] = useState(spreadSheetEngine.getSheetDisplayStringsForGUI());
