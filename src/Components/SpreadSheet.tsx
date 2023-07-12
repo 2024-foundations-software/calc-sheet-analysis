@@ -23,24 +23,24 @@ interface CalculatorInputProcessorProps {
 
 function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
 
-  const { machine } = props;
-  const [formulaString, setFormulaString] = useState(machine.getFormulaString())
-  const [resultString, setResultString] = useState(machine.getResultString())
-  const [cells, setCells] = useState(machine.getSheetDisplayStringsForGUI());
-  const [statusString, setStatusString] = useState(machine.getEditStatusString());
-  const [currentCell, setCurrentCell] = useState(machine.getCurrentCellLabel());
-  const [currentlyEditing, setCurrentlyEditing] = useState(machine.getEditStatus());
+  const { machine: spreadSheetEngine } = props;
+  const [formulaString, setFormulaString] = useState(spreadSheetEngine.getFormulaString())
+  const [resultString, setResultString] = useState(spreadSheetEngine.getResultString())
+  const [cells, setCells] = useState(spreadSheetEngine.getSheetDisplayStringsForGUI());
+  const [statusString, setStatusString] = useState(spreadSheetEngine.getEditStatusString());
+  const [currentCell, setCurrentCell] = useState(spreadSheetEngine.getCurrentCellLabel());
+  const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetEngine.getEditStatus());
 
 
   function updateDisplayValues(): void {
 
-    setFormulaString(machine.getFormulaString());
-    setResultString(machine.getResultString());
-    setStatusString(machine.getEditStatusString());
-    setCells(machine.getSheetDisplayStringsForGUI());
+    setFormulaString(spreadSheetEngine.getFormulaString());
+    setResultString(spreadSheetEngine.getResultString());
+    setStatusString(spreadSheetEngine.getEditStatusString());
+    setCells(spreadSheetEngine.getSheetDisplayStringsForGUI());
 
-    setCurrentCell(machine.getCurrentCellLabel());
-    setCurrentlyEditing(machine.getEditStatus());
+    setCurrentCell(spreadSheetEngine.getCurrentCellLabel());
+    setCurrentlyEditing(spreadSheetEngine.getEditStatus());
   }
 
   /**
@@ -63,29 +63,29 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
 
       switch (trueText) {
         case ButtonNames.edit:
-          machine.setEditStatus(true);
-          setStatusString(machine.getEditStatusString());
+          spreadSheetEngine.setEditStatus(true);
+          setStatusString(spreadSheetEngine.getEditStatusString());
           break;
 
         case ButtonNames.done:
-          machine.setEditStatus(false);
-          setStatusString(machine.getEditStatusString());
+          spreadSheetEngine.setEditStatus(false);
+          setStatusString(spreadSheetEngine.getEditStatusString());
           break;
 
         case ButtonNames.clear:
-          machine.removeToken();
+          spreadSheetEngine.removeToken();
           break;
 
         case ButtonNames.allClear:
-          machine.clearFormula();
+          spreadSheetEngine.clearFormula();
           break;
 
         case ButtonNames.restart:
-          machine.restart();
+          spreadSheetEngine.restart();
           break;
 
         default:
-          await machine.processCommandButton(trueText);
+          await spreadSheetEngine.processCommandButton(trueText);
           break
       }
       // update the display values
@@ -109,8 +109,8 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
       let trueText = text ? text : "";
 
 
-      machine.setEditStatus(true);
-      machine.addToken(trueText);
+      spreadSheetEngine.setEditStatus(true);
+      spreadSheetEngine.addToken(trueText);
 
       updateDisplayValues();
     }
@@ -130,18 +130,18 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
     const cellLabel = event.currentTarget.getAttribute("cell-label");
     // calculate the current row and column of the clicked on cell
 
-    const editStatus = machine.getEditStatus();
+    const editStatus = spreadSheetEngine.getEditStatus();
     let realCellLabel = cellLabel ? cellLabel : "";
 
 
     // if the edit status is true then add the token to the machine
     if (editStatus) {
-      machine.addCell(realCellLabel);  // this will never be ""
+      spreadSheetEngine.addCell(realCellLabel);  // this will never be ""
       updateDisplayValues();
     }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
-      machine.setCurrentCellByLabel(realCellLabel);
+      spreadSheetEngine.setCurrentCellByLabel(realCellLabel);
       updateDisplayValues();
     }
 

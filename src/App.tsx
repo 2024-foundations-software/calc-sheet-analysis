@@ -5,7 +5,7 @@
 import React from 'react';
 import './App.css';
 import SpreadSheetEngine from './Engine/SpreadSheetEngine';
-import CalculatorInputProcessor from './Components/CalculatorInputProcessor';
+import CalculatorInputProcessor from './Components/SpreadSheet';
 
 function App() {
   const machine = new SpreadSheetEngine(5, 8);

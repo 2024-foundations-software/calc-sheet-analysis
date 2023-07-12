@@ -100,7 +100,34 @@ export default class DependencyManager {
 
         // update the computation order
         this.updateComputationOrder(sheetMemory);
+
     }
+
+    private getFullDependsOn(cellLabel: string, sheetMemory: SheetMemory): string[] {
+        let currentCell = sheetMemory.getCellByLabel(cellLabel);
+        let currentFormula = currentCell.getFormula();
+        let cellDependsOn = FormulaBuilder.getCellReferences(currentFormula);
+
+
+        // if the cell has no cells referenced in its formula, then return
+        if (cellDependsOn.length === 0) {
+            return [];
+        }
+
+        // If there are cells referenced in the formula, then look at all of the cells
+        // referenced in the formula and get their dependencies
+        // and add them to the list of dependencies for the cell
+        // there is no need to check for circular dependencies here because the circular dependencies
+        // will be detected when the cell is added to the sheet memory
+
+        for (let i = 0; i < cellDependsOn.length; i++) {
+
+
+        }
+        return [];
+    }
+
+
 
     /**
      * update the dependencies for all cells in the sheet

@@ -5,7 +5,7 @@
 import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import CalculatorInputProcessor from "../../Components/CalculatorInputProcessor";
+import CalculatorInputProcessor from "../../Components/SpreadSheet";
 
 import KeyPad from "../../Components/KeyPad";
 
@@ -69,7 +69,30 @@ describe("CalculatorInputProcessor", () => {
         expect(getByTestId("FormulaResult")).toHaveTextContent("3");
     });
 
+    it("Can add up two identical cells A2 + A2, A2 is 1, result should be A1 has the formula and the value 2", () => {
+        const { getByText, getByTestId } = render(
+            <CalculatorInputProcessor machine={machine} />
+        );
 
+        const A1cell = getByTestId("A1");
+        const A2cell = getByTestId("A2");
+
+        // set A2 to 1
+        fireEvent.click(A2cell);
+        fireEvent.click(getByTestId("one-button"));
+        fireEvent.click(getByTestId("done-button"));
+
+        fireEvent.click(A1cell);
+        fireEvent.click(getByTestId("edit-button"));
+        fireEvent.click(A2cell);
+        fireEvent.click(getByTestId("add-button"));
+        fireEvent.click(A2cell);
+        fireEvent.click(getByTestId("done-button"));
+
+        expect(getByTestId("FormulaValue")).toHaveTextContent("A2 + A2");
+        expect(getByTestId("FormulaResult")).toHaveTextContent("2");
+
+    });
     it("can make a number with consecutive digits", () => {
         const { getByText, getByTestId } = render(
             <CalculatorInputProcessor machine={machine} />

@@ -9,10 +9,23 @@
  */
 export class Cell {
   // private members
+
+  // the formula for the cell expressed as a string of tokens
+  // this is built by the formula builder in response to the user editing the formula
+  // in the react app
   private _formula: string[] = [];
+
+  // the value of the cell
   private _value: number = 0;
+
+  // the display string for the cell, it is either the value or an error message
   private _displayString: string = "";
+
+  // the cells that the cell depends on (extracted from the formula)
   private _dependsOn: string[] = [];
+
+  // the cells that depend on this cell (extracted from the formula)
+  private _children: string[] = [];
 
   /**
    * constructor
@@ -29,12 +42,14 @@ export class Cell {
       this._value = cell._value;
       this._displayString = cell._displayString.slice();
       this._dependsOn = [...cell._dependsOn];
+      this._children = [...cell._children];
     } else {
       // default constructor logic
       this._formula = [];
       this._value = 0;
       this._displayString = "";
       this._dependsOn = [];
+      this._children = [];
     }
   }
 
@@ -115,6 +130,47 @@ export class Cell {
     this._dependsOn = dependsOn;
   }
 
+  /**
+   * get the cells that depend on this cell
+   * @returns {string[]} The cells that depend on this cell
+   *  
+   * */
+  getChildren(): string[] {
+    return this._children;
+  }
+
+  /**
+   * set the cells that depend on this cell
+   * @param {string[]} children - The cells that depend on this cell
+   * @returns {void}
+   * 
+   * */
+  setChildren(children: string[]): void {
+    this._children = children;
+  }
+
+  /**
+   * add a child cell
+   * @param {string} cell - The cell that the cell depends on
+   * @returns {void}
+   * 
+   * */
+  public addChild(child: string): void {
+    this._children.push(child);
+  }
+
+  /**
+   * remove a child cell  
+   * @param {string} cell - The cell that the cell depends on
+   * @returns {void}
+   * 
+   * */
+  public removeChild(child: string): void {
+    const index = this._children.indexOf(child);
+    if (index > -1) {
+      this._children.splice(index, 1);
+    }
+  }
 
 
   //** static methods. */
