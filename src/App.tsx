@@ -5,7 +5,7 @@
 import React from 'react';
 import './App.css';
 import SpreadSheetEngine from './Engine/SpreadSheetEngine';
-import CalculatorInputProcessor from './Components/SpreadSheet';
+import SpreadSheet from './Components/SpreadSheet';
 
 function App() {
   const machine = new SpreadSheetEngine(5, 8);
@@ -13,7 +13,7 @@ function App() {
     <div className="App">
       <header className="App-header">
 
-        <CalculatorInputProcessor machine={machine} />
+        <SpreadSheet machine={machine} />
 
       </header>
 

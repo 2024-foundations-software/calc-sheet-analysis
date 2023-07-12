@@ -5,7 +5,7 @@
 import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import CalculatorInputProcessor from "../../Components/SpreadSheet";
+import SpreadSheet from "../../Components/SpreadSheet";
 
 import KeyPad from "../../Components/KeyPad";
 
@@ -20,7 +20,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("renders the formula, status, sheet holder, and keypad", () => {
         const { getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
         const formula = getByTestId("FormulaTitle");
 
@@ -44,7 +44,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("updates the formula and result strings when a number button is clicked", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
 
@@ -71,7 +71,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("Can add up two identical cells A2 + A2, A2 is 1, result should be A1 has the formula and the value 2", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
         const A1cell = getByTestId("A1");
@@ -95,7 +95,7 @@ describe("CalculatorInputProcessor", () => {
     });
     it("can make a number with consecutive digits", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
         const formulaValue = getByTestId("FormulaValue");
@@ -117,7 +117,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("updates the current cell when a cell is clicked on", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
         const statusComponent = getByTestId("StatusComponent");
 
@@ -133,7 +133,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("updates the status when a digit is pressed then goes back to current when done is pressed", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
         const statusComponent = getByTestId("StatusComponent");
 
@@ -153,7 +153,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("selects A3 enters 88 then presses done then selects A1 clicks on edit then clicks on A3 and sees 88", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
         const statusComponent = getByTestId("StatusComponent");
         const formulaValue = getByTestId("FormulaValue");
@@ -197,7 +197,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("clear and all clear work as expected.", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
         const formulaValue = getByTestId("FormulaValue");
@@ -247,7 +247,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("the formula result and the display value in the cell A1 are the same", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
         const formulaValue = getByTestId("FormulaValue");
@@ -282,7 +282,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("the formula result is #REF! when cell reference points to an empty cell", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
         const formulaValue = getByTestId("FormulaValue");
@@ -302,7 +302,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("when editing a cell a self reference is ignored", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
         const formulaValue = getByTestId("FormulaValue");
@@ -324,7 +324,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("when editing a cell a circular reference is ignored", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
 
         const formulaValue = getByTestId("FormulaValue");
@@ -366,7 +366,7 @@ describe("CalculatorInputProcessor", () => {
 
     it("clears the formula and edit status when the all clear button is clicked", () => {
         const { getByText, getByTestId } = render(
-            <CalculatorInputProcessor machine={machine} />
+            <SpreadSheet machine={machine} />
         );
         const one_button = getByTestId("one-button");
 

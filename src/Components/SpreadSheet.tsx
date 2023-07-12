@@ -8,7 +8,7 @@ import SheetHolder from "./SheetHolder";
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 
 
-interface CalculatorInputProcessorProps {
+interface SpreadSheetProps {
   machine: SpreadSheetEngine;
 }
 
@@ -21,7 +21,7 @@ interface CalculatorInputProcessorProps {
 
 
 
-function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
+function SpreadSheet(props: SpreadSheetProps) {
 
   const { machine: spreadSheetEngine } = props;
   const [formulaString, setFormulaString] = useState(spreadSheetEngine.getFormulaString())
@@ -157,4 +157,4 @@ function CalculatorInputProcessor(props: CalculatorInputProcessorProps) {
   )
 };
 
-export default CalculatorInputProcessor;
+export default SpreadSheet;
