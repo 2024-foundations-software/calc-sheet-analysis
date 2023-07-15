@@ -149,8 +149,13 @@ function SpreadSheet() {
     <div>
       <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
       <Status statusString={statusString}></Status>
-      {<SheetHolder cellsValues={cells} onClick={onCellClick} currentCell={currentCell} currentlyEditing={currentlyEditing} ></SheetHolder>}
-      <KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick}></KeyPad>
+      {<SheetHolder cellsValues={cells}
+        onClick={onCellClick}
+        currentCell={currentCell}
+        currentlyEditing={currentlyEditing} ></SheetHolder>}
+      <KeyPad onButtonClick={onButtonClick}
+        onCommandButtonClick={onCommandButtonClick}
+        currentlyEditing={currentlyEditing}></KeyPad>
     </div>
   )
 };
