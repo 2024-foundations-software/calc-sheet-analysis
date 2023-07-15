@@ -58,7 +58,7 @@ export default class DependencyManager {
                 displayString = error;
             }
             // update the cell in the sheet memory
-            currentCell.setDisplayString(displayString);
+            currentCell.setError(calculator.error);
             currentCell.setValue(value);
             sheetMemory.setCellByLabel(cellLabel, currentCell);
         }

@@ -33,7 +33,7 @@ describe('SheetMemory', () => {
       sheetMemory.setCurrentCellCoordinates(1, 1);
       let testWriteCell = new Cell();
       testWriteCell.setFormula(["1234"]);
-      testWriteCell.setDisplayString("1234");
+      testWriteCell.setError("");
       testWriteCell.setValue(123);
       testWriteCell.setDependsOn(["A5"]);
       sheetMemory.setCurrentCell(testWriteCell);
@@ -77,7 +77,7 @@ describe('SheetMemory', () => {
         const sheetMemory = new SheetMemory(5, 5);
         const testCell = new Cell();
         testCell.setFormula(["1"]);
-        testCell.setDisplayString("1");
+        testCell.setError("");
         testCell.setValue(1);
         testCell.setDependsOn([]);
         sheetMemory.setCurrentCell(testCell);
@@ -154,19 +154,7 @@ describe('SheetMemory', () => {
     });
   }
   );
-  describe('setCurrentCellDisplayString', () => {
-    describe('when the current cell display string is set', () => {
-      it('getCurrentCell should return the same cell', () => {
-        const sheetMemory = new SheetMemory(5, 5);
-        const testDisplayString = "1";
-        sheetMemory.setCurrentCellDisplayString(testDisplayString);
-        const testSetDisplayString = sheetMemory.getCurrentCell();
-        expect(testSetDisplayString.getDisplayString()).toEqual(testDisplayString);
-      }
-      );
-    });
-  }
-  );
+
   describe('getCurrentCellDisplayString', () => {
     describe('when the current cell display string is not set', () => {
       it('getCurrentCell should return the default cell', () => {

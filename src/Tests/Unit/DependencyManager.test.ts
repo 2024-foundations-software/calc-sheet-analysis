@@ -15,7 +15,7 @@ beforeEach(() => {
   const cellA1 = new Cell();
   cellA1.setFormula(["A2"]);
   cellA1.setValue(1);
-  cellA1.setDisplayString("1");
+  cellA1.setError("");
   cellA1.setDependsOn(["A2"]);
 
   testMemory.setCurrentCellCoordinates(0, 0);
@@ -25,7 +25,7 @@ beforeEach(() => {
   const cellA2 = new Cell();
   cellA2.setFormula(["2"]);
   cellA2.setValue(2);
-  cellA2.setDisplayString("2");
+  cellA2.setError("");
   cellA2.setDependsOn([]);
   testMemory.setCurrentCellCoordinates(0, 1);
   testMemory.setCurrentCell(cellA2);
@@ -33,7 +33,7 @@ beforeEach(() => {
   const cellA3 = new Cell();
   cellA3.setFormula(["A1"]);
   cellA3.setValue(3);
-  cellA3.setDisplayString("3");
+  cellA3.setError("");
   cellA3.setDependsOn(["A1", "A2"]);
   testMemory.setCurrentCellCoordinates(0, 2);
   testMemory.setCurrentCell(cellA3);
@@ -63,7 +63,7 @@ describe("RecalcDependency", () => {
       let testWriteCell: Cell = new Cell();
       testWriteCell.setFormula(["A2", "-", "A3"]);
       testWriteCell.setValue(0);
-      testWriteCell.setDisplayString("0");
+      testWriteCell.setError("");
       testMemory.setCurrentCellCoordinates(0, 0);
       testMemory.setCurrentCell(testWriteCell);
 
@@ -92,7 +92,7 @@ describe("RecalcDependency", () => {
       let A1Cell = new Cell();
       A1Cell.setFormula(["A2"]);
       A1Cell.setValue(0);
-      A1Cell.setDisplayString("0");
+      A1Cell.setError("");
 
       testMemory.setCurrentCellCoordinates(0, 0);
       testMemory.setCurrentCell(A1Cell);
@@ -100,7 +100,7 @@ describe("RecalcDependency", () => {
       let A2Cell = new Cell();
       A2Cell.setFormula(["A3"]);
       A2Cell.setValue(0);
-      A2Cell.setDisplayString("0");
+      A2Cell.setError("");
 
       testMemory.setCurrentCellCoordinates(0, 1);
       testMemory.setCurrentCell(A2Cell);
@@ -108,7 +108,7 @@ describe("RecalcDependency", () => {
       let A3Cell = new Cell();
       A3Cell.setFormula(["A4"]);
       A3Cell.setValue(0);
-      A3Cell.setDisplayString("0");
+      A3Cell.setError("");
 
       testMemory.setCurrentCellCoordinates(0, 2);
       testMemory.setCurrentCell(A3Cell);
@@ -116,7 +116,7 @@ describe("RecalcDependency", () => {
       let A4Cell = new Cell();
       A4Cell.setFormula(["4"]);
       A4Cell.setValue(4);
-      A4Cell.setDisplayString("4");
+      A4Cell.setError("");
 
       testMemory.setCurrentCellCoordinates(0, 3);
       testMemory.setCurrentCell(A4Cell);
@@ -135,8 +135,7 @@ describe("RecalcDependency", () => {
       let A1Cell = new Cell();
       A1Cell.setFormula(["A2"]);
       A1Cell.setValue(0);
-      A1Cell.setDisplayString("0");
-
+      A1Cell.setError("");
 
       testMemoryInt.setCurrentCellCoordinates(0, 0);
       testMemoryInt.setCurrentCell(A1Cell);
@@ -144,7 +143,7 @@ describe("RecalcDependency", () => {
       let A2Cell = new Cell();
       A2Cell.setFormula(["B1"]);
       A2Cell.setValue(0);
-      A2Cell.setDisplayString("0");
+      A2Cell.setError("");
 
 
       testMemoryInt.setCurrentCellCoordinates(0, 1);
@@ -153,7 +152,7 @@ describe("RecalcDependency", () => {
       let B1Cell = new Cell();
       B1Cell.setFormula(["B2"]);
       B1Cell.setValue(0);
-      B1Cell.setDisplayString("0");
+      B1Cell.setError("");
 
 
       testMemoryInt.setCurrentCellCoordinates(1, 0);
@@ -162,7 +161,7 @@ describe("RecalcDependency", () => {
       let B2Cell = new Cell();
       B2Cell.setFormula(["2"]);
       B2Cell.setValue(2);
-      B2Cell.setDisplayString("2");
+      B2Cell.setError("");
 
 
       dependencyManager.updateDependencies(testMemoryInt);
@@ -181,7 +180,7 @@ describe("RecalcDependency", () => {
       let cellA1: Cell = new Cell();
       cellA1.setFormula(["A2", "+", "A3", "+", "B1", "+", "B2", "+", "B3", "+", "C1", "+", "C2", "+", "C3"]);
       cellA1.setValue(0);
-      cellA1.setDisplayString("0");
+      cellA1.setError("");
       testMemory.setCurrentCellCoordinates(0, 0);
       testMemory.setCurrentCell(cellA1);
 
@@ -201,14 +200,14 @@ describe("RecalcDependency", () => {
       let cellA1: Cell = new Cell();
       cellA1.setFormula([]);
       cellA1.setValue(0);
-      cellA1.setDisplayString("0");
+      cellA1.setError("");
       testMemory.setCurrentCellCoordinates(0, 0);
       testMemory.setCurrentCell(cellA1);
 
       let cellOther: Cell = new Cell();
       cellOther.setFormula(["A1"]);
       cellOther.setValue(0);
-      cellOther.setDisplayString("0");
+      cellOther.setError("");
 
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {

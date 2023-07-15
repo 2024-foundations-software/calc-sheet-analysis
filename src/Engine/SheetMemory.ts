@@ -208,15 +208,6 @@ export class SheetMemory {
     }
 
     /**
-     * set current cell display string
-     * 
-     * @param displayString
-     * 
-     * */
-    setCurrentCellDisplayString(displayString: string): void {
-        this.cells[this.currentColumn][this.currentRow].setDisplayString(displayString);
-    }
-    /**
      * get current cell display string
      * 
      * @returns the display string of the current cell
