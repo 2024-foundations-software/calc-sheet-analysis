@@ -7,6 +7,7 @@
  * 
  * 
  */
+import { ErrorMessages } from "./GlobalDefinitions";
 export class Cell {
   // private members
 
@@ -105,11 +106,15 @@ export class Cell {
    *  
    * @param {string} displayString - The display string of the cell
    * @returns {void}
+   * 
+   * Empty cells have an error from evaluation which is an emptyFormula
+   * We do not want this to show up.   All other errors are displayed
    *  
    * */
   setDisplayString(displayString: string): void {
     this._displayString = displayString;
   }
+
 
   /**
    * get the cells that the cell depends on
@@ -204,11 +209,11 @@ export class Cell {
    */
   public static columnNumberToName(column: number): string {
     /**
- * 65 is the ASCII code for A
- * 26 is the number of letters in the alphabet
- * 
- * we use do while loop to make sure that the loop runs at least once
- */
+  * 65 is the ASCII code for A
+  * 26 is the number of letters in the alphabet
+  * 
+  * we use do while loop to make sure that the loop runs at least once
+  */
     let temp = column;
     let result = "";
     do {

@@ -22,10 +22,6 @@ import { ButtonNames } from "../Engine/GlobalDefinitions";
 let spreadSheetEngine: SpreadSheetEngine = new SpreadSheetEngine(5, 8);
 
 function SpreadSheet() {
-
-
-
-
   const [formulaString, setFormulaString] = useState(spreadSheetEngine.getFormulaString())
   const [resultString, setResultString] = useState(spreadSheetEngine.getResultString())
   const [cells, setCells] = useState(spreadSheetEngine.getSheetDisplayStringsForGUI());

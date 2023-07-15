@@ -4,6 +4,7 @@ import DependencyManager from "./DependencyManager"
 import FormulaBuilder from "./FormulaBuilder";
 import Cell from "./Cell";
 import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
+import { ErrorMessages } from "./GlobalDefinitions";
 
 
 
@@ -241,8 +242,9 @@ export class SpreadSheetEngine {
    * 
    * */
   getResultString(): string {
-    let currentFormula = this._formulaBuilder.getFormula();
-    const [, displayString] = this._formulaEvaluator.evaluate(currentFormula, this._memory);
+    let currentWorkingCell = this._memory.getCurrentCell();
+    let displayString = currentWorkingCell.getDisplayString();
+
     return displayString;
   }
 

@@ -46,7 +46,7 @@ export class FormulaEvaluator {
    * This means that recalc can simply read the value from the memory when it encounters a cellReference
    * 
    */
-  evaluate(formula: FormulaType, memory: SheetMemory): [number, string] {
+  evaluate(formula: FormulaType, memory: SheetMemory) {
 
     // make a copy of the formula
     //
@@ -56,43 +56,40 @@ export class FormulaEvaluator {
     this._sheetMemory = memory;
 
 
-    // set the value of result to ""
-    let result = "";
+
     this._lastResult = 0;
 
     // if the formula is empty return ""
     if (formula.length === 0) {
-      this._error = "";
+      this._errorMessage = ErrorMessages.emptyFormula;
       this._result = 0;
-      return [this._lastResult, result];
+      return;
     }
     // set the errorOccured flag
     this._errorOccured = false;
 
+    // clear the error message
+    this._errorMessage = "";
+
     // get the value of the expression in the formula
-    let resultNumber = this.expression();
+    let resultValue = this.expression();
+    this._result = resultValue;
 
-    // if an error occured  and the message is PARTIAL return the last resul
-    if (this._errorOccured && this._errorMessage === ErrorMessages.partial) {
-      const displayString = this._lastResult.toString();
-      return [this._lastResult, displayString];
+    // if there are still tokens in the formula set the errorOccured flag
+    if (this._currentFormula.length > 0) {
+      this._errorOccured = true;
+      this._errorMessage = ErrorMessages.invalidFormula;
     }
 
-    // if an error occured return the error message
+    // if an error occured  and the message is PARTIAL return the last result
     if (this._errorOccured) {
-      return [0, this._errorMessage];
+      this._result = this._lastResult;
     }
 
-    // otherwise return the value of the expression
-    // convert the number result to a string and return it
-    const displayString = resultNumber.toString();
-    return [resultNumber, displayString];
   }
 
-
-
   public get error(): string {
-    return this._error
+    return this._errorMessage
   }
 
   public get result(): number {
@@ -134,14 +131,15 @@ export class FormulaEvaluator {
       if (operator === "*") {
         result *= factor;
       } else {
-        result /= factor;
-        if (result === Infinity || result === -Infinity) {
+        // check for divide by zero
+        if (factor === 0) {
           this._errorOccured = true;
-          this._errorMessage = "#DIV/0!";
-          this._lastResult = NaN;
+          this._errorMessage = ErrorMessages.divideByZero;
+          this._lastResult = Infinity;
+          return Infinity;
         }
-
-
+        // we are ok, lets divide
+        result /= factor;
       }
     }
     // set the lastResult to the result

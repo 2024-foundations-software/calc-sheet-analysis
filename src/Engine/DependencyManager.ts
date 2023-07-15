@@ -40,14 +40,26 @@ export default class DependencyManager {
         // compute the computation order for the sheet.
         let computationOrder = this.updateComputationOrder(sheetMemory);
 
+        // create a new FormulaEvaluator
+        let calculator = new FormulaEvaluator();
+
         // compute the cells in the computation order
         for (let cellLabel of computationOrder) {
             let currentCell = sheetMemory.getCellByLabel(cellLabel);
             let formula = currentCell.getFormula();
-            let calculator = new FormulaEvaluator();
-            let [value, displayString] = calculator.evaluate(formula, sheetMemory);
-            currentCell.setValue(value);
+
+            calculator.evaluate(formula, sheetMemory);
+
+            let value = calculator.result
+            let error = calculator.error;
+
+            let displayString = value.toString();
+            if (error.length > 0) {
+                displayString = error;
+            }
+            // update the cell in the sheet memory
             currentCell.setDisplayString(displayString);
+            currentCell.setValue(value);
             sheetMemory.setCellByLabel(cellLabel, currentCell);
         }
     }

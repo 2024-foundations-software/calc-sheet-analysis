@@ -7,6 +7,7 @@ export const ErrorMessages = {
   invalidNumber: "#ERR",
   invalidOperator: "#ERR",
   missingParentheses: "#ERR",
+  emptyFormula: "#EMPTY!", // this is not an error message but we use it to indicate that the cell is empty
 
 }
 

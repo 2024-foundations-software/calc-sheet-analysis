@@ -85,6 +85,7 @@ describe("Machine", () => {
           machine.setCurrentCellByLabel("B2");
           machine.addToken("1");
 
+
           expect(machine.getFormulaString()).toEqual("1");
           expect(machine.getResultString()).toEqual("1");
         });

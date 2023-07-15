@@ -24,7 +24,7 @@
  * 
  * 
  */
-
+import { ErrorMessages } from "./GlobalDefinitions";
 import FormulaEvaluator from "./FormulaEvaluator";
 import Cell from "./Cell";
 
@@ -36,7 +36,7 @@ export class SheetMemory {
     private currentRow = 0;
     private currentColumn = 0;
 
-    private recalc: FormulaEvaluator = new FormulaEvaluator();
+    private _recalc: FormulaEvaluator = new FormulaEvaluator();
 
     constructor(columns: number, rows: number) {
 
@@ -191,6 +191,8 @@ export class SheetMemory {
      *  
      * */
     setCurrentCellFormula(formula: FormulaType): void {
+        console.log("setting formula", formula);
+        console.log("current cell", this.currentColumn, this.currentRow);
         this.cells[this.currentColumn][this.currentRow].setFormula(formula);
     }
 
@@ -310,7 +312,9 @@ export class SheetMemory {
             displayStrings[column] = [];
             for (let row = 0; row < this.maxRows; row++) {
                 const displayString = this.cells[column][row].getDisplayString();
+
                 displayStrings[column][row] = displayString;
+
 
             }
         }
@@ -339,36 +343,22 @@ export class SheetMemory {
 
 
     /**
-     * Evaluate the formula for the current cell.
+     * Evaluate the formula for the current working cell.
      * 
-     * @returns the value of the current cell
+     * @returns the value of the current working cell
      * 
      */
-    evaluateCurrentCell(): number {
+    evaluateCurrentWorkingCell(): number {
         const formula = this.getCurrentCell().getFormula()
-        const value = this.evaluateFormulaNumber(formula);
-        this.setCurrentCellValue(value);
-        return value;
+        this._recalc.evaluate(formula, this);
+        let result = this._recalc.result;
+        this.setCurrentCellValue(result);
+        return result;
 
     }
-
-    /**
-     * Evaluate the formula 
-     * 
-     * @param formula
-     * 
-     * @returns the value of the formula
-     * 
-     * */
-    evaluateFormulaNumber(formula: FormulaType): number {
-        const [, displayString] = this.recalc.evaluate(formula, this);
-        const result = parseFloat(displayString);
-        return result
-    }
-
-
 
 
 }
+
 
 export default SheetMemory;

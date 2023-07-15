@@ -39,7 +39,7 @@
       "type": "node-terminal",
       "name": "Jest tests",
       "request": "launch",
-      "command": "npx jest Simple",
+      "command": "npx jest MachineSimple",
       "cwd": "${workspaceFolder}"
     },
     {
