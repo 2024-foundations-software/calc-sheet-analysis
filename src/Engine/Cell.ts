@@ -32,6 +32,10 @@ export class Cell {
   // the cells that depend on this cell (extracted from the formula)
   private _children: string[] = [];
 
+  // 
+  private _label: string = "";
+
+
   /**
    * constructor
    * @constructor
@@ -132,6 +136,23 @@ export class Cell {
   }
 
 
+  /**
+   * get the label of the cell
+   * @returns {string} The label of the cell
+   */
+  getLabel(): string {
+    return this._label;
+  }
+
+  /**
+   * set the label of the cell
+   * @param {string} label - The label of the cell
+   * @returns {void}
+   * 
+   * */
+  setLabel(label: string): void {
+    this._label = label;
+  }
   // There is no setDisplayString method because the display string is calculated
   // from the value and the error message
 

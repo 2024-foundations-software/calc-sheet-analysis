@@ -29,6 +29,20 @@ describe("Cell", () => {
   }
   );
 
+  describe("The cell label", () => {
+    it("should be empty", () => {
+      const cell = new Cell();
+      expect(cell.getLabel()).toEqual("");
+    });
+
+    it("should be set", () => {
+      const cell = new Cell();
+      cell.setLabel("A1");
+      expect(cell.getLabel()).toEqual("A1");
+    });
+  });
+
+
   describe("getFormula", () => {
     it("should return the formula", () => {
       const cell = new Cell();
