@@ -13,6 +13,15 @@ describe('SheetMemory', () => {
           expect(testMaxColumns).toEqual(5);
         });
       });
+
+      describe('cells should have labels that are column row pairs', () => {
+        it('should have the correct labels', () => {
+          const sheetMemory = new SheetMemory(5, 5);
+          const testGetCell = sheetMemory.getCellByLabel("A1");
+          expect(testGetCell.getLabel()).toEqual("A1");
+        });
+      });
+
       describe('when the max rows and columns are set', () => {
         it('getMaxRows should return 8, and getMaxColumns should return 7', () => {
           const testMaxRows = 8;
@@ -32,15 +41,17 @@ describe('SheetMemory', () => {
       const sheetMemory = new SheetMemory(10, 10);
       sheetMemory.setCurrentCellCoordinates(1, 1);
       let testWriteCell = new Cell();
-      testWriteCell.setFormula(["1234"]);
+      testWriteCell.setFormula(["123"]);
       testWriteCell.setError("");
       testWriteCell.setValue(123);
       testWriteCell.setDependsOn(["A5"]);
+      testWriteCell.setLabel("B2");
       sheetMemory.setCurrentCell(testWriteCell);
       const testCell = sheetMemory.getCellByLabel("B2");
-      expect(testCell.getDisplayString()).toEqual("1234");
+      expect(testCell.getLabel()).toEqual("B2");
+      expect(testCell.getDisplayString()).toEqual("123");
       expect(testCell.getValue()).toEqual(123);
-      expect(testCell.getFormula()).toEqual(["1234"]);
+      expect(testCell.getFormula()).toEqual(["123"]);
       expect(testCell.getDependsOn()).toEqual(["A5"]);
     });
   });
@@ -96,9 +107,9 @@ describe('SheetMemory', () => {
     describe('when the current cell is not set', () => {
       it('getCurrentCell should return the default cell', () => {
         const sheetMemory = new SheetMemory(5, 5);
-        const testCell = new Cell();
+
         const testGetCell = sheetMemory.getCurrentCell();
-        expect(testGetCell).toEqual(testCell);
+        expect(testGetCell.getLabel()).toEqual("A1");
       }
       );
     });

@@ -47,7 +47,9 @@ export class SheetMemory {
         for (let column = 0; column < this.maxColumns; column++) {
             this.cells[column] = [];
             for (let row = 0; row < this.maxRows; row++) {
-                this.cells[column][row] = new Cell();
+                let cell = new Cell();
+                cell.setLabel(Cell.columnRowToCell(column, row));
+                this.cells[column][row] = cell;
             }
         }
     }

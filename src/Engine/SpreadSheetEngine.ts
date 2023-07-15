@@ -188,7 +188,11 @@ export class SpreadSheetEngine {
 
     let dependentCell: Cell = this._memory.getCellByLabel(cell_reference);
     let currentCell: Cell = this._memory.getCurrentCell();
-    let currentLabel = Cell.columnRowToCell(this._currentWorkingColumn, this._currentWorkingRow);
+    let currentLabel = currentCell.getLabel();
+
+    console.log('inserted cell: ' + cell_reference);
+    console.log('dependent cell: ' + dependentCell.getLabel());
+    console.log('current cell: ' + currentCell.getLabel());
 
     // get the dependents for the current cell
     let dependents = dependentCell.getDependsOn();
