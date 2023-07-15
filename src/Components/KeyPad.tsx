@@ -19,68 +19,6 @@ function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
     <div className="buttons">
       <div className="buttons-row">
         <Button
-          text={ButtonNames.edit}
-          isDigit={true}
-          onClick={onCommandButtonClick}
-          className="button-operator"
-          dataTestId="edit-button"
-        />
-        <Button
-          text={ButtonNames.done}
-          isDigit={true}
-          onClick={onCommandButtonClick}
-          className="button-operator"
-          dataTestId="done-button"
-        />
-        <Button
-          text={ButtonNames.allClear}
-          isDigit={true}
-          onClick={onCommandButtonClick}
-          className="button-operator"
-          dataTestId="all-clear-button"
-        />
-        <Button
-          text={ButtonNames.clear}
-          isDigit={false}
-          onClick={onCommandButtonClick}
-          className="button-operator"
-          dataTestId="clear-button"
-        />
-      </div>
-
-      <div className="buttons-row">
-        <Button
-          text={ButtonNames.save}
-          isDigit={true}
-          onClick={onCommandButtonClick}
-          className="button-operator"
-          dataTestId="save-button"
-        />
-        <Button
-          text={ButtonNames.load}
-          isDigit={true}
-          onClick={onCommandButtonClick}
-          className="button-operator"
-          dataTestId="load-button"
-        />
-        <Button
-          text={ButtonNames.restart}
-          isDigit={true}
-          onClick={onCommandButtonClick}
-          className="button-operator"
-          dataTestId="restart-button"
-        />
-        <Button
-          text="/"
-          isDigit={false}
-          onClick={onButtonClick}
-          className="button-operator"
-          dataTestId="divide-button"
-        />
-      </div>
-
-      <div className="buttons-row">
-        <Button
           text="7"
           isDigit={true}
           onClick={onButtonClick}
@@ -102,11 +40,18 @@ function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
           dataTestId="nine-button"
         />
         <Button
-          text="*"
-          isDigit={false}
-          onClick={onButtonClick}
+          text={ButtonNames.allClear}
+          isDigit={true}
+          onClick={onCommandButtonClick}
           className="button-operator"
-          dataTestId="multiply-button"
+          dataTestId="all-clear-button"
+        />
+        <Button
+          text={ButtonNames.clear}
+          isDigit={false}
+          onClick={onCommandButtonClick}
+          className="button-operator"
+          dataTestId="clear-button"
         />
       </div>
 
@@ -133,11 +78,18 @@ function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
           dataTestId="six-button"
         />
         <Button
-          text="-"
+          text="*"
           isDigit={false}
           onClick={onButtonClick}
           className="button-operator"
-          dataTestId="subtract-button"
+          dataTestId="multiply-button"
+        />
+        <Button
+          text="/"
+          isDigit={false}
+          onClick={onButtonClick}
+          className="button-operator"
+          dataTestId="divide-button"
         />
       </div>
 
@@ -170,6 +122,14 @@ function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
           className="button-operator"
           dataTestId="add-button"
         />
+        <Button
+          text="-"
+          isDigit={false}
+          onClick={onButtonClick}
+          className="button-operator"
+          dataTestId="subtract-button"
+        />
+
       </div>
 
       <div className="buttons-row">
@@ -200,6 +160,13 @@ function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
           onClick={onButtonClick}
           className="button-number"
           dataTestId="right-parenthesis-button"
+        />
+        <Button
+          text={ButtonNames.done}
+          isDigit={true}
+          onClick={onCommandButtonClick}
+          className="button-operator"
+          dataTestId="done-button"
         />
       </div>
 
