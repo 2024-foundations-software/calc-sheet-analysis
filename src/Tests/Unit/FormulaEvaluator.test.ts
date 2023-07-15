@@ -25,21 +25,21 @@ beforeEach(() => {
   const cellA1 = new Cell();
   cellA1.setFormula(["1"]);
   cellA1.setValue(1);
-  cellA1.setDisplayString("1");
+  cellA1.setError("");
   testMemory.setCurrentCellCoordinates(0, 0);
   testMemory.setCurrentCell(cellA1);
 
   const cellA2 = new Cell();
   cellA2.setFormula(["2"]);
   cellA2.setValue(2);
-  cellA2.setDisplayString("2");
+  cellA2.setError("");
   testMemory.setCurrentCellCoordinates(0, 1);
   testMemory.setCurrentCell(cellA2);
 
   const cellA3 = new Cell();
   cellA3.setFormula(["3"]);
   cellA3.setValue(3);
-  cellA3.setDisplayString("3");
+  cellA3.setError("");
   testMemory.setCurrentCellCoordinates(0, 2);
   testMemory.setCurrentCell(cellA3);
 });

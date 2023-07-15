@@ -16,8 +16,12 @@ export class Cell {
   // in the react app
   private _formula: string[] = [];
 
+
   // the value of the cell
   private _value: number = 0;
+
+  // the error message for the cell (if any)
+  private _error: string = "";
 
   // the display string for the cell, it is either the value or an error message
   private _displayString: string = "";
@@ -41,6 +45,7 @@ export class Cell {
       // copy constructor logic
       this._formula = [...cell._formula];
       this._value = cell._value;
+      this._error = cell._error.slice();
       this._displayString = cell._displayString.slice();
       this._dependsOn = [...cell._dependsOn];
       this._children = [...cell._children];
@@ -48,6 +53,7 @@ export class Cell {
       // default constructor logic
       this._formula = [];
       this._value = 0;
+      this._error = ErrorMessages.emptyFormula;
       this._displayString = "";
       this._dependsOn = [];
       this._children = [];
@@ -70,8 +76,20 @@ export class Cell {
    *  
    * */
   setFormula(formula: string[]): void {
-    this._formula = formula;
+    this._formula = [...formula];
   }
+
+  /**
+   * set the error message for the cell
+   * @param {string} error - The error message for the cell
+   */
+  setError(error: string): void {
+    this._error = error;
+  }
+
+  // error is used to indicate that an error has occurred during evaluation
+  // it is used to get the display string for the cell
+
 
   /**
    * get the value of the cell
@@ -98,23 +116,24 @@ export class Cell {
    *  
    * */
   getDisplayString(): string {
-    return this._displayString;
+    // successful evaluation has occurred
+    if (this._error === "" && this._formula.length > 0) {
+      return this._value.toString();
+    }
+
+    // Check to see if cell is empty
+    if (this._formula.length === 0) {
+      return "";
+    }
+
+    // unsuccessful evaluation has occurred
+    // return the error message
+    return this._error;
   }
 
-  /**
-   * set the display string of the cell
-   *  
-   * @param {string} displayString - The display string of the cell
-   * @returns {void}
-   * 
-   * Empty cells have an error from evaluation which is an emptyFormula
-   * We do not want this to show up.   All other errors are displayed
-   *  
-   * */
-  setDisplayString(displayString: string): void {
-    this._displayString = displayString;
-  }
 
+  // There is no setDisplayString method because the display string is calculated
+  // from the value and the error message
 
   /**
    * get the cells that the cell depends on
@@ -161,7 +180,10 @@ export class Cell {
    * 
    * */
   public addChild(child: string): void {
-    this._children.push(child);
+    // check to see if the cell is already a child
+    if (this._children.indexOf(child) === -1) {
+      this._children.push(child);
+    }
   }
 
   /**

@@ -37,9 +37,16 @@
     },
     {
       "type": "node-terminal",
-      "name": "Jest tests",
+      "name": "Jest Machine",
       "request": "launch",
       "command": "npx jest MachineSimple",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Jest Cell",
+      "request": "launch",
+      "command": "npx jest Cell",
       "cwd": "${workspaceFolder}"
     },
     {
