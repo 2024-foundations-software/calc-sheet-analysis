@@ -32,7 +32,8 @@ describe("CalculatorInputProcessor", () => {
     it("calls the onButtonClick callback when a button is clicked", () => {
         const onButtonClick = jest.fn();
         const onCommandButtonClick = jest.fn();
-        const { getByTestId } = render(<KeyPad onButtonClick={onButtonClick} onCommandButtonClick={onCommandButtonClick} />);
+        const { getByTestId } = render(<KeyPad onButtonClick={onButtonClick}
+            onCommandButtonClick={onCommandButtonClick} currentlyEditing={true} />);
 
         const oneButton = screen.getByTestId("one-button");
 

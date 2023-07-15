@@ -1,23 +1,41 @@
 import React from "react";
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 
+
 import Button from "./Button";
 
 import "./KeyPad.css";
 import "./Button.css";
+import { get } from "http";
 
 interface KeyPadProps {
   onButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onCommandButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  currentlyEditing: boolean;
 } // interface KeyPadProps
 
-function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
+function KeyPad({ onButtonClick, onCommandButtonClick, currentlyEditing }: KeyPadProps) {
+
+  // the done button has two styles and two text values depending on currently Editing
+  // if currentlyEditing is true then the button will have the class button-edit-end
+  // and the text will be "="
+  // if currentlyEditing is false then the button will have the class button-edit-start
+  // and the text will be "edit"
+  function getDoneButtonClass() {
+    if (currentlyEditing) {
+      return "button-edit-end";
+    }
+    return "button-edit-start";
+  } // getDoneButtonClass
+
+  let doneButtonText = currentlyEditing ? ButtonNames.done : ButtonNames.edit;
 
   // the buttons use one of three classes
   // numberButton, operatorButton, and otherButton
   return (
     <div className="buttons">
       <div className="buttons-row">
+
         <Button
           text="7"
           isDigit={true}
@@ -43,14 +61,14 @@ function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
           text={ButtonNames.allClear}
           isDigit={true}
           onClick={onCommandButtonClick}
-          className="button-operator"
+          className="button-control"
           dataTestId="all-clear-button"
         />
         <Button
           text={ButtonNames.clear}
           isDigit={false}
           onClick={onCommandButtonClick}
-          className="button-operator"
+          className="button-control"
           dataTestId="clear-button"
         />
       </div>
@@ -162,10 +180,10 @@ function KeyPad({ onButtonClick, onCommandButtonClick }: KeyPadProps) {
           dataTestId="right-parenthesis-button"
         />
         <Button
-          text={ButtonNames.done}
+          text={doneButtonText}
           isDigit={true}
           onClick={onCommandButtonClick}
-          className="button-operator"
+          className={(getDoneButtonClass())}
           dataTestId="done-button"
         />
       </div>

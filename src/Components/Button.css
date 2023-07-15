@@ -1,7 +1,6 @@
-.button-number
-{
+.button-number {
   background-color: #514caf;
-  border: 5px solid #192f19;
+  border: 5px solid #000000;
   color: white;
   padding: 5px 5px;
   text-align: center;
@@ -12,10 +11,9 @@
   height: 60px;
 }
 
-.button-operator
-{
+.button-operator {
   background-color: #512426;
-  border: 5px solid #192f19;
+  border: 5px solid #000000;
   color: white;
   padding: 5px 5px;
   text-align: center;
@@ -26,16 +24,42 @@
   height: 60px;
 }
 
-.button-equal
-{
-  background-color: #1db531;
-  border: 5px solid #192f19;
+.button-edit-end {
+  background-color: #707070;
+  border: 5px solid #000000;
+  color: #ffffff;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: large;
+  width: 80px;
+  height: 60px;
+}
+
+.button-edit-start {
+  background-color: #707070;
+  border: 5px solid #000000;
   color: white;
   padding: 5px 5px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: large;
+  width: 80px;
+  height: 60px;
+}
+
+.button-control {
+  background-color: #000000;
+  border: 5px solid #000000;
+  color: rgb(255, 255, 255);
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: large;
+
   width: 80px;
   height: 60px;
 }
