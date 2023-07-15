@@ -191,8 +191,6 @@ export class SheetMemory {
      *  
      * */
     setCurrentCellFormula(formula: FormulaType): void {
-        console.log("setting formula", formula);
-        console.log("current cell", this.currentColumn, this.currentRow);
         this.cells[this.currentColumn][this.currentRow].setFormula(formula);
     }
 

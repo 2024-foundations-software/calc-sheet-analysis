@@ -186,12 +186,17 @@ export class SpreadSheetEngine {
       return;
     }
 
-    let cell: Cell = this._memory.getCellByLabel(cell_reference);
+    let dependentCell: Cell = this._memory.getCellByLabel(cell_reference);
+    let currentCell: Cell = this._memory.getCurrentCell();
+    let currentLabel = Cell.columnRowToCell(this._currentWorkingColumn, this._currentWorkingRow);
 
     // get the dependents for the current cell
-    let dependents = cell.getDependsOn();
+    let dependents = dependentCell.getDependsOn();
+    console.log('current cell: ' + this.getCurrentCellLabel());
 
-    let currentLabel = Cell.columnRowToCell(this._currentWorkingColumn, this._currentWorkingRow);
+    console.log('dependents: ' + dependents);
+
+
 
 
     // if the cell reference is not in the dependents use add token
