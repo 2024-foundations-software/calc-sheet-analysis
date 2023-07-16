@@ -184,41 +184,7 @@ export class SheetMemory {
         workingCell.setValue(value);
     }
 
-    /**
-     * Get Sheet formulas
-     * 
-     * returns a twoD array of formulas
-     * 
-     * */
-    getSheetFormulas(): FormulaType[][] {
-        let formulas: FormulaType[][] = [];
-        for (let column = 0; column < this._numColumns; column++) {
-            formulas[column] = [];
-            for (let row = 0; row < this._numRows; row++) {
-                formulas[column][row] = this._cells[column][row].getFormula();
-            }
-        }
-        return formulas;
-    }
 
-    /**
-     * 
-     * set sheet formulas
-     * 
-     * @param formulas
-     * 
-     */
-    setSheetFormulas(formulas: FormulaType[][]): void {
-        for (let column = 0; column < this._numColumns; column++) {
-            for (let row = 0; row < this._numRows; row++) {
-                let cell = new Cell();
-                cell.setFormula(formulas[column][row]);
-                this._cells[column][row] = cell;
-            }
-        }
-
-
-    }
 
     /**
      * Get Sheet display strings

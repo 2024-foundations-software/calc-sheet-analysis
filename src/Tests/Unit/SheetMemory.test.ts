@@ -178,22 +178,7 @@ describe('SheetMemory', () => {
     });
   }
   );
-  describe('setSheetFormulas', () => {
-    describe('when the sheet formulas are set', () => {
-      it('getSheetFormulas should return the same formulas', () => {
-        const sheetMemory = new SheetMemory(2, 2);
-        // define testFormulas to be a 2 b 2 array of formulas
 
-        const testFormulas: FormulaType[][] = [[["1", "+", "3"], ["2"]], [["3"], ["4"]]];
-        sheetMemory.setSheetFormulas(testFormulas);
-        const testSetFormulas = sheetMemory.getSheetFormulas();
-        expect(testSetFormulas).toEqual(testFormulas);
-      }
-      );
-    });
-  });
-}
-
-);
+});
 
 
