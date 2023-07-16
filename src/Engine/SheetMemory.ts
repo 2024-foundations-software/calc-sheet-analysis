@@ -107,13 +107,6 @@ export class SheetMemory {
     }
 
     /**
-     * get the label of the current working cell
-     */
-    getCurrentCellLabel(): string {
-        return Cell.columnRowToCell(this.currentColumn, this.currentRow);
-    }
-
-    /**
      * set the current cell
      * 
      * @param cell
@@ -162,31 +155,6 @@ export class SheetMemory {
     }
 
     /**
-     * get cell by coordinates
-     * 
-     * @param column
-     * @param row
-
-     *  
-     * */
-    getCellByCoordinates(column: number, row: number): Cell {
-        return this.cells[column][row];
-    }
-
-    /**
-     * set cell by coordinates
-     * 
-     * @param row
-     * @param column
-     * @param cell the cell to set
-     * 
-     */
-    setCellByCoordinates(column: number, row: number, cell: Cell): void {
-        this.cells[column][row] = cell;
-    }
-
-
-    /**
      * set current cell formula
      *  
      * @param formula
@@ -208,16 +176,6 @@ export class SheetMemory {
     }
 
     /**
-     * get current cell display string
-     * 
-     * @returns the display string of the current cell
-     * 
-     * */
-    getCurrentCellDisplayString(): string {
-        return this.cells[this.currentColumn][this.currentRow].getDisplayString();
-    }
-
-    /**
      * set current cell value
      *  
      * @param value
@@ -227,18 +185,6 @@ export class SheetMemory {
         let workingCell: Cell = this.cells[this.currentColumn][this.currentRow];
         workingCell.setValue(value);
     }
-
-    /**
-     * get current cell value
-     *  
-     * @returns the value of the current cell
-     *  
-     * */
-    getCurrentCellValue(): number {
-        const cell: Cell = this.cells[this.currentColumn][this.currentRow];
-        return cell.getValue();
-    }
-
 
     /**
      * Get Sheet formulas
@@ -275,22 +221,6 @@ export class SheetMemory {
 
 
     }
-    /**
-     * Get Sheet values
-     * 
-     * returns a twoD array of values
-     * 
-     * */
-    getSheetValues(): number[][] {
-        let values: number[][] = [];
-        for (let column = 0; column < this.maxColumns; column++) {
-            values[column] = [];
-            for (let row = 0; row < this.maxRows; row++) {
-                values[column][row] = this.cells[column][row].getValue();
-            }
-        }
-        return values;
-    }
 
     /**
      * Get Sheet display strings
@@ -310,42 +240,6 @@ export class SheetMemory {
             }
         }
         return displayStrings;
-    }
-
-
-    /**
-     * Get Sheet Dependencies
-     * 
-     * returns a twoD array of dependencies
-     * 
-     * */
-    getDependsOn(): string[][][] {
-        let dependencies: string[][][] = [];
-        for (let column = 0; column < this.maxColumns; column++) {
-            dependencies[column] = [];
-            for (let row = 0; row < this.maxRows; row++) {
-                dependencies[column][row] = this.cells[column][row].getDependsOn();
-            }
-        }
-
-        return dependencies;
-    }
-
-
-
-    /**
-     * Evaluate the formula for the current working cell.
-     * 
-     * @returns the value of the current working cell
-     * 
-     */
-    evaluateCurrentWorkingCell(): number {
-        const formula = this.getCurrentCell().getFormula()
-        this._recalc.evaluate(formula, this);
-        let result = this._recalc.result;
-        this.setCurrentCellValue(result);
-        return result;
-
     }
 
 

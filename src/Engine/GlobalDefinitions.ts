@@ -17,10 +17,6 @@ export const ButtonNames = {
   done: "=",
   allClear: "AC",
   clear: "C",
-  restart: "new",
-  save: "save",
-  load: "load",
-
 }
 
 

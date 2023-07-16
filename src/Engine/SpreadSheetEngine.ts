@@ -71,85 +71,6 @@ export class SpreadSheetEngine {
     this._memory = new SheetMemory(columns, rows);
   }
 
-  /**
-   * restart the machine
-   */
-  public restart(): void {
-    this._memory = new SheetMemory(this._memory.getMaxColumns(), this._memory.getMaxRows());
-    this._currentWorkingRow = 0;
-    this._currentWorkingColumn = 0;
-    this._cellIsBeingEdited = false;
-    this._formulaBuilder = new FormulaBuilder();
-    this._dependencyManager = new DependencyManager();
-  }
-
-  /**
-   * handle a key press
-   *  
-   *  @param key:string
-   */
-  public processKey(key: string): void {
-
-    // if the key is a number or a parenthesis or a decimal point add it to the formula
-    if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "(", ")"].includes(key)) {
-      this.addToken(key);
-      this._cellIsBeingEdited = true;
-      this._dependencyManager.evaluateSheet(this._memory);
-      return;
-    }
-
-    // if the key is an operator add it to the formula
-    if (["+", "-", "*", "/"].includes(key)) {
-      this.addToken(key);
-      this._cellIsBeingEdited = true;
-      this._dependencyManager.evaluateSheet(this._memory);
-      return;
-    }
-
-    // if the key is backspace or delete remove the last token from the formula
-    if (["Backspace", "Delete"].includes(key)) {
-      this.removeToken();
-      this._cellIsBeingEdited = true;
-      this._dependencyManager.evaluateSheet(this._memory);
-      return;
-    }
-
-
-  }
-
-
-  public async processCommandButton(command: string): Promise<void> {
-    if (command === 'save') {
-      let documentToSend: CalcSheetDocument = {
-        numberOfRows: this._memory.getMaxRows(),
-        numberOfColumns: this._memory.getMaxColumns(),
-        formulas: this._memory.getSheetFormulas(),
-      };
-      try {
-        await this.calcSheetServerClient.sendDocument(documentToSend);
-      } catch (error) {
-        console.error('error-------->: ' + error);
-      }
-    }
-    if (command === 'load') {
-      let documentID = '5366e13f-929b-464e-a408-31c14250daee';
-      try {
-        let result = await this.calcSheetServerClient.getDocument(documentID);
-        if (result) {
-          let newFormulas = result.formulas;
-
-          this._memory.setSheetFormulas(newFormulas);
-
-          this._dependencyManager.updateDependencies(this._memory);
-          this._dependencyManager.evaluateSheet(this._memory);
-        } else {
-          console.error('document not found');
-        }
-      } catch (error) {
-        console.error('error-------->: ' + error);
-      }
-    }
-  }
 
   /**  
    *  add token to current formula, this is not a cell and thus no dependency updating is needed
@@ -379,20 +300,6 @@ export class SpreadSheetEngine {
     }
     return "current cell: " + this.getCurrentCellLabel();
   }
-
-
-  /**
-   * update the current formula of the machine with the input cell formula
-   * 
-   * */
-  public updateCurrentFormula(cellLabel: string): void {
-    const cell = this._memory.getCellByLabel(cellLabel);
-
-    const formula = cell.getFormula();
-    this._formulaBuilder.setFormula(formula);
-  }
-
-
 
 
 }

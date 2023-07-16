@@ -10,9 +10,10 @@ export class FormulaEvaluator {
   private _errorMessage: string = "";
   private _currentFormula: FormulaType = [];
   private _lastResult: number = 0;
-  private _sheetMemory: SheetMemory | undefined;
-  private _error: string = "";
+  private _sheetMemory: SheetMemory | null = null;
   private _result: number = 0;
+
+
 
   /**
    * 
@@ -46,6 +47,7 @@ export class FormulaEvaluator {
    * This means that recalc can simply read the value from the memory when it encounters a cellReference
    * 
    */
+
   evaluate(formula: FormulaType, memory: SheetMemory) {
 
     // make a copy of the formula
@@ -228,17 +230,16 @@ export class FormulaEvaluator {
    */
   getCellValue(token: TokenType): [number, string] {
 
-    if (this._sheetMemory === undefined) {
-      throw new Error("Sheet memory is undefined");
+    if (this._sheetMemory !== null) {
+      let cell = this._sheetMemory.getCellByLabel(token);
+      let formula = cell.getFormula();
+      if (formula.length === 0) {
+        return [0, ErrorMessages.invalidCell];
+      }
+      let value = cell.getValue();
+      return [value, ""];
     }
-    let cell = this._sheetMemory.getCellByLabel(token);
-    let formula = cell.getFormula();
-    if (formula.length === 0) {
-      return [0, ErrorMessages.invalidCell];
-    }
-    let value = cell.getValue();
-    return [value, ""];
-
+    return [0, ErrorMessages.invalidCell];
   }
 
 

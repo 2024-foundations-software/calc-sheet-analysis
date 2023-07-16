@@ -74,18 +74,10 @@ function SpreadSheet() {
         spreadSheetEngine.clearFormula();
         break;
 
-      case ButtonNames.restart:
-        spreadSheetEngine.restart();
-        break;
-
-      default:
-        await spreadSheetEngine.processCommandButton(text);
-        break
     }
     // update the display values
     updateDisplayValues();
   }
-
 
   /**
    *  This function is the call back for the number buttons and the Parenthesis buttons
@@ -98,15 +90,12 @@ function SpreadSheet() {
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
 
     const text = event.currentTarget.textContent;
-    if (text) {
-      let trueText = text ? text : "";
+    let trueText = text ? text : "";
+    spreadSheetEngine.setEditStatus(true);
+    spreadSheetEngine.addToken(trueText);
 
+    updateDisplayValues();
 
-      spreadSheetEngine.setEditStatus(true);
-      spreadSheetEngine.addToken(trueText);
-
-      updateDisplayValues();
-    }
   }
 
 

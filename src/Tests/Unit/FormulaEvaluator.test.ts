@@ -60,6 +60,21 @@ describe("FormulaEvaluator", () => {
       });
     });
 
+    describe("when the formula is ( 8 )", () => {
+      it("returns the number", () => {
+        const formula: FormulaType = ["(", "8", ")"];
+        const memory = new SheetMemory(5, 5);
+        recalc.evaluate(formula, memory);
+
+        let result = recalc.result;
+        let error = recalc.error;
+
+        expect(result).toEqual(8);
+        expect(error).toEqual("");
+      });
+    });
+
+
     describe("when the formula contains two tokens, number, operator", () => {
       it("returns the number", () => {
         const formula: FormulaType = ["1", "+"];
@@ -148,6 +163,20 @@ describe("FormulaEvaluator", () => {
       });
     });
 
+    describe(" The formula is ( )", () => {
+      it("returns a syntax error", () => {
+        const formula: FormulaType = ["(", ")"];
+        const memory = new SheetMemory(5, 5);
+        recalc.evaluate(formula, memory);
+
+        let result = recalc.result;
+        let error = recalc.error;
+
+        expect(result).toEqual(0);
+        expect(error).toEqual(ErrorMessages.missingParentheses);
+      });
+    });
+
     describe("when the formula contains 8 ( ", () => {
       it("returns a syntax error", () => {
         const formula: FormulaType = ["8", "("];
@@ -206,6 +235,7 @@ describe("FormulaEvaluator", () => {
 
         });
       });
+
 
       describe("when the operators are +, /", () => {
         it("returns the quotient of the second and third number added to the first number", () => {
