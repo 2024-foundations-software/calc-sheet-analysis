@@ -36,7 +36,6 @@ export class SheetMemory {
     private currentRow = 0;
     private currentColumn = 0;
 
-    private _recalc: FormulaEvaluator = new FormulaEvaluator();
 
     constructor(columns: number, rows: number) {
 

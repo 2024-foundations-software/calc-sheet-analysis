@@ -1,6 +1,6 @@
 import SheetMemory from "./SheetMemory"
 import FormulaEvaluator from "./FormulaEvaluator"
-import DependencyManager from "./DependencyManager"
+import CalculationManager from "./CalculationManager"
 import FormulaBuilder from "./FormulaBuilder";
 import Cell from "./Cell";
 import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
@@ -43,18 +43,18 @@ export class SpreadSheetEngine {
 
   // The formula evaluator, this is used to evaluate the formula for the current cell
   // it is only called for a cell when all cells it depends on have been evaluated
-  private _formulaEvaluator: FormulaEvaluator = new FormulaEvaluator();
+  private _formulaEvaluator: FormulaEvaluator;
 
   // The formula builder, this is used to build the formula for the current cell
   // it is used when the user is editing the formula for the current cell
-  private _formulaBuilder: FormulaBuilder = new FormulaBuilder();
+  private _formulaBuilder: FormulaBuilder;
 
   // The current cell is being edited
-  private _cellIsBeingEdited: boolean = false;
+  private _cellIsBeingEdited: boolean;;
 
   // The dependency manager, this is used to manage the dependencies between cells
   // The main job of this is to compute the order in which the cells should be evaluated
-  private _dependencyManager: DependencyManager = new DependencyManager();
+  private _calculationManager: CalculationManager;
 
 
 
@@ -69,6 +69,10 @@ export class SpreadSheetEngine {
    * */
   constructor(columns: number, rows: number) {
     this._memory = new SheetMemory(columns, rows);
+    this._formulaEvaluator = new FormulaEvaluator(this._memory);
+    this._calculationManager = new CalculationManager();
+    this._formulaBuilder = new FormulaBuilder();
+    this._cellIsBeingEdited = false;
   }
 
 
@@ -90,7 +94,7 @@ export class SpreadSheetEngine {
     let formula = this._formulaBuilder.getFormula();
     this._memory.setCurrentCellFormula(formula);
     // Do a recalc
-    this._dependencyManager.evaluateSheet(this._memory);
+    this._calculationManager.evaluateSheet(this._memory);
   }
 
   /**  
@@ -119,7 +123,7 @@ export class SpreadSheetEngine {
 
     // Check to see if we would be introducing a circular dependency
     // this function will update the dependency for the cell being inserted
-    let okToAdd = this._dependencyManager.addCellDependency(currentLabel, cell_reference, this._memory);
+    let okToAdd = this._calculationManager.addCellDependency(currentLabel, cell_reference, this._memory);
 
     // We have checked to see if this new token introduces a circular dependency
     // if it does not then we can add the token to the formula
@@ -140,7 +144,7 @@ export class SpreadSheetEngine {
   removeToken(): void {
     this._formulaBuilder.removeToken();
     this._memory.setCurrentCellFormula(this._formulaBuilder.getFormula());
-    this._dependencyManager.evaluateSheet(this._memory);
+    this._calculationManager.evaluateSheet(this._memory);
   }
 
   /**
@@ -151,7 +155,7 @@ export class SpreadSheetEngine {
   clearFormula(): void {
     this._formulaBuilder.setFormula([]);
     this._memory.setCurrentCellFormula(this._formulaBuilder.getFormula());
-    this._dependencyManager.evaluateSheet(this._memory);
+    this._calculationManager.evaluateSheet(this._memory);
   }
 
   /**
@@ -248,8 +252,8 @@ export class SpreadSheetEngine {
     * @returns string[][]
     */
   public getSheetDisplayStringsForGUI(): string[][] {
-    this._dependencyManager.updateComputationOrder(this._memory);
-    this._dependencyManager.evaluateSheet(this._memory);
+    this._calculationManager.updateComputationOrder(this._memory);
+    this._calculationManager.evaluateSheet(this._memory);
 
     let memoryDisplayValues = this._memory.getSheetDisplayStrings();
     let guiDisplayValues: string[][] = [];

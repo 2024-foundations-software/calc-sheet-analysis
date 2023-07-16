@@ -28,11 +28,14 @@ import FormulaEvaluator from "./FormulaEvaluator";
 
 
 
-export default class DependencyManager {
+export default class CalculationManager {
 
 
 
-
+    // Update the dependency graph of the sheet
+    // get the computation order
+    // compute the cells in the computation order
+    // update the cells in the sheet memory
     public evaluateSheet(sheetMemory: SheetMemory): void {
         // update the dependencies in the sheet
         this.updateDependencies(sheetMemory);
@@ -41,24 +44,20 @@ export default class DependencyManager {
         let computationOrder = this.updateComputationOrder(sheetMemory);
 
         // create a new FormulaEvaluator
-        let calculator = new FormulaEvaluator();
+        let calculator = new FormulaEvaluator(sheetMemory);
 
         // compute the cells in the computation order
         for (let cellLabel of computationOrder) {
             let currentCell = sheetMemory.getCellByLabel(cellLabel);
             let formula = currentCell.getFormula();
 
-            calculator.evaluate(formula, sheetMemory);
+            calculator.evaluate(formula);
 
             let value = calculator.result
             let error = calculator.error;
 
-            let displayString = value.toString();
-            if (error.length > 0) {
-                displayString = error;
-            }
             // update the cell in the sheet memory
-            currentCell.setError(calculator.error);
+            currentCell.setError(error);
             currentCell.setValue(value);
             sheetMemory.setCellByLabel(cellLabel, currentCell);
         }
@@ -67,7 +66,7 @@ export default class DependencyManager {
 
 
     /**
-     *  checck to see if it is ok eo add a cell to the formula in the current cell.
+     *  checck to see if it is ok to add a cell to the formula in the current cell.
      * 
      * @param {string} currentCellLabel - The label of the cell
      * @param {sheetMemory} SheetMemory - The sheet memory

@@ -1,17 +1,17 @@
 /**
  * RecalcDependency.ts
  */
-import DependencyManager from "../../Engine/DependencyManager";
+import CalculationManager from "../../Engine/CalculationManager";
 import SheetMemory from "../../Engine/SheetMemory";
 import Cell from "../../Engine/Cell";
 import { get } from "http";
 import e from "cors";
 
 let testMemory: SheetMemory;
-let dependencyManager: DependencyManager;
+let dependencyManager: CalculationManager;
 beforeEach(() => {
   testMemory = new SheetMemory(3, 3);
-  dependencyManager = new DependencyManager();
+  dependencyManager = new CalculationManager();
 
   const cellA1 = new Cell();
   cellA1.setFormula(["A2"]);
@@ -316,7 +316,7 @@ describe("RecalcDependency", () => {
 
     describe("A 3 by 3 sheet with all of the cells being in a chain in reverse order", () => {
       let testMemory: SheetMemory = new SheetMemory(3, 3);
-      dependencyManager = new DependencyManager();
+      dependencyManager = new CalculationManager();
       let cellC3: Cell = new Cell();
       cellC3.setFormula(["C2", "+", "1"]);
       testMemory.setCurrentCellLabel("C3");

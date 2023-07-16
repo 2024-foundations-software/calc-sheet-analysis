@@ -10,13 +10,16 @@ export class FormulaEvaluator {
   private _errorMessage: string = "";
   private _currentFormula: FormulaType = [];
   private _lastResult: number = 0;
-  private _sheetMemory: SheetMemory | null = null;
+  private _sheetMemory: SheetMemory;
   private _result: number = 0;
 
 
+  constructor(memory: SheetMemory) {
+    this._sheetMemory = memory;
+  }
 
   /**
-   * 
+   * evaluate the formula
    * @param formula
    * @returns The value of the expression in the tokenized formula
    * it also provides two properties formulaString and resultString
@@ -48,16 +51,13 @@ export class FormulaEvaluator {
    * 
    */
 
-  evaluate(formula: FormulaType, memory: SheetMemory) {
+  evaluate(formula: FormulaType) {
 
     // make a copy of the formula
     //
     // set the currentFormula to the copy of the formula
     // we do this because the parser consumes the value in currentFormula 
     this._currentFormula = [...formula];
-    this._sheetMemory = memory;
-
-
 
     this._lastResult = 0;
 
@@ -230,16 +230,15 @@ export class FormulaEvaluator {
    */
   getCellValue(token: TokenType): [number, string] {
 
-    if (this._sheetMemory !== null) {
-      let cell = this._sheetMemory.getCellByLabel(token);
-      let formula = cell.getFormula();
-      if (formula.length === 0) {
-        return [0, ErrorMessages.invalidCell];
-      }
-      let value = cell.getValue();
-      return [value, ""];
+
+    let cell = this._sheetMemory.getCellByLabel(token);
+    let formula = cell.getFormula();
+    if (formula.length === 0) {
+      return [0, ErrorMessages.invalidCell];
     }
-    return [0, ErrorMessages.invalidCell];
+    let value = cell.getValue();
+    return [value, ""];
+
   }
 
 
