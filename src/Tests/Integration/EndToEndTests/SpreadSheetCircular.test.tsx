@@ -10,7 +10,7 @@ import SpreadSheet from "../../../Components/SpreadSheet";
 
 import KeyPad from "../../../Components/KeyPad";
 
-import SpreadSheetEngine from "../../../Engine/SpreadSheetEngine";
+import SpreadSheetController from "../../../Engine/SpreadSheetController";
 
 import { ErrorMessages } from "../../../Engine/GlobalDefinitions";
 import { after } from "node:test";

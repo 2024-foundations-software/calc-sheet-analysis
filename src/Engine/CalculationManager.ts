@@ -154,6 +154,8 @@ export default class CalculationManager {
      * @param {sheetMemory} SheetMemory - The sheet memory
      * @returns {void}
      * 
+     * This function will update the dependencies for all cells in the sheet
+     * there are no circular dependencies in the sheet so  we just need to 
      * */
     public updateDependencies(sheetMemory: SheetMemory): boolean {
         for (let column = 0; column < sheetMemory.getMaxColumns(); column++) {
@@ -167,6 +169,7 @@ export default class CalculationManager {
                 // always read the top level depensOn from the formula
                 let currentDependsOn = FormulaBuilder.getCellReferences(currentFormula);
                 currentCell.setDependsOn(currentDependsOn);
+
                 // if the current cell is in the formula then we are done
                 if (currentDependsOn.includes(cellLabel)) {
                     return false;

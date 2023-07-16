@@ -3,14 +3,10 @@ import FormulaEvaluator from "./FormulaEvaluator"
 import CalculationManager from "./CalculationManager"
 import FormulaBuilder from "./FormulaBuilder";
 import Cell from "./Cell";
-import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient";
-import { ErrorMessages } from "./GlobalDefinitions";
-
-
-
+import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient"
 
 /**
- *  The main object of the SpreadSheet
+ *  The main controller of the SpreadSheet
  * 
  *  The exported methods are
  * 
@@ -23,11 +19,9 @@ import { ErrorMessages } from "./GlobalDefinitions";
  * setWorkingCell( column:number, row_number)): void
  * 
  * getSheetValues(void): string[][]
- * 
- * 
- * 
+ *
  */
-export class SpreadSheetEngine {
+export class SpreadSheetController {
   /** The memory for the sheet */
   private _memory: SheetMemory;
 
@@ -308,4 +302,4 @@ export class SpreadSheetEngine {
 
 }
 
-export default SpreadSheetEngine;
+export default SpreadSheetController;

@@ -8,10 +8,10 @@ import { get } from "http";
 import e from "cors";
 
 let testMemory: SheetMemory;
-let dependencyManager: CalculationManager;
+let calculationManager: CalculationManager;
 beforeEach(() => {
   testMemory = new SheetMemory(3, 3);
-  dependencyManager = new CalculationManager();
+  calculationManager = new CalculationManager();
 
   const cellA1 = new Cell();
   cellA1.setFormula(["A2"]);
@@ -52,10 +52,10 @@ describe("RecalcDependency", () => {
       cellA1.setError("");
       testMemory.setCurrentCellCoordinates(0, 0);
       testMemory.setCurrentCell(cellA1);
-      let okToAdd = dependencyManager.addCellDependency("A1", "A2", testMemory);
+      let okToAdd = calculationManager.addCellDependency("A1", "A2", testMemory);
 
       expect(okToAdd).toEqual(true);
-      let [isCircular, dependencies] = dependencyManager.expandDependencies("A1", "A1", testMemory);
+      let [isCircular, dependencies] = calculationManager.expandDependencies("A1", "A1", testMemory);
       expect(isCircular).toEqual(false);
       expect(dependencies).toEqual(["A2"]);
 
@@ -65,10 +65,10 @@ describe("RecalcDependency", () => {
       cellA2.setError("");
       testMemory.setCurrentCellCoordinates(0, 1);
       testMemory.setCurrentCell(cellA2);
-      okToAdd = dependencyManager.addCellDependency("A2", "A3", testMemory);
+      okToAdd = calculationManager.addCellDependency("A2", "A3", testMemory);
 
       expect(okToAdd).toEqual(true);
-      [isCircular, dependencies] = dependencyManager.expandDependencies("A1", "A1", testMemory);
+      [isCircular, dependencies] = calculationManager.expandDependencies("A1", "A1", testMemory);
       expect(isCircular).toEqual(false);
       expect(dependencies).toEqual(["A3", "A2"]);
 
@@ -78,7 +78,7 @@ describe("RecalcDependency", () => {
       cellA3.setError("");
       testMemory.setCurrentCellCoordinates(0, 2);
       testMemory.setCurrentCell(cellA3);
-      okToAdd = dependencyManager.addCellDependency("A3", "A1", testMemory);
+      okToAdd = calculationManager.addCellDependency("A3", "A1", testMemory);
 
       expect(okToAdd).toEqual(false);
 
@@ -90,7 +90,7 @@ describe("RecalcDependency", () => {
   describe("WORKING updateComputationOrder", () => {
     it("should update the computationOrder to be in the correct order", () => {
 
-      const computationOrder = dependencyManager.updateComputationOrder(testMemory);
+      const computationOrder = calculationManager.updateComputationOrder(testMemory);
       let lastCell = computationOrder[computationOrder.length - 1];
       let penultimateCell = computationOrder[computationOrder.length - 2];
 
@@ -119,7 +119,7 @@ describe("RecalcDependency", () => {
       testMemory.setCurrentCellCoordinates(1, 0);
       testMemory.setCurrentCell(cellB1);
 
-      dependencyManager.updateDependencies(testMemory);
+      calculationManager.updateDependencies(testMemory);
       const B1DependsOn = testMemory.getCellByLabel("B1").getDependsOn();
 
       const foundFirstDependency = (B1DependsOn[0] === "A2" || B1DependsOn[0] === "A3");
@@ -143,7 +143,7 @@ describe("RecalcDependency", () => {
 
       testMemory.setCurrentCellCoordinates(0, 0);
       testMemory.setCurrentCell(A1Cell);
-      let okToAdd = dependencyManager.addCellDependency("A1", "A2", testMemory);
+      let okToAdd = calculationManager.addCellDependency("A1", "A2", testMemory);
       expect(okToAdd).toEqual(true);
 
       let A2Cell = new Cell();
@@ -153,7 +153,7 @@ describe("RecalcDependency", () => {
 
       testMemory.setCurrentCellCoordinates(0, 1);
       testMemory.setCurrentCell(A2Cell);
-      okToAdd = dependencyManager.addCellDependency("A2", "A3", testMemory);
+      okToAdd = calculationManager.addCellDependency("A2", "A3", testMemory);
       expect(okToAdd).toEqual(true);
 
 
@@ -165,7 +165,7 @@ describe("RecalcDependency", () => {
 
       testMemory.setCurrentCellCoordinates(0, 2);
       testMemory.setCurrentCell(A3Cell);
-      okToAdd = dependencyManager.addCellDependency("A3", "A4", testMemory);
+      okToAdd = calculationManager.addCellDependency("A3", "A4", testMemory);
       expect(okToAdd).toEqual(true);
 
       let A4Cell = new Cell();
@@ -175,7 +175,7 @@ describe("RecalcDependency", () => {
 
       testMemory.setCurrentCellCoordinates(0, 3);
       testMemory.setCurrentCell(A4Cell);
-      dependencyManager.updateDependencies(testMemory);
+      calculationManager.updateDependencies(testMemory);
 
       let A1DependsOn = new Set(testMemory.getCellByLabel("A1").getDependsOn());
       let A2DependsOn = new Set(testMemory.getCellByLabel("A2").getDependsOn());
@@ -198,7 +198,7 @@ describe("RecalcDependency", () => {
 
       testMemoryInt.setCurrentCellCoordinates(0, 0);
       testMemoryInt.setCurrentCell(A1Cell);
-      let okToAdd = dependencyManager.addCellDependency("A1", "A2", testMemoryInt);
+      let okToAdd = calculationManager.addCellDependency("A1", "A2", testMemoryInt);
       expect(okToAdd).toEqual(true);
 
       let A2Cell = new Cell();
@@ -209,7 +209,7 @@ describe("RecalcDependency", () => {
 
       testMemoryInt.setCurrentCellCoordinates(0, 1);
       testMemoryInt.setCurrentCell(A2Cell);
-      okToAdd = dependencyManager.addCellDependency("A2", "B1", testMemoryInt);
+      okToAdd = calculationManager.addCellDependency("A2", "B1", testMemoryInt);
       expect(okToAdd).toEqual(true);
 
       let B1Cell = new Cell();
@@ -220,7 +220,7 @@ describe("RecalcDependency", () => {
 
       testMemoryInt.setCurrentCellCoordinates(1, 0);
       testMemoryInt.setCurrentCell(B1Cell);
-      okToAdd = dependencyManager.addCellDependency("B1", "B2", testMemoryInt);
+      okToAdd = calculationManager.addCellDependency("B1", "B2", testMemoryInt);
       expect(okToAdd).toEqual(true);
 
       let B2Cell = new Cell();
@@ -229,7 +229,7 @@ describe("RecalcDependency", () => {
       B2Cell.setError("");
 
 
-      dependencyManager.updateDependencies(testMemoryInt);
+      calculationManager.updateDependencies(testMemoryInt);
 
 
 
@@ -251,7 +251,7 @@ describe("RecalcDependency", () => {
 
 
 
-      dependencyManager.updateDependencies(testMemory);
+      calculationManager.updateDependencies(testMemory);
       const A1DependsOn = testMemory.getCellByLabel("A1").getDependsOn();
       let A1DependsOnSet = new Set(A1DependsOn);
       let expectedSet = new Set(["A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3"]);
@@ -283,7 +283,7 @@ describe("RecalcDependency", () => {
           testMemory.setCurrentCell(cellOther);
         }
       }
-      dependencyManager.updateDependencies(testMemory);
+      calculationManager.updateDependencies(testMemory);
 
       const A1DependsOn = testMemory.getCellByLabel("A1").getDependsOn();
       expect(A1DependsOn).toEqual([]);
@@ -316,7 +316,7 @@ describe("RecalcDependency", () => {
 
     describe("A 3 by 3 sheet with all of the cells being in a chain in reverse order", () => {
       let testMemory: SheetMemory = new SheetMemory(3, 3);
-      dependencyManager = new CalculationManager();
+      calculationManager = new CalculationManager();
       let cellC3: Cell = new Cell();
       cellC3.setFormula(["C2", "+", "1"]);
       testMemory.setCurrentCellLabel("C3");
@@ -363,8 +363,8 @@ describe("RecalcDependency", () => {
       testMemory.setCurrentCellLabel("A1");
       testMemory.setCurrentCell(cellA1);
 
-      dependencyManager.updateDependencies(testMemory);
-      dependencyManager.updateComputationOrder(testMemory);
+      calculationManager.updateDependencies(testMemory);
+      calculationManager.updateComputationOrder(testMemory);
 
       let C3DependsOn = new Set(testMemory.getCellByLabel("C3").getDependsOn());
       let expectedSet = new Set(["C2", "C1", "B3", "B2", "B1", "A3", "A2", "A1"]);
@@ -401,7 +401,7 @@ describe("RecalcDependency", () => {
 
 
       let expectedComputation = ["A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3"];
-      let actualComputation = dependencyManager.updateComputationOrder(testMemory);
+      let actualComputation = calculationManager.updateComputationOrder(testMemory);
       expect(actualComputation).toEqual(expectedComputation);
 
     });

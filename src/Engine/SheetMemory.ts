@@ -24,8 +24,7 @@
  * 
  * 
  */
-import { ErrorMessages } from "./GlobalDefinitions";
-import FormulaEvaluator from "./FormulaEvaluator";
+
 import Cell from "./Cell";
 
 export class SheetMemory {
