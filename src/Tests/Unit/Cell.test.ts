@@ -42,6 +42,41 @@ describe("Cell", () => {
     });
   });
 
+  describe("addDependsOn", () => {
+    it("adds a dependency to the dependsOn array", () => {
+      let cell = new Cell();
+      cell.addDependsOn("B2");
+
+      expect(cell.getDependsOn()).toContain("B2");
+    });
+
+    it("does not add a duplicate dependency to the dependsOn array", () => {
+      let cell = new Cell();
+      cell.addDependsOn("B2");
+      cell.addDependsOn("B2");
+
+      expect(cell.getDependsOn()).toEqual(["B2"]);
+    });
+  });
+
+  describe("removeDependsOn", () => {
+    it("removes a dependency from the dependsOn array", () => {
+      let cell = new Cell();
+      cell.addDependsOn("B2");
+      cell.removeDependsOn("B2");
+
+      expect(cell.getDependsOn()).toEqual([]);
+    });
+
+    it("does not remove a non-existent dependency from the dependsOn array", () => {
+      let cell = new Cell();
+      cell.addDependsOn("B2");
+      cell.removeDependsOn("C3");
+
+      expect(cell.getDependsOn()).toEqual(["B2"]);
+    });
+  });
+
 
   describe("getFormula", () => {
     it("should return the formula", () => {

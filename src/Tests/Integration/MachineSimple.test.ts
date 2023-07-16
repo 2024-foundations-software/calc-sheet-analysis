@@ -54,6 +54,26 @@ describe("Machine", () => {
         });
       });
 
+      describe("it can have a forumula A2 + A2", () => {
+        it("The value of the formula should be A2 +A2", () => {
+          const machine = new SpreadSheetEngine(5, 5);
+          machine.setCurrentCellByLabel("A1");
+          machine.addCell("A2");
+          machine.addToken("+");
+          machine.addCell("A2");
+          expect(machine.getFormulaString()).toEqual("A2 + A2");
+          expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
+          machine.setCurrentCellByLabel("A2");
+          machine.addToken("1");
+          expect(machine.getFormulaString()).toEqual("1");
+          expect(machine.getResultString()).toEqual("1");
+          machine.setCurrentCellByLabel("A1");
+          expect(machine.getFormulaString()).toEqual("A2 + A2");
+          expect(machine.getResultString()).toEqual("2");
+
+        });
+      });
+
       describe("and the value of A2 is defined", () => {
         it("the value of the display string of A1 should be the value of A2", () => {
           const machine = new SpreadSheetEngine(5, 5);

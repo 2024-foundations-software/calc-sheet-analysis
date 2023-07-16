@@ -51,6 +51,20 @@
     },
     {
       "type": "node-terminal",
+      "name": "Jest Dependency",
+      "request": "launch",
+      "command": "npx jest Dependency",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Jest SpreadSheet",
+      "request": "launch",
+      "command": "npx jest SpreadSheet --runInBand",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Jest coverage",
       "request": "launch",
       "command": "npx jest --coverage",

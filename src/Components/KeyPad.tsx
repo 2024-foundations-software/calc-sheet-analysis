@@ -10,7 +10,7 @@ import { get } from "http";
 
 interface KeyPadProps {
   onButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  onCommandButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onCommandButtonClick: (text: string) => void;
   currentlyEditing: boolean;
 } // interface KeyPadProps
 
@@ -60,14 +60,14 @@ function KeyPad({ onButtonClick, onCommandButtonClick, currentlyEditing }: KeyPa
         <Button
           text={ButtonNames.allClear}
           isDigit={true}
-          onClick={onCommandButtonClick}
+          onClick={() => onCommandButtonClick(ButtonNames.allClear)}
           className="button-control"
           dataTestId="all-clear-button"
         />
         <Button
           text={ButtonNames.clear}
           isDigit={false}
-          onClick={onCommandButtonClick}
+          onClick={() => onCommandButtonClick(ButtonNames.clear)}
           className="button-control"
           dataTestId="clear-button"
         />
@@ -182,9 +182,9 @@ function KeyPad({ onButtonClick, onCommandButtonClick, currentlyEditing }: KeyPa
         <Button
           text={doneButtonText}
           isDigit={true}
-          onClick={onCommandButtonClick}
+          onClick={() => onCommandButtonClick(ButtonNames.edit_toggle)}
           className={(getDoneButtonClass())}
-          dataTestId="done-button"
+          dataTestId="edit-toggle-button"
         />
       </div>
 

@@ -12,6 +12,7 @@ export const ErrorMessages = {
 }
 
 export const ButtonNames = {
+  edit_toggle: "edit-toggle",
   edit: "edit",
   done: "=",
   allClear: "AC",

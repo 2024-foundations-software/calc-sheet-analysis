@@ -155,10 +155,14 @@ export class SpreadSheetEngine {
    *  add token to current formula, this is not a cell and thus no dependency updating is needed
    * 
    * @param token:string
-   * Inform the memory that the current cell formula has changed
+   * 
+   * if the token is a valid cell label add it to the formula
+   * 
    * 
    */
   addToken(token: string): void {
+
+
     // add the token to the formula
     this._formulaBuilder.addToken(token);
     // update the memory with the new formula
@@ -172,10 +176,12 @@ export class SpreadSheetEngine {
    *  add cell reference to current formula
    * 
    * @param cell:string
+   * returns true if the token was added to the formula
+   * returns false if a circular dependency is detected.
+   * 
    * Assuming that the dependents have been updated
    * we will look at the dependsOn array for the cell being inserted
-   * if the current cell is in the dependsOn array then we have a circular reference
-   * 
+   * if the current cell is in the dependsOn array then we have a circular referenceoutloo
    */
   addCell(cell_reference: string): void {
 
@@ -190,26 +196,17 @@ export class SpreadSheetEngine {
     let currentCell: Cell = this._memory.getCurrentCell();
     let currentLabel = currentCell.getLabel();
 
-    console.log('inserted cell: ' + cell_reference);
-    console.log('dependent cell: ' + dependentCell.getLabel());
-    console.log('current cell: ' + currentCell.getLabel());
+    // Check to see if we would be introducing a circular dependency
+    // this function will update the dependency for the cell being inserted
+    let okToAdd = this._dependencyManager.addCellDependency(currentLabel, cell_reference, this._memory);
 
-    // get the dependents for the current cell
-    let dependents = dependentCell.getDependsOn();
-    console.log('current cell: ' + this.getCurrentCellLabel());
-
-    console.log('dependents: ' + dependents);
-
-
-
-
-    // if the cell reference is not in the dependents use add token
-    if (!dependents.includes(currentLabel)) {
+    // We have checked to see if this new token introduces a circular dependency
+    // if it does not then we can add the token to the formula
+    if (okToAdd) {
       this.addToken(cell_reference);
-    } else {
-      // do nothing
     }
   }
+
 
 
   /**
@@ -217,6 +214,8 @@ export class SpreadSheetEngine {
    * remove the last token from the current formula
    * 
    */
+
+
   removeToken(): void {
     this._formulaBuilder.removeToken();
     this._memory.setCurrentCellFormula(this._formulaBuilder.getFormula());

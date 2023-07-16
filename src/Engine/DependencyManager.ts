@@ -67,35 +67,43 @@ export default class DependencyManager {
 
 
     /**
-     * add a cell dependency to a cell
-     * @param {string} cellLabel - The label of the cell
-     * @param {sheetMemory} SheetMemory - The sheet memory
-     * @returns {void}
+     *  checck to see if it is ok eo add a cell to the formula in the current cell.
      * 
+     * @param {string} currentCellLabel - The label of the cell
+     * @param {sheetMemory} SheetMemory - The sheet memory
+     * 
+     * 
+     * This assumes that there is no circular dependency in the current sheet and thus if 
+     * when we expand the depends on list then we will not find a circular dependency
+     * if we do find a circular dependency then we return false.
      * */
-    public addCellDependency(cellLabel: string, newDependsOn: string, sheetMemory: SheetMemory): void {
+    public addCellDependency(currentCellLabel: string, newDependsOnCell: string, sheetMemory: SheetMemory): boolean {
+        // get the current cell
+        let currentCell = sheetMemory.getCellByLabel(currentCellLabel);
 
-        let currentCell = sheetMemory.getCellByLabel(cellLabel);
         const cachedCellDependsOn: string[] = currentCell.getDependsOn();
 
 
-
-        if (cachedCellDependsOn.includes(newDependsOn)) {
-            return;
+        // We could have a formula that looks like A1 + A1 so we have already
+        // checked for a dependency for this cell and we are done
+        if (cachedCellDependsOn.includes(newDependsOnCell)) {
+            return true;
         }
 
         // add the new dependency to the cell dependsOn to try to expand the dependencies
-        let newCellDependsOn: string[] = [...cachedCellDependsOn, newDependsOn];
+        let newCellDependsOn: string[] = [...cachedCellDependsOn, newDependsOnCell];
 
         /* set the test dependences for this cell */
 
         currentCell.setDependsOn(newCellDependsOn);
-        let [isCircular, discoveredDependencies] = this.expandDependencies(cellLabel, sheetMemory);
+
+        let [isCircular, discoveredDependencies] = this.expandDependencies(currentCellLabel, currentCellLabel, sheetMemory);
+
 
         // if the cell is circular, then restore the original dependencies and return
         if (isCircular) {
             currentCell.setDependsOn(cachedCellDependsOn);
-            return;
+            return false;
         }
 
         // lets complete the dependencies for this cell.
@@ -105,13 +113,14 @@ export default class DependencyManager {
         currentCell.setDependsOn(expandedDependencies);
 
         // update the cell in the sheet memory
-        sheetMemory.setCellByLabel(cellLabel, currentCell);
+        sheetMemory.setCellByLabel(currentCellLabel, currentCell);
 
         // update the dependencies of the sheet
         this.updateDependencies(sheetMemory);
 
         // update the computation order
         this.updateComputationOrder(sheetMemory);
+        return true;
 
     }
 
@@ -178,7 +187,7 @@ export default class DependencyManager {
                 }
 
                 // if we reach here we have top level dependencies that we need to expand.
-                let [isCircular, discoveredDependencies] = this.expandDependencies(cellLabel, sheetMemory);
+                let [isCircular, discoveredDependencies] = this.expandDependencies(cellLabel, cellLabel, sheetMemory);
 
                 // This function will throw an error if a circular dependency is detected
                 // updates to formulas that introduce dependencies that are circular are not allowed
@@ -212,9 +221,9 @@ export default class DependencyManager {
      * for each cell in the depends on look at the depends on of that cell
      * and to the list of dependencies for the cell
      */
-    private expandDependencies(cellLabel: string, sheetMemory: SheetMemory): [boolean, string[]] {
+    expandDependencies(originalCellLabel: string, cellLabel: string, sheetMemory: SheetMemory): [boolean, string[]] {
         let currentCell = sheetMemory.getCellByLabel(cellLabel);
-        let cellDependsOn: string[] = FormulaBuilder.getCellReferences(currentCell.getFormula());
+        let cellDependsOn: string[] = currentCell.getDependsOn();
         let expandedDependencies: string[] = [];
         let isCircular: boolean = false;
 
@@ -228,17 +237,29 @@ export default class DependencyManager {
             return [isCircular, expandedDependencies];
         }
 
+        // if the original cell is in the list of dependencies, then the cell is circular
+        if (cellDependsOn.indexOf(originalCellLabel) !== -1) {
+            isCircular = true;
+            return [isCircular, []];
+        }
+
         /**
          * if the cell has dependencies, then expand the dependencies
          * */
         for (let i = 0; i < cellDependsOn.length; i++) {
             let currentDependency = cellDependsOn[i];
 
-            let currentDependencyExpandedDependencies = this.expandDependencies(currentDependency, sheetMemory);
+            let currentDependencyExpandedDependencies = this.expandDependencies(originalCellLabel, currentDependency, sheetMemory);
             let currentDependencyIsCircular = currentDependencyExpandedDependencies[0];
             let currentDependencyExpandedDependenciesList = currentDependencyExpandedDependencies[1];
 
             if (currentDependencyIsCircular) {
+                isCircular = true;
+                return [isCircular, []];
+            }
+
+            // check to see if the current list contains the original cell
+            if (currentDependencyExpandedDependenciesList.indexOf(originalCellLabel) !== -1) {
                 isCircular = true;
                 return [isCircular, []];
             }

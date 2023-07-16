@@ -53,43 +53,39 @@ function SpreadSheet() {
    * 
    * the other buttons do require asynchronous processing and so the function is marked async
    */
-  async function onCommandButtonClick(event: React.MouseEvent<HTMLButtonElement>): Promise<void> {
-    const text = event.currentTarget.textContent;
+  async function onCommandButtonClick(text: string): Promise<void> {
 
-    if (text) {
-      let trueText = text ? text : "";
 
-      switch (trueText) {
-        case ButtonNames.edit:
-          spreadSheetEngine.setEditStatus(true);
-          setStatusString(spreadSheetEngine.getEditStatusString());
-          break;
-
-        case ButtonNames.done:
+    switch (text) {
+      case ButtonNames.edit_toggle:
+        if (currentlyEditing) {
           spreadSheetEngine.setEditStatus(false);
-          setStatusString(spreadSheetEngine.getEditStatusString());
-          break;
+        } else {
+          spreadSheetEngine.setEditStatus(true);
+        }
+        setStatusString(spreadSheetEngine.getEditStatusString());
+        break;
 
-        case ButtonNames.clear:
-          spreadSheetEngine.removeToken();
-          break;
+      case ButtonNames.clear:
+        spreadSheetEngine.removeToken();
+        break;
 
-        case ButtonNames.allClear:
-          spreadSheetEngine.clearFormula();
-          break;
+      case ButtonNames.allClear:
+        spreadSheetEngine.clearFormula();
+        break;
 
-        case ButtonNames.restart:
-          spreadSheetEngine.restart();
-          break;
+      case ButtonNames.restart:
+        spreadSheetEngine.restart();
+        break;
 
-        default:
-          await spreadSheetEngine.processCommandButton(trueText);
-          break
-      }
-      // update the display values
-      updateDisplayValues();
+      default:
+        await spreadSheetEngine.processCommandButton(text);
+        break
     }
+    // update the display values
+    updateDisplayValues();
   }
+
 
   /**
    *  This function is the call back for the number buttons and the Parenthesis buttons
@@ -102,7 +98,6 @@ function SpreadSheet() {
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
 
     const text = event.currentTarget.textContent;
-
     if (text) {
       let trueText = text ? text : "";
 

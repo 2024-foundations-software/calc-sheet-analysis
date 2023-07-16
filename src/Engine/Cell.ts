@@ -156,6 +156,27 @@ export class Cell {
   // There is no setDisplayString method because the display string is calculated
   // from the value and the error message
 
+  /** 
+   * add depends on cell to the dependsOn array
+   */
+  public addDependsOn(cell: string): void {
+    // check to see if the cell is already a dependency
+    if (this._dependsOn.indexOf(cell) === -1) {
+      this._dependsOn.push(cell);
+    }
+  }
+
+  /**
+   * remove depends on cell from the dependsOn array
+   * @param {string} cell - The cell that the cell depends on
+   */
+  public removeDependsOn(cell: string): void {
+    const index = this._dependsOn.indexOf(cell);
+    if (index > -1) {
+      this._dependsOn.splice(index, 1);
+    }
+  }
+
   /**
    * get the cells that the cell depends on
    * @returns {string[]} The cells that the cell depends on
