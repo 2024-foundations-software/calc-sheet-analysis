@@ -188,6 +188,44 @@ describe("RecalcDependency", () => {
     );
   });
 
+  describe("attempting to add a circular dependency", () => {
+    it("should return false", () => {
+      let testMemory: SheetMemory = new SheetMemory(5, 5);
+      let A1Cell = new Cell();
+      A1Cell.setFormula(["B1", "+", "C1"]);
+      A1Cell.setValue(0);
+      A1Cell.setError("");
+      testMemory.setCurrentCellCoordinates(0, 0);
+      testMemory.setCurrentCell(A1Cell);
+
+      // B1 is D1 + D2
+      let B1Cell = new Cell();
+      B1Cell.setFormula(["D1", "+", "D2"]);
+      B1Cell.setValue(0);
+      B1Cell.setError("");
+      testMemory.setCurrentCellCoordinates(1, 0);
+      testMemory.setCurrentCell(B1Cell);
+
+      // C1 is A2 + A3
+      let C1Cell = new Cell();
+      C1Cell.setFormula(["A2", "+", "A3"]);
+      C1Cell.setValue(0);
+      C1Cell.setError("");
+      testMemory.setCurrentCellCoordinates(2, 0);
+      testMemory.setCurrentCell(C1Cell);
+
+      // now we want to add a circular dependency by adding A1 to D1
+      let calculationManager = new CalculationManager();
+      calculationManager.updateDependencies(testMemory);
+
+      let okToAdd = calculationManager.addCellDependency("D1", "A1", testMemory);
+      expect(okToAdd).toEqual(false);
+    });
+  });
+
+
+
+
   describe("FORWARD add a chain A1 depends on A2, A2 depends on B1, B1 depends on B2", () => {
     it("should add the new dependency to the cell", () => {
       let testMemoryInt: SheetMemory = new SheetMemory(2, 2);

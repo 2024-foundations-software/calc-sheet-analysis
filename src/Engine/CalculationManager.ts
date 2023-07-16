@@ -123,30 +123,6 @@ export default class CalculationManager {
 
     }
 
-    private getFullDependsOn(cellLabel: string, sheetMemory: SheetMemory): string[] {
-        let currentCell = sheetMemory.getCellByLabel(cellLabel);
-        let currentFormula = currentCell.getFormula();
-        let cellDependsOn = FormulaBuilder.getCellReferences(currentFormula);
-
-
-        // if the cell has no cells referenced in its formula, then return
-        if (cellDependsOn.length === 0) {
-            return [];
-        }
-
-        // If there are cells referenced in the formula, then look at all of the cells
-        // referenced in the formula and get their dependencies
-        // and add them to the list of dependencies for the cell
-        // there is no need to check for circular dependencies here because the circular dependencies
-        // will be detected when the cell is added to the sheet memory
-
-        for (let i = 0; i < cellDependsOn.length; i++) {
-
-
-        }
-        return [];
-    }
-
 
 
     /**
@@ -157,7 +133,7 @@ export default class CalculationManager {
      * This function will update the dependencies for all cells in the sheet
      * there are no circular dependencies in the sheet so  we just need to 
      * */
-    public updateDependencies(sheetMemory: SheetMemory): boolean {
+    public updateDependencies(sheetMemory: SheetMemory) {
         for (let column = 0; column < sheetMemory.getMaxColumns(); column++) {
             for (let row = 0; row < sheetMemory.getMaxRows(); row++) {
                 const cellLabel = Cell.columnRowToCell(column, row);
@@ -169,11 +145,6 @@ export default class CalculationManager {
                 // always read the top level depensOn from the formula
                 let currentDependsOn = FormulaBuilder.getCellReferences(currentFormula);
                 currentCell.setDependsOn(currentDependsOn);
-
-                // if the current cell is in the formula then we are done
-                if (currentDependsOn.includes(cellLabel)) {
-                    return false;
-                }
 
                 sheetMemory.setCellByLabel(cellLabel, currentCell);
 
@@ -188,27 +159,14 @@ export default class CalculationManager {
                     continue;
                 }
 
-                // if we reach here we have top level dependencies that we need to expand.
+                // if we reach here we have found a cell that references other cells
                 let [isCircular, discoveredDependencies] = this.expandDependencies(cellLabel, cellLabel, sheetMemory);
-
-                // This function will throw an error if a circular dependency is detected
-                // updates to formulas that introduce dependencies that are circular are not allowed
-                // and thus if we find it here we have failed at that task 
-                if (isCircular) {
-                    return false;
-                }
 
                 currentCell.setDependsOn(discoveredDependencies);
                 sheetMemory.setCellByLabel(cellLabel, currentCell);
-
             }
         }
-        return true;
     }
-
-
-
-
 
 
     /**
@@ -229,17 +187,15 @@ export default class CalculationManager {
         let expandedDependencies: string[] = [];
         let isCircular: boolean = false;
 
-
-
         /**
          * if the cell has no dependencies, then return
          * */
-
         if (cellDependsOn.length === 0) {
             return [isCircular, expandedDependencies];
         }
 
         // if the original cell is in the list of dependencies, then the cell is circular
+        // we return the cell is circular and an empty list.   
         if (cellDependsOn.indexOf(originalCellLabel) !== -1) {
             isCircular = true;
             return [isCircular, []];
@@ -260,35 +216,19 @@ export default class CalculationManager {
                 return [isCircular, []];
             }
 
-            // check to see if the current list contains the original cell
-            if (currentDependencyExpandedDependenciesList.indexOf(originalCellLabel) !== -1) {
-                isCircular = true;
-                return [isCircular, []];
-            }
-
-
-            /**
-             * if the current dependency is not circular, then add the expanded dependencies to the list of expanded dependencies
-             * */
+            // if the current dependency is not circular, then add the expanded 
+            // dependencies to the list of expanded dependencies
             for (let j = 0; j < currentDependencyExpandedDependenciesList.length; j++) {
                 let currentDependencyExpandedDependency = currentDependencyExpandedDependenciesList[j];
                 if (expandedDependencies.indexOf(currentDependencyExpandedDependency) === -1) {
                     expandedDependencies.push(currentDependencyExpandedDependency);
                 }
             }
+
             // now we add the currentDependency to the list of expanded dependencies
             if (expandedDependencies.indexOf(currentDependency) === -1) {
                 expandedDependencies.push(currentDependency);
             }
-        }
-
-        /**
-         * if the cell is already in the list of expanded dependencies, then the cell is circular
-         * */
-        if (expandedDependencies.indexOf(cellLabel) !== -1) {
-
-            isCircular = true;
-            return [isCircular, []];
 
         }
 
@@ -354,10 +294,8 @@ export default class CalculationManager {
 
         // now add the dependent cells to the computation order
         while (cellsToBeProcessed.length > 0) {
-            let currentCell = cellsToBeProcessed.shift();
-            if (currentCell === undefined) {
-                throw new Error("currentCell is undefined");
-            }
+            let currentCell = cellsToBeProcessed.shift()!; // Assertion that this is non undefined
+
             let currentCellDependsOn = sheetMemory.getCellByLabel(currentCell).getDependsOn();
             let currentComputationSet = new Set(resultingComputationOrder);
 
@@ -374,60 +312,6 @@ export default class CalculationManager {
         }
 
         return resultingComputationOrder;
-    }
-
-
-
-    public updateComputationOrderBad(sheetMemory: SheetMemory): string[] {
-        let newComputationOrder: string[] = [];
-        let independentCells: string[] = [];
-
-        let maxRows: number = sheetMemory.getMaxRows();
-        let maxColumns: number = sheetMemory.getMaxColumns();
-        for (let row = 0; row < maxRows; row++) {
-            for (let column = 0; column < maxColumns; column++) {
-
-                let currentLabel = Cell.columnRowToCell(column, row);
-                const currentCell = sheetMemory.getCellByLabel(currentLabel);
-
-                /**
-                 * if the cell has no dependencies, then it is an independent cell
-                 */
-                let currentDependsOn = currentCell.getDependsOn();
-
-                if (currentDependsOn.length === 0) {
-                    independentCells.push(currentLabel);
-                }
-                /**
-                 * if the cell has dependencies, then it is a dependent cell
-                 * 
-                 * add the cell to the computation order after the cells that it depends on
-                 */
-                else {
-                    for (let i = 0; i < currentDependsOn.length; i++) {
-                        let currentDependsOnLabel = currentDependsOn[i];
-                        let currentDependsOnIndex = newComputationOrder.indexOf(currentDependsOnLabel);
-                        if (currentDependsOnIndex === -1) {
-                            newComputationOrder.push(currentDependsOnLabel);
-                        }
-                    }
-                    newComputationOrder.push(currentLabel);
-                }
-
-            }
-        }
-        /**
-         * add the independent cells to the computation order
-         *  
-         * */
-        for (let i = 0; i < independentCells.length; i++) {
-            let currentLabel = independentCells[i];
-            let currentLabelIndex = newComputationOrder.indexOf(currentLabel);
-            if (currentLabelIndex === -1) {
-                newComputationOrder.push(currentLabel);
-            }
-        }
-        return newComputationOrder;
     }
 
 

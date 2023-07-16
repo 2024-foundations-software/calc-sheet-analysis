@@ -3,7 +3,6 @@ import FormulaEvaluator from "./FormulaEvaluator"
 import CalculationManager from "./CalculationManager"
 import FormulaBuilder from "./FormulaBuilder";
 import Cell from "./Cell";
-import CalcSheetServerClient from "../DataStore/src/CalcSheetServerClient"
 
 /**
  *  The main controller of the SpreadSheet
@@ -49,14 +48,6 @@ export class SpreadSheetController {
   // The dependency manager, this is used to manage the dependencies between cells
   // The main job of this is to compute the order in which the cells should be evaluated
   private _calculationManager: CalculationManager;
-
-
-
-  private portForServer: number = 3005;
-
-  private calcSheetServerClient: CalcSheetServerClient = new CalcSheetServerClient(this.portForServer);
-
-
 
   /**
    * constructor
@@ -111,7 +102,6 @@ export class SpreadSheetController {
       return;
     }
 
-    let dependentCell: Cell = this._memory.getCellByLabel(cell_reference);
     let currentCell: Cell = this._memory.getCurrentCell();
     let currentLabel = currentCell.getLabel();
 
