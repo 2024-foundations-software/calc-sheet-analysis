@@ -136,12 +136,12 @@ describe("Machine", () => {
       describe("and a token 1 is added to the machine", () => {
         it("the value of the display string of B2 should be 1", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setWorkingCellByLabel("B2");
+          machine.setWorkingCellByLabel("A2");
           machine.addToken("1");
           expect(machine.getFormulaString()).toEqual("1");
           expect(machine.getResultString()).toEqual("1");
-          let sheetValues: Array<Array<string>> = machine.getSheetDisplayStrings();
-          expect(sheetValues[1][1]).toEqual("1");
+          let sheetValues: Array<Array<string>> = machine.getSheetDisplayStringsForGUI();
+          expect(sheetValues[1][0]).toEqual("1");
         });
       });
     });

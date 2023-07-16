@@ -221,15 +221,6 @@ export class SpreadSheetController {
   }
 
   /**
-   * Get the Sheet Display Values
-   *  
-   * @returns string[][]
-   */
-  public getSheetDisplayStrings(): string[][] {
-    return this._memory.getSheetDisplayStrings();
-  }
-
-  /**
     * Get the Sheet Display Values
     * the GUI needs the data to be in row major order
     * 
