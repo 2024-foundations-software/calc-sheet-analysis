@@ -7,17 +7,23 @@ import Cell from "./Cell";
 /**
  *  The main controller of the SpreadSheet
  * 
- *  The exported methods are
+ * functions exported are
  * 
  * addToken(token:string):  void
+ * addCell(cell:string): void
+ * removeToken(): void
+ * clearFormula(): void
+ * getFormulaString(): string
+ * getResultString(): string
+ * setWorkingCellByLabel(label:string): void
+ * getWorkingCellLabel(): string
+ * setWorkingCellByCoordinates(column:number, row:number): void
+ * getSheetDisplayStringsForGUI(): string[][]
+ * getEditStatus(): boolean
+ * setEditStatus(bool:boolean): void
+ * getEditStatusString(): string
  * 
- * getFormulaString(void): string
  * 
- * getFormulaValue(void): string
- * 
- * setWorkingCell( column:number, row_number)): void
- * 
- * getSheetValues(void): string[][]
  *
  */
 export class SpreadSheetController {
