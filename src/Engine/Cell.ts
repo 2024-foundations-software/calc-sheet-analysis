@@ -88,8 +88,13 @@ export class Cell {
     this._error = error;
   }
 
-  // error is used to indicate that an error has occurred during evaluation
-  // it is used to get the display string for the cell
+  /**
+   * 
+   * @returns the error message for the cell
+   */
+  getError(): string {
+    return this._error;
+  }
 
 
   /**

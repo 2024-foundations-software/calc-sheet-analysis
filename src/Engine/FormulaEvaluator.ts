@@ -224,18 +224,28 @@ export class FormulaEvaluator {
   /**
    * 
    * @param token
-   * @returns [value, ""] if the cell formula is not empty
-   * @returns [0, "UNDEF"] if the cell formula is empty
+   * @returns [value, ""] if the cell formula is not empty and has no error
+   * @returns [0, error] if the cell has an error
+   * @returns [0, ErrorMessages.invalidCell] if the cell formula is empty
    * 
    */
   getCellValue(token: TokenType): [number, string] {
 
-
     let cell = this._sheetMemory.getCellByLabel(token);
     let formula = cell.getFormula();
+    let error = cell.getError();
+
+    // if the cell has an error return 0
+    if (error !== "" && error !== ErrorMessages.emptyFormula) {
+      return [0, error];
+    }
+
+    // if the cell formula is empty return 0
     if (formula.length === 0) {
       return [0, ErrorMessages.invalidCell];
     }
+
+
     let value = cell.getValue();
     return [value, ""];
 
