@@ -19,7 +19,7 @@ beforeEach(() => {
   cellA1.setError("");
   cellA1.setDependsOn(["A2"]);
 
-  testMemory.setCurrentCellCoordinates(0, 0);
+  testMemory.setWorkingCellByCoordinates(0, 0);
   testMemory.setCurrentCell(cellA1);
 
 
@@ -28,7 +28,7 @@ beforeEach(() => {
   cellA2.setValue(2);
   cellA2.setError("");
   cellA2.setDependsOn([]);
-  testMemory.setCurrentCellCoordinates(0, 1);
+  testMemory.setWorkingCellByCoordinates(0, 1);
   testMemory.setCurrentCell(cellA2);
 
   const cellA3 = new Cell();
@@ -36,7 +36,7 @@ beforeEach(() => {
   cellA3.setValue(3);
   cellA3.setError("");
   cellA3.setDependsOn(["A1", "A2"]);
-  testMemory.setCurrentCellCoordinates(0, 2);
+  testMemory.setWorkingCellByCoordinates(0, 2);
   testMemory.setCurrentCell(cellA3);
 }
 );
@@ -50,7 +50,7 @@ describe("RecalcDependency", () => {
       cellA1.setFormula(["A2"]);
       cellA1.setValue(0);
       cellA1.setError("");
-      testMemory.setCurrentCellCoordinates(0, 0);
+      testMemory.setWorkingCellByCoordinates(0, 0);
       testMemory.setCurrentCell(cellA1);
       calculationManager.updateDependencies(testMemory);
       let okToAdd = calculationManager.okToAddNewDependency("A1", "A2", testMemory);
@@ -63,7 +63,7 @@ describe("RecalcDependency", () => {
       cellA2.setFormula(["A3"]);
       cellA2.setValue(0);
       cellA2.setError("");
-      testMemory.setCurrentCellCoordinates(0, 1);
+      testMemory.setWorkingCellByCoordinates(0, 1);
       testMemory.setCurrentCell(cellA2);
       calculationManager.updateDependencies(testMemory);
       okToAdd = calculationManager.okToAddNewDependency("A2", "A3", testMemory);
@@ -75,7 +75,7 @@ describe("RecalcDependency", () => {
       cellA3.setFormula([]);
       cellA3.setValue(0);
       cellA3.setError("");
-      testMemory.setCurrentCellCoordinates(0, 2);
+      testMemory.setWorkingCellByCoordinates(0, 2);
       testMemory.setCurrentCell(cellA3);
       calculationManager.updateDependencies(testMemory);
       okToAdd = calculationManager.okToAddNewDependency("A3", "A1", testMemory);
@@ -111,7 +111,7 @@ describe("RecalcDependency", () => {
       A1Cell.setFormula(["B1", "+", "C1"]);
       A1Cell.setValue(0);
       A1Cell.setError("");
-      testMemory.setCurrentCellCoordinates(0, 0);
+      testMemory.setWorkingCellByCoordinates(0, 0);
       testMemory.setCurrentCell(A1Cell);
 
       // B1 is D1 + D2
@@ -119,7 +119,7 @@ describe("RecalcDependency", () => {
       B1Cell.setFormula(["D1", "+", "D2"]);
       B1Cell.setValue(0);
       B1Cell.setError("");
-      testMemory.setCurrentCellCoordinates(1, 0);
+      testMemory.setWorkingCellByCoordinates(1, 0);
       testMemory.setCurrentCell(B1Cell);
 
       // C1 is A2 + A3
@@ -127,7 +127,7 @@ describe("RecalcDependency", () => {
       C1Cell.setFormula(["A2", "+", "A3"]);
       C1Cell.setValue(0);
       C1Cell.setError("");
-      testMemory.setCurrentCellCoordinates(2, 0);
+      testMemory.setWorkingCellByCoordinates(2, 0);
       testMemory.setCurrentCell(C1Cell);
 
       // now we want to add a circular dependency by adding A1 to D1
@@ -150,7 +150,7 @@ describe("RecalcDependency", () => {
       A1Cell.setValue(0);
       A1Cell.setError("");
 
-      testMemoryInt.setCurrentCellCoordinates(0, 0);
+      testMemoryInt.setWorkingCellByCoordinates(0, 0);
       testMemoryInt.setCurrentCell(A1Cell);
       let okToAdd = calculationManager.okToAddNewDependency("A1", "A2", testMemoryInt);
       expect(okToAdd).toEqual(true);
@@ -161,7 +161,7 @@ describe("RecalcDependency", () => {
       A2Cell.setError("");
 
 
-      testMemoryInt.setCurrentCellCoordinates(0, 1);
+      testMemoryInt.setWorkingCellByCoordinates(0, 1);
       testMemoryInt.setCurrentCell(A2Cell);
       okToAdd = calculationManager.okToAddNewDependency("A2", "B1", testMemoryInt);
       expect(okToAdd).toEqual(true);
@@ -172,7 +172,7 @@ describe("RecalcDependency", () => {
       B1Cell.setError("");
 
 
-      testMemoryInt.setCurrentCellCoordinates(1, 0);
+      testMemoryInt.setWorkingCellByCoordinates(1, 0);
       testMemoryInt.setCurrentCell(B1Cell);
       okToAdd = calculationManager.okToAddNewDependency("B1", "B2", testMemoryInt);
       expect(okToAdd).toEqual(true);
@@ -202,7 +202,7 @@ describe("RecalcDependency", () => {
       cellA1.setFormula(["A2", "+", "A3", "+", "B1", "+", "B2", "+", "B3", "+", "C1", "+", "C2", "+", "C3"]);
       cellA1.setValue(0);
       cellA1.setError("");
-      testMemory.setCurrentCellCoordinates(0, 0);
+      testMemory.setWorkingCellByCoordinates(0, 0);
       testMemory.setCurrentCell(cellA1);
 
 
@@ -222,7 +222,7 @@ describe("RecalcDependency", () => {
       cellA1.setFormula([]);
       cellA1.setValue(0);
       cellA1.setError("");
-      testMemory.setCurrentCellCoordinates(0, 0);
+      testMemory.setWorkingCellByCoordinates(0, 0);
       testMemory.setCurrentCell(cellA1);
 
       let cellOther: Cell = new Cell();
@@ -235,7 +235,7 @@ describe("RecalcDependency", () => {
           if (i === 0 && j === 0) {
             continue;
           }
-          testMemory.setCurrentCellCoordinates(i, j);
+          testMemory.setWorkingCellByCoordinates(i, j);
           testMemory.setCurrentCell(cellOther);
         }
       }
@@ -275,48 +275,48 @@ describe("RecalcDependency", () => {
       calculationManager = new CalculationManager();
       let cellC3: Cell = new Cell();
       cellC3.setFormula(["C2", "+", "1"]);
-      testMemory.setCurrentCellLabel("C3");
+      testMemory.setWorkingCellByLabel("C3");
       testMemory.setCurrentCell(cellC3);
 
       let cellC2: Cell = new Cell();
       cellC2.setFormula(["C1", "+", "1"]);
-      testMemory.setCurrentCellLabel("C2");
+      testMemory.setWorkingCellByLabel("C2");
       testMemory.setCurrentCell(cellC2);
 
       let cellC1: Cell = new Cell();
       cellC1.setFormula(["B3", "+", "1"]);
-      testMemory.setCurrentCellLabel("C1");
+      testMemory.setWorkingCellByLabel("C1");
       testMemory.setCurrentCell(cellC1);
 
 
       let cellB3: Cell = new Cell();
       cellB3.setFormula(["B2", "+", "1"]);
-      testMemory.setCurrentCellLabel("B3");
+      testMemory.setWorkingCellByLabel("B3");
       testMemory.setCurrentCell(cellB3);
 
       let cellB2: Cell = new Cell();
       cellB2.setFormula(["B1", "+", "1"]);
-      testMemory.setCurrentCellLabel("B2");
+      testMemory.setWorkingCellByLabel("B2");
       testMemory.setCurrentCell(cellB2);
 
       let cellB1: Cell = new Cell();
       cellB1.setFormula(["A3", "+", "1"]);
-      testMemory.setCurrentCellLabel("B1");
+      testMemory.setWorkingCellByLabel("B1");
       testMemory.setCurrentCell(cellB1);
 
       let cellA3: Cell = new Cell();
       cellA3.setFormula(["A2", "+", "1"]);
-      testMemory.setCurrentCellLabel("A3");
+      testMemory.setWorkingCellByLabel("A3");
       testMemory.setCurrentCell(cellA3);
 
       let cellA2: Cell = new Cell();
       cellA2.setFormula(["A1", "+", "1"]);
-      testMemory.setCurrentCellLabel("A2");
+      testMemory.setWorkingCellByLabel("A2");
       testMemory.setCurrentCell(cellA2);
 
       let cellA1: Cell = new Cell();
       cellA1.setFormula(["45"]);
-      testMemory.setCurrentCellLabel("A1");
+      testMemory.setWorkingCellByLabel("A1");
       testMemory.setCurrentCell(cellA1);
 
       calculationManager.updateDependencies(testMemory);

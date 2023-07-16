@@ -32,6 +32,21 @@ describe("Machine", () => {
       });
     });
 
+    describe("when A1 refers to A2 and A2 refers to A3", () => {
+      it("should return #REF! for A1", () => {
+        const machine = new SpreadSheetController(5, 5);
+        machine.setWorkingCellByLabel("A1");
+        machine.addCell("A2");
+        machine.setWorkingCellByLabel("A2");
+        machine.addCell("A3");
+        machine.setWorkingCellByLabel("A3");
+        machine.setWorkingCellByLabel("A1");
+
+        expect(machine.getFormulaString()).toEqual("A2");
+        expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
+      });
+    });
+
     describe("when the formula is not empty", () => {
       it("should add the token to the formula", () => {
         const machine = new SpreadSheetController(5, 5);
@@ -47,7 +62,7 @@ describe("Machine", () => {
       describe("and the value of B2 is undefined", () => {
         it("the value of the display string of A1 should be #REF!", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           machine.addCell("B2");
           expect(machine.getFormulaString()).toEqual("B2");
           expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
@@ -57,17 +72,17 @@ describe("Machine", () => {
       describe("it can have a forumula A2 + A2", () => {
         it("The value of the formula should be A2 +A2", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           machine.addCell("A2");
           machine.addToken("+");
           machine.addCell("A2");
           expect(machine.getFormulaString()).toEqual("A2 + A2");
           expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
-          machine.setCurrentCellByLabel("A2");
+          machine.setWorkingCellByLabel("A2");
           machine.addToken("1");
           expect(machine.getFormulaString()).toEqual("1");
           expect(machine.getResultString()).toEqual("1");
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           expect(machine.getFormulaString()).toEqual("A2 + A2");
           expect(machine.getResultString()).toEqual("2");
 
@@ -77,11 +92,11 @@ describe("Machine", () => {
       describe("and the value of A2 is defined", () => {
         it("the value of the display string of A1 should be the value of A2", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           machine.addCell("A2");
-          machine.setCurrentCellByLabel("A2");
+          machine.setWorkingCellByLabel("A2");
           machine.addToken("1");
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           expect(machine.getFormulaString()).toEqual("A2");
           expect(machine.getResultString()).toEqual("1");
         });
@@ -90,7 +105,7 @@ describe("Machine", () => {
       describe("when the sheet is empty and the current cell is A1", () => {
         it("attempting to add A1 to the formula should result in an empty formula", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           machine.addCell("A1");
           expect(machine.getFormulaString()).toEqual("");
           expect(machine.getResultString()).toEqual("");
@@ -100,9 +115,9 @@ describe("Machine", () => {
       describe("and the value of B2 is definedt then", () => {
         it("the value of the display string of 2 should be the value of B2", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           machine.addCell("B2");
-          machine.setCurrentCellByLabel("B2");
+          machine.setWorkingCellByLabel("B2");
           machine.addToken("1");
 
 
@@ -121,7 +136,7 @@ describe("Machine", () => {
       describe("and a token 1 is added to the machine", () => {
         it("the value of the display string of B2 should be 1", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setCurrentCellByLabel("B2");
+          machine.setWorkingCellByLabel("B2");
           machine.addToken("1");
           expect(machine.getFormulaString()).toEqual("1");
           expect(machine.getResultString()).toEqual("1");
@@ -138,19 +153,19 @@ describe("Machine", () => {
       describe("And you then change the coordinates back", () => {
         it("should result in the same formula being in the tokenProcessor", () => {
           const machine = new SpreadSheetController(5, 5);
-          machine.setCurrentCellByLabel("B1");
+          machine.setWorkingCellByLabel("B1");
           machine.addToken("1");
           machine.addToken("+");
           machine.addToken("2");
 
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           machine.addToken("1");
           machine.addToken("2");
-          machine.setCurrentCellByLabel("B1");
+          machine.setWorkingCellByLabel("B1");
 
           expect(machine.getFormulaString()).toEqual("1 + 2");
 
-          machine.setCurrentCellByLabel("A1");
+          machine.setWorkingCellByLabel("A1");
           expect(machine.getFormulaString()).toEqual("12");
 
         });
@@ -162,11 +177,11 @@ describe("Machine", () => {
       it("should return the value of the other cell", () => {
         const machine = new SpreadSheetController(5, 5);
 
-        machine.setCurrentCellByLabel("B1");
+        machine.setWorkingCellByLabel("B1");
         machine.addToken("22");
         expect(machine.getFormulaString()).toEqual("22");
 
-        machine.setCurrentCellByLabel("A1");
+        machine.setWorkingCellByLabel("A1");
         machine.addToken("B1");
 
         expect(machine.getFormulaString()).toEqual("B1");
@@ -178,7 +193,7 @@ describe("Machine", () => {
       it("should return an 0 string", () => {
         const machine = new SpreadSheetController(5, 5);
 
-        machine.setCurrentCellByLabel("A1");
+        machine.setWorkingCellByLabel("A1");
         machine.addToken("B3");
         expect(machine.getFormulaString()).toEqual("B3");
         expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
@@ -195,20 +210,20 @@ describe("Machine", () => {
       it("should return the value of the other cell", () => {
         const machine = new SpreadSheetController(5, 5);
 
-        machine.setCurrentCellByLabel("A1");
+        machine.setWorkingCellByLabel("A1");
         machine.addToken("1");
 
-        machine.setCurrentCellByLabel("B1");
+        machine.setWorkingCellByLabel("B1");
         machine.addToken("A1");
         machine.addToken("+");
         machine.addToken("1");
 
-        machine.setCurrentCellByLabel("C1");
+        machine.setWorkingCellByLabel("C1");
         machine.addToken("B1");
         machine.addToken("+");
         machine.addToken("1");
 
-        machine.setCurrentCellByLabel("D1");
+        machine.setWorkingCellByLabel("D1");
         machine.addToken("C1");
         machine.addToken("+");
         machine.addToken("1");

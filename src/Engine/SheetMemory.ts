@@ -58,7 +58,7 @@ export class SheetMemory {
      * @returns the max rows
      *  
      * */
-    getMaxRows(): number {
+    getNumRows(): number {
         return this._numRows;
     }
 
@@ -68,7 +68,7 @@ export class SheetMemory {
     * @returns the max columns
     * 
     * */
-    getMaxColumns(): number {
+    getNumColumns(): number {
         return this._numColumns;
     }
 
@@ -77,7 +77,7 @@ export class SheetMemory {
      *  get coordinates of current cell
      * returns an array of [row, column]
      * */
-    getCurrentCellCoordinates(): number[] {
+    getWorkingCellByCoordinates(): number[] {
         return [this._currentColumn, this._currentRow];
     }
 
@@ -88,7 +88,7 @@ export class SheetMemory {
      * @param column
      * @param cell
      * */
-    setCurrentCellCoordinates(column: number, row: number): void {
+    setWorkingCellByCoordinates(column: number, row: number): void {
         this._currentRow = row;
         this._currentColumn = column;
     }
@@ -99,9 +99,9 @@ export class SheetMemory {
      * @param label
      * 
      */
-    setCurrentCellLabel(label: string): void {
+    setWorkingCellByLabel(label: string): void {
         const [column, row] = Cell.cellToColumnRow(label);
-        this.setCurrentCellCoordinates(column, row);
+        this.setWorkingCellByCoordinates(column, row);
     }
 
     /**
@@ -110,6 +110,7 @@ export class SheetMemory {
      * @param cell
      */
     setCurrentCell(cell: Cell): void {
+
         this._cells[this._currentColumn][this._currentRow] = cell;
     }
 

@@ -26,7 +26,7 @@ function SpreadSheet() {
   const [resultString, setResultString] = useState(spreadSheetController.getResultString())
   const [cells, setCells] = useState(spreadSheetController.getSheetDisplayStringsForGUI());
   const [statusString, setStatusString] = useState(spreadSheetController.getEditStatusString());
-  const [currentCell, setCurrentCell] = useState(spreadSheetController.getCurrentCellLabel());
+  const [currentCell, setCurrentCell] = useState(spreadSheetController.getWorkingCellLabel());
   const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetController.getEditStatus());
 
 
@@ -36,8 +36,7 @@ function SpreadSheet() {
     setResultString(spreadSheetController.getResultString());
     setStatusString(spreadSheetController.getEditStatusString());
     setCells(spreadSheetController.getSheetDisplayStringsForGUI());
-
-    setCurrentCell(spreadSheetController.getCurrentCellLabel());
+    setCurrentCell(spreadSheetController.getWorkingCellLabel());
     setCurrentlyEditing(spreadSheetController.getEditStatus());
   }
 
@@ -122,7 +121,7 @@ function SpreadSheet() {
     }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
-      spreadSheetController.setCurrentCellByLabel(realCellLabel);
+      spreadSheetController.setWorkingCellByLabel(realCellLabel);
       updateDisplayValues();
     }
 

@@ -97,7 +97,7 @@ export class SpreadSheetController {
 
     // get the dependents for the cell being inserted
 
-    if (cellReference === this.getCurrentCellLabel()) {
+    if (cellReference === this.getWorkingCellLabel()) {
       // do nothing
       return;
     }
@@ -173,9 +173,9 @@ export class SpreadSheetController {
    * 
    * 
    */
-  setCurrentCellByLabel(label: string): void {
+  setWorkingCellByLabel(label: string): void {
     const [column, row] = Cell.cellToColumnRow(label);
-    this.setCurrentCellByCoordinates(column, row);
+    this.setWorkingCellByCoordinates(column, row);
   }
 
 
@@ -185,7 +185,7 @@ export class SpreadSheetController {
    * @returns the current cell label
    * 
    */
-  getCurrentCellLabel(): string {
+  getWorkingCellLabel(): string {
     return Cell.columnRowToCell(this._currentWorkingColumn, this._currentWorkingRow);
   }
 
@@ -200,7 +200,7 @@ export class SpreadSheetController {
    * copy the formula from the new cell into the formulaBuilder
    * 
    * */
-  setCurrentCellByCoordinates(column: number, row: number): void {
+  setWorkingCellByCoordinates(column: number, row: number): void {
     // if the cell is the same as the current cell do nothing
     if (column === this._currentWorkingColumn && row === this._currentWorkingRow) return;
 
@@ -209,14 +209,14 @@ export class SpreadSheetController {
     this._memory.setCurrentCellFormula(currentFormula);
 
     // get the formula from the new cell
-    this._memory.setCurrentCellCoordinates(column, row);
+    this._memory.setWorkingCellByCoordinates(column, row);
     currentFormula = this._memory.getCurrentCellFormula();
     this._formulaBuilder.setFormula(currentFormula);
 
     this._currentWorkingColumn = column;
     this._currentWorkingRow = row;
 
-    this._memory.setCurrentCellCoordinates(column, row);
+    this._memory.setWorkingCellByCoordinates(column, row);
 
   }
 
@@ -284,9 +284,9 @@ export class SpreadSheetController {
    * */
   public getEditStatusString(): string {
     if (this._cellIsBeingEdited) {
-      return "editing: " + this.getCurrentCellLabel();
+      return "editing: " + this.getWorkingCellLabel();
     }
-    return "current cell: " + this.getCurrentCellLabel();
+    return "current cell: " + this.getWorkingCellLabel();
   }
 
 

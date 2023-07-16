@@ -7,8 +7,8 @@ describe('SheetMemory', () => {
       describe('when the max rows and columns are not set', () => {
         it('getMaxRows should return 5, and getMaxColumns should return 5', () => {
           const sheetMemory = new SheetMemory(5, 5);
-          const testMaxRows = sheetMemory.getMaxRows();
-          const testMaxColumns = sheetMemory.getMaxColumns();
+          const testMaxRows = sheetMemory.getNumRows();
+          const testMaxColumns = sheetMemory.getNumColumns();
           expect(testMaxRows).toEqual(5);
           expect(testMaxColumns).toEqual(5);
         });
@@ -27,8 +27,8 @@ describe('SheetMemory', () => {
           const testMaxRows = 8;
           const testMaxColumns = 7;
           const sheetMemory = new SheetMemory(testMaxColumns, testMaxRows);
-          const testSetMaxRows = sheetMemory.getMaxRows();
-          const testSetMaxColumns = sheetMemory.getMaxColumns();
+          const testSetMaxRows = sheetMemory.getNumRows();
+          const testSetMaxColumns = sheetMemory.getNumColumns();
           expect(testSetMaxRows).toEqual(testMaxRows);
           expect(testSetMaxColumns).toEqual(testMaxColumns);
         });
@@ -39,7 +39,7 @@ describe('SheetMemory', () => {
   describe("getCellByLabel", () => {
     it("should return the cell", () => {
       const sheetMemory = new SheetMemory(10, 10);
-      sheetMemory.setCurrentCellCoordinates(1, 1);
+      sheetMemory.setWorkingCellByCoordinates(1, 1);
       let testWriteCell = new Cell();
       testWriteCell.setFormula(["123"]);
       testWriteCell.setError("");
@@ -62,8 +62,8 @@ describe('SheetMemory', () => {
         const sheetMemory = new SheetMemory(5, 5);
         const testRow = 0;
         const testColumn = 0;
-        sheetMemory.setCurrentCellCoordinates(testRow, testColumn);
-        const testSetCoordinates = sheetMemory.getCurrentCellCoordinates();
+        sheetMemory.setWorkingCellByCoordinates(testRow, testColumn);
+        const testSetCoordinates = sheetMemory.getWorkingCellByCoordinates();
         expect(testSetCoordinates).toEqual([testRow, testColumn]);
       }
       );
@@ -75,7 +75,7 @@ describe('SheetMemory', () => {
     describe('when the current cell coordinates are not set', () => {
       it('getCurrentCellCoordinates should return [0, 0]', () => {
         const sheetMemory = new SheetMemory(5, 5);
-        const testCoordinates = sheetMemory.getCurrentCellCoordinates();
+        const testCoordinates = sheetMemory.getWorkingCellByCoordinates();
         expect(testCoordinates).toEqual([0, 0]);
       }
       );

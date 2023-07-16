@@ -132,8 +132,8 @@ export default class CalculationManager {
      * there are no circular dependencies in the sheet so  we just need to 
      * */
     public updateDependencies(sheetMemory: SheetMemory) {
-        for (let column = 0; column < sheetMemory.getMaxColumns(); column++) {
-            for (let row = 0; row < sheetMemory.getMaxRows(); row++) {
+        for (let column = 0; column < sheetMemory.getNumColumns(); column++) {
+            for (let row = 0; row < sheetMemory.getNumRows(); row++) {
                 const cellLabel = Cell.columnRowToCell(column, row);
 
                 let currentCell = sheetMemory.getCellByLabel(cellLabel);
@@ -170,8 +170,8 @@ export default class CalculationManager {
 
 
         // first split the cells into independent and dependent cells (cellsToBeProcessed)
-        for (let column = 0; column < sheetMemory.getMaxColumns(); column++) {
-            for (let row = 0; row < sheetMemory.getMaxRows(); row++) {
+        for (let column = 0; column < sheetMemory.getNumColumns(); column++) {
+            for (let row = 0; row < sheetMemory.getNumRows(); row++) {
                 let currentLabel = Cell.columnRowToCell(column, row);
                 const currentCell = sheetMemory.getCellByLabel(currentLabel);
 
