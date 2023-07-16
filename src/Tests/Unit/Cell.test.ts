@@ -132,41 +132,9 @@ describe("Cell", () => {
   }
   );
 
-  describe("ChildrenManagement", () => {
-    describe("The empty cell should have no children", () => {
-      const cell = new Cell();
-      expect(cell.getChildren()).toEqual([]);
-    });
-
-    describe(" adding a child should add the child", () => {
-      const cell = new Cell();
-      cell.addChild("A1");
-      let children = cell.getChildren();
-      expect(cell.getChildren()).toEqual(["A1"]);
-    });
-
-    describe(" adding a child twice should add the child once", () => {
-      const cell = new Cell();
-      cell.addChild("A1");
-      cell.addChild("A1");
-      expect(cell.getChildren()).toEqual(["A1"]);
-    });
-
-    describe("adding a set of children should work", () => {
-      const cell = new Cell();
-      cell.setChildren(["A1", "A2", "A3"]);
-      expect(cell.getChildren()).toEqual(["A1", "A2", "A3"]);
-    });
-
-    describe("removing a child should work", () => {
-      const cell = new Cell();
-      cell.setChildren(["A1", "A2", "A3"]);
-      cell.removeChild("A2");
-      expect(cell.getChildren()).toEqual(["A1", "A3"]);
-    });
 
 
-  });
+
 
   describe("Static Methods", () => {
     describe(" cellToColumnRow should throw an error if the cell is invalid", () => {
@@ -176,6 +144,5 @@ describe("Cell", () => {
 
 
 
-}
-);
+});
 

@@ -107,7 +107,7 @@ export class SpreadSheetController {
 
     // Check to see if we would be introducing a circular dependency
     // this function will update the dependency for the cell being inserted
-    let okToAdd = this._calculationManager.addCellDependency(currentLabel, cell_reference, this._memory);
+    let okToAdd = this._calculationManager.okToAddNewDependency(currentLabel, cell_reference, this._memory);
 
     // We have checked to see if this new token introduces a circular dependency
     // if it does not then we can add the token to the formula

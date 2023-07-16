@@ -51,9 +51,9 @@
     },
     {
       "type": "node-terminal",
-      "name": "Jest Dependency",
+      "name": "Jest Calculation",
       "request": "launch",
-      "command": "npx jest Dependency",
+      "command": "npx jest CalculationManager",
       "cwd": "${workspaceFolder}"
     },
     {
