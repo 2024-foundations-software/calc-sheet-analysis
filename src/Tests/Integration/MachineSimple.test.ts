@@ -69,6 +69,21 @@ describe("Machine", () => {
         });
       });
 
+      describe("If A1 has the formula B1 + B2 and B1 is undefined and B2 is defined", () => {
+        it("the value of the display string of A1 should be #REF!", () => {
+          const machine = new SpreadSheetController(5, 5);
+          machine.setWorkingCellByLabel("A1");
+          machine.addCell("B1");
+          machine.addToken("+");
+          machine.addCell("B2");
+          machine.setWorkingCellByLabel("B2");
+          machine.addToken("1");
+          machine.setWorkingCellByLabel("A1");
+          expect(machine.getFormulaString()).toEqual("B1 + B2");
+          expect(machine.getResultString()).toEqual(ErrorMessages.invalidCell);
+        });
+      });
+
       describe("it can have a forumula A2 + A2", () => {
         it("The value of the formula should be A2 +A2", () => {
           const machine = new SpreadSheetController(5, 5);

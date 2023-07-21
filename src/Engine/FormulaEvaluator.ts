@@ -78,7 +78,8 @@ export class FormulaEvaluator {
     this._result = resultValue;
 
     // if there are still tokens in the formula set the errorOccured flag
-    if (this._currentFormula.length > 0) {
+    // if an error has occured then we dont update the error message
+    if (this._currentFormula.length > 0 && !this._errorOccured) {
       this._errorOccured = true;
       this._errorMessage = ErrorMessages.invalidFormula;
     }
@@ -155,6 +156,9 @@ export class FormulaEvaluator {
    * 
    */
   private factor(): number {
+    if (this._errorOccured) {
+      return 0;
+    }
     let result = 0;
     // if the formula is empty set errorOccured to true 
     // and set the errorMessage to "PARTIAL"

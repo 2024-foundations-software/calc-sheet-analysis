@@ -308,5 +308,19 @@ describe("FormulaEvaluator", () => {
       });
     });
 
+    describe("when the formula is 1 * ) ", () => {
+      it("returns the number", () => {
+        const formula = ["1", "+", "+"];
+
+        recalc.evaluate(formula);
+
+        let result = recalc.result;
+        let error = recalc.error;
+
+        expect(result).toEqual(1);
+        expect(error).toEqual(ErrorMessages.invalidFormula);
+      });
+    });
+
   });
 });
