@@ -43,8 +43,8 @@ beforeEach(() => {
 
 describe("RecalcDependency", () => {
 
-  describe("okToAddNewDependency should detect a loop when a1 points at a2 and a2 points at a3 ", () => {
-    it("The circular flag should be set to true", () => {
+  describe("okToAddNewDependency when the same dependency is added  ", () => {
+    it("The okToAdd flag should be set to true", () => {
       let testMemory: SheetMemory = new SheetMemory(3, 3);
       let cellA1: Cell = new Cell();
       cellA1.setFormula(["A2"]);
