@@ -1,23 +1,11 @@
 /**
- *  This class is responsible for managing the dependencies in the sheet
+ *  This is the CalculationManager class
+ * it is responsible for managing the calculation of the cells in the sheet
  * 
- *  A cell has a property called dependsOn which is a list of cells that the cell depends on
- * 
- * This class exports the following functions
- * 
- * 0. addCellDependency(cellLabel: string, newDependsOn: string, sheetMemory: SheetMemory): boolean 
- *    - add a cell dependency to a cell, if the new dependency introduces a circular dependency, then return false
- * 1. getComputationOrder(sheetMemory: SheetMemory): string[]
- *   - get the computation order for the sheet this way the FormulaEvaluator can compute the cells in the correct order
- * 
- * Internal routines marked private
- * 
- * 1. updateDependencies(sheetMemory: SheetMemory): void
- *  - update the dependencies for all cells in the sheet
- * 2. updateComputationOrder(sheetMemory: SheetMemory): string[]
- * - update the computation order for the sheet
- * 3. expandDependencies(cellLabel: string, sheetMemory: SheetMemory): [boolean, string[]]
- * - expand the dependencies of a cell recursively 
+ * it exports the following functions
+ * okToAddNewDependency(currentCellLabel: string, newDependsOnCell: string, sheetMemory: SheetMemory): boolean
+ * updateDependencies(sheetMemory: SheetMemory): void
+ * updateComputationOrder(sheetMemory: SheetMemory): string[]
  * 
  */
 
@@ -79,6 +67,8 @@ export default class CalculationManager {
     public okToAddNewDependency(currentCellLabel: string, newDependsOnCell: string, sheetMemory: SheetMemory): boolean {
         // get the current cell
         let currentCell = sheetMemory.getCellByLabel(currentCellLabel);
+        console.log("currentCell", currentCellLabel)
+        console.log("newDependsOnCell", newDependsOnCell)
 
         // the dependsOn list for the current cell is up to because we update it everyt time we render
         const dependsOn: string[] = currentCell.getDependsOn();
