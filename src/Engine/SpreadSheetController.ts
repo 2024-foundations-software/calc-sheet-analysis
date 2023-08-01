@@ -30,6 +30,9 @@ export class SpreadSheetController {
   /** The memory for the sheet */
   private _memory: SheetMemory;
 
+  /** the local storage for the document */
+
+
   /** The current cell */
   private _currentWorkingRow = 0;
   private _currentWorkingColumn = 0;
@@ -253,6 +256,9 @@ export class SpreadSheetController {
 
   }
 
+
+
+
   /**
    * The edit status of the machine specifies what happens when a cell is clicked
    * 
@@ -286,7 +292,18 @@ export class SpreadSheetController {
     return "current cell: " + this.getWorkingCellLabel();
   }
 
+  public sheetToJSON(): string {
+    return this._memory.sheetToJSON();
+  }
 
+  public updateSheetFromJSON(json: string): void {
+    this._memory.updateSheetFromJSON(json);
+  }
+
+  public spreadsheetFromJSON(json: string): void {
+
+
+  }
 }
 
 export default SpreadSheetController;

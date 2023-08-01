@@ -207,6 +207,91 @@ export class SheetMemory {
         return displayStrings;
     }
 
+    /** 
+     * get a json representation of the sheet We only need to store
+     * the formula, value, and error for each cell
+     * */
+    public sheetToJSON(): string {
+        const sheetObject: any = {
+            columns: this._numColumns,
+            rows: this._numRows,
+            cells: {}
+        };
+
+        for (let column = 0; column < this._numColumns; column++) {
+            for (let row = 0; row < this._numRows; row++) {
+                const cell = this._cells[column][row];
+                const label = cell.getLabel();
+
+                const contents = {
+                    formula: cell.getFormula(),
+                    value: cell.getValue(),
+                    error: cell.getError()
+                }
+                sheetObject.cells[label] = contents;
+            }
+        }
+
+        return JSON.stringify(sheetObject);
+    }
+
+    public updateSheetFromJSON(jsonString: string): void {
+        const sheetObject = JSON.parse(jsonString);
+        const numColumns = sheetObject.columns;
+        const numRows = sheetObject.rows;
+        if (numColumns !== this._numColumns || numRows !== this._numRows) {
+            throw new Error("The JSON string does not match the current sheet");
+        }
+
+        for (const label in sheetObject.cells) {
+            if (sheetObject.cells.hasOwnProperty(label)) {
+                const cellObject = sheetObject.cells[label];
+                const formula = cellObject.formula;
+                const value = cellObject.value;
+                const error = cellObject.error;
+                const cell = new Cell();
+                cell.setFormula(formula);
+                cell.setValue(value);
+                cell.setError(error);
+
+                this.setCellByLabel(label, cell);
+            }
+        }
+    }
+
+    /** 
+     * Staic method to load a json representation of the sheet
+     * 
+     * @param sheetJSON
+    */
+
+    public static createSheetFromJSON(jsonString: string): SheetMemory {
+        const sheetObject = JSON.parse(jsonString);
+        const numColumns = sheetObject.columns;
+        const numRows = sheetObject.rows;
+        const sheet = new SheetMemory(numColumns, numRows);
+
+        for (const label in sheetObject.cells) {
+            if (sheetObject.cells.hasOwnProperty(label)) {
+                const cellObject = sheetObject.cells[label];
+                const formula = cellObject.formula;
+                const value = cellObject.value;
+                const error = cellObject.error;
+                const cell = new Cell();
+                cell.setFormula(formula);
+                cell.setValue(value);
+                cell.setError(error);
+
+                sheet.setCellByLabel(label, cell);
+            }
+        }
+
+        return sheet;
+    }
+
+
+
+
 
 }
 

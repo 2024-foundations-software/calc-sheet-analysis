@@ -179,6 +179,106 @@ describe('SheetMemory', () => {
   }
   );
 
+  describe("SheetMemory", () => {
+    describe("sheetToJSON", () => {
+      it("should return a JSON string representing the sheet", () => {
+        const sheet = new SheetMemory(2, 2);
+        let cell = sheet.getCellByLabel("A1");
+        cell.setFormula(["1", "+", "2"]);
+        cell.setValue(3);
+        cell.setError("");
+        sheet.setCellByLabel("A1", cell);
+
+
+        cell = sheet.getCellByLabel("B1");
+        cell.setFormula(["A1"]);
+        cell.setValue(3);
+        cell.setError("");
+        sheet.setCellByLabel("B1", cell);
+
+        cell = sheet.getCellByLabel("A2");
+        cell.setFormula(["B2"]);
+        cell.setValue(0);
+        cell.setError("#REF!");
+
+        const sheetJSON = sheet.sheetToJSON();
+
+
+
+        const expectedJSON = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1","+","2"],"value":3,"error":""},"A2":{"formula":["B2"],"value":0,"error":"#REF!"},"B1":{"formula":["A1"],"value":3,"error":""},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}';
+        expect(sheet.sheetToJSON()).toEqual(expectedJSON);
+      });
+    });
+
+    describe("updateSheetFromJSON", () => {
+      it("should update the sheet from the JSON string", () => {
+        const sheet = new SheetMemory(2, 2);
+        let cell = sheet.getCellByLabel("A1");
+        cell.setFormula(["1", "+", "7"]);
+        cell.setValue(8);
+        cell.setError("");
+
+        const jsonString = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1","+","2"],"value":3,"error":""},"A2":{"formula":["B2"],"value":0,"error":"#REF!"},"B1":{"formula":["A1"],"value":3,"error":""},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}';
+        sheet.updateSheetFromJSON(jsonString);
+
+        cell = sheet.getCellByLabel("A1");
+        expect(cell.getFormula()).toEqual(["1", "+", "2"]);
+        expect(cell.getValue()).toEqual(3);
+        expect(cell.getError()).toEqual("");
+
+        cell = sheet.getCellByLabel("A2");
+        expect(cell.getFormula()).toEqual(["B2"]);
+        expect(cell.getValue()).toEqual(0);
+        expect(cell.getError()).toEqual("#REF!");
+
+        cell = sheet.getCellByLabel("B1");
+        expect(cell.getFormula()).toEqual(["A1"]);
+        expect(cell.getValue()).toEqual(3);
+        expect(cell.getError()).toEqual("");
+
+        cell = sheet.getCellByLabel("B2");
+        expect(cell.getFormula()).toEqual([]);
+        expect(cell.getValue()).toEqual(0);
+        expect(cell.getError()).toEqual("#EMPTY!");
+
+      });
+    });
+
+
+
+
+    describe("createSheetFromJSON", () => {
+      it("should return spreadsheet with the values", () => {
+        const sourceJSON = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1","+","2"],"value":3,"error":""},"A2":{"formula":["B2"],"value":0,"error":"#REF!"},"B1":{"formula":["A1"],"value":3,"error":""},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}';
+        const sheet = SheetMemory.createSheetFromJSON(sourceJSON);
+
+        expect(sheet.getNumColumns()).toEqual(2);
+        expect(sheet.getNumRows()).toEqual(2);
+
+        let cell = sheet.getCellByLabel("A1");
+        expect(cell.getFormula()).toEqual(["1", "+", "2"]);
+        expect(cell.getValue()).toEqual(3);
+        expect(cell.getError()).toEqual("");
+
+        cell = sheet.getCellByLabel("A2");
+        expect(cell.getFormula()).toEqual(["B2"]);
+        expect(cell.getValue()).toEqual(0);
+        expect(cell.getError()).toEqual("#REF!");
+
+        cell = sheet.getCellByLabel("B1");
+        expect(cell.getFormula()).toEqual(["A1"]);
+        expect(cell.getValue()).toEqual(3);
+        expect(cell.getError()).toEqual("");
+
+        cell = sheet.getCellByLabel("B2");
+        expect(cell.getFormula()).toEqual([]);
+        expect(cell.getValue()).toEqual(0);
+        expect(cell.getError()).toEqual("#EMPTY!");
+
+      });
+    });
+  });
+
 });
 
 

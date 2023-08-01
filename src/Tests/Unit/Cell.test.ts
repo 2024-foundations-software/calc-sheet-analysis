@@ -132,17 +132,11 @@ describe("Cell", () => {
   }
   );
 
-
-
-
-
   describe("Static Methods", () => {
     describe(" cellToColumnRow should throw an error if the cell is invalid", () => {
       expect(() => Cell.cellToColumnRow("A")).toThrow();
     });
   });
-
-
 
 });
 

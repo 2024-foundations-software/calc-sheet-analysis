@@ -44,6 +44,13 @@
     },
     {
       "type": "node-terminal",
+      "name": "Jest Memory",
+      "request": "launch",
+      "command": "npx jest SheetMemory",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Jest Cell",
       "request": "launch",
       "command": "npx jest Cell",
