@@ -290,6 +290,16 @@ describe("Machine", () => {
       });
     });
 
+    it("It should create a new spreadsheet from a json string", () => {
+      const expectJSON = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1"],"value":1,"error":""},"A2":{"formula":["B1","+","1"],"value":3,"error":""},"B1":{"formula":["A1","+","1"],"value":2,"error":""},"B2":{"formula":["A2","+","1"],"value":4,"error":""}}}'
+      const controller = SpreadSheetController.spreadsheetFromJSON(expectJSON);
+
+      controller.setWorkingCellByLabel("B2");
+      expect(controller.getFormulaString()).toEqual("A2 + 1");
+      expect(controller.getResultString()).toEqual("4");
+    });
+
+
     describe("It should update the sheet from a JSON string", () => {
       it("should update the sheet from a JSON string", () => {
         const machine = new SpreadSheetController(2, 2);

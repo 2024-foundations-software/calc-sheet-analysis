@@ -65,6 +65,13 @@
     },
     {
       "type": "node-terminal",
+      "name": "Jest DocumentHolder",
+      "request": "launch",
+      "command": "npx jest DocumentHolder",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Jest SpreadSheet",
       "request": "launch",
       "command": "npx jest SpreadSheet --runInBand",

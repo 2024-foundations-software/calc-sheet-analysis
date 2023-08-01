@@ -300,9 +300,14 @@ export class SpreadSheetController {
     this._memory.updateSheetFromJSON(json);
   }
 
-  public spreadsheetFromJSON(json: string): void {
+  static spreadsheetFromJSON(json: string): SpreadSheetController {
+    let sheetObject = JSON.parse(json);
+    let columns = sheetObject.columns;
+    let rows = sheetObject.rows;
+    let spreadsheet = new SpreadSheetController(columns, rows);
+    spreadsheet.updateSheetFromJSON(json);
 
-
+    return spreadsheet;
   }
 }
 
