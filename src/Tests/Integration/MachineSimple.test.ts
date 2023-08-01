@@ -255,9 +255,77 @@ describe("Machine", () => {
       let sheetValues: Array<Array<string>> = machine.getSheetDisplayStringsForGUI();
       expect(sheetValues.length).toEqual(4);
       expect(sheetValues[0].length).toEqual(2);
-    }
-    );
+    });
 
+  });
+
+  describe("Controller gets JSON and can update sheet from JSON", () => {
+    describe("It should get the string for the sheet", () => {
+      it("should return the sheet as a JSON string", () => {
+        const machine = new SpreadSheetController(2, 2);
+
+        machine.setWorkingCellByLabel("A1");
+        machine.addToken("1");
+
+        machine.setWorkingCellByLabel("B1");
+        machine.addToken("A1");
+        machine.addToken("+");
+        machine.addToken("1");
+
+        machine.setWorkingCellByLabel("A2");
+        machine.addToken("B1");
+        machine.addToken("+");
+        machine.addToken("1");
+
+        machine.setWorkingCellByLabel("B2");
+        machine.addToken("A2");
+        machine.addToken("+");
+        machine.addToken("1");
+
+        const sheetJSON: string = machine.sheetToJSON();
+        const expectJSON = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1"],"value":1,"error":""},"A2":{"formula":["B1","+","1"],"value":3,"error":""},"B1":{"formula":["A1","+","1"],"value":2,"error":""},"B2":{"formula":["A2","+","1"],"value":4,"error":""}}}'
+
+        expect(expectJSON).toEqual(sheetJSON);
+
+      });
+    });
+
+    describe("It should update the sheet from a JSON string", () => {
+      it("should update the sheet from a JSON string", () => {
+        const machine = new SpreadSheetController(2, 2);
+
+        machine.setWorkingCellByLabel("A1");
+        machine.addToken("1");
+
+        machine.setWorkingCellByLabel("B1");
+        machine.addToken("A1");
+        machine.addToken("+");
+        machine.addToken("1");
+
+        machine.setWorkingCellByLabel("A2");
+        machine.addToken("B1");
+        machine.addToken("+");
+        machine.addToken("1");
+
+        machine.setWorkingCellByLabel("B2");
+        machine.addToken("A2");
+        machine.addToken("+");
+        machine.addToken("1");
+
+
+        // now make a new machine and update it from the JSON string
+        // the result should be the same
+        const sheetJSON: string = machine.sheetToJSON();
+
+        const machine2 = new SpreadSheetController(2, 2);
+        machine2.updateSheetFromJSON(sheetJSON);
+
+        machine2.setWorkingCellByLabel("B2");
+        expect(machine2.getFormulaString()).toEqual("A2 + 1");
+        expect(machine2.getResultString()).toEqual("4");
+
+      });
+    });
   });
 
 });
