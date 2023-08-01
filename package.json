@@ -31,9 +31,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-server": "ts-node ./src/DataStore/src/StartCalcSheetServer.ts 3005",
-    "test-server": "ts-node ./src/DataStore/src/CalcSheetServerAppTest.ts 3005",
-    "jest-server": "jest ./src/DataStore/tests",
+    "start-server": "ts-node ./src/Server/DocumentServer.ts",
+    "test-server": "ts-node ./src/Server/DocumentServerTester.ts",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

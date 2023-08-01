@@ -221,7 +221,7 @@ export class SheetMemory {
         for (let column = 0; column < this._numColumns; column++) {
             for (let row = 0; row < this._numRows; row++) {
                 const cell = this._cells[column][row];
-                const label = cell.getLabel();
+                const label = Cell.columnRowToCell(column, row);
 
                 const contents = {
                     formula: cell.getFormula(),

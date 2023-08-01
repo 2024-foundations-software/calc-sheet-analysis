@@ -32,21 +32,43 @@ describe('DocumentHolder', () => {
 
     describe('createDocument', () => {
         it('should create a document', () => {
+            const sheetTestName = 'test' + 1
             const documentHolder = new DocumentHolder(documentTestPath);
-            documentHolder.createDocument('test', 2, 2);
+            documentHolder.createDocument('test1', 2, 2);
             // the document should be in the right folder
 
             expect(documentHolder).toBeDefined();
         });
     });
 
+    describe('getDocument', () => {
+        it('should get a document', () => {
+            const sheetTestName = 'test' + 2
+            const documentHolder = new DocumentHolder(documentTestPath);
+            documentHolder.createDocument(sheetTestName, 2, 2);
+            const documentJSON = documentHolder.getDocument(sheetTestName);
+            // unpack the JSON
+            const document = JSON.parse(documentJSON);
+
+            expect(document).toBeDefined();
+            expect(document.columns).toEqual(2);
+            expect(document.rows).toEqual(2);
+            expect(document.cells).toBeDefined();
+            expect(document.cells["A1"]).toBeDefined();
+            expect(document.cells["A1"].formula).toEqual([]);
+            expect(document.cells["A1"].value).toEqual(0);
+            expect(document.cells["A1"].error).toEqual("#EMPTY!");
+        });
+    });
+
     describe('accessing a document', () => {
         describe('Formula Editing', () => {
             it('should add a token to the current formula', () => {
+                const sheetTestName = 'test' + 3
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                const documentJSON = documentHolder.addToken('test', '1');
+                const documentJSON = documentHolder.addToken(sheetTestName, '1');
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -60,11 +82,12 @@ describe('DocumentHolder', () => {
             });
 
             it('should add a second token to the current formula', () => {
+                const sheetTestName = 'test' + 4
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                documentHolder.addToken('test', '1');
-                const documentJSON = documentHolder.addToken('test', '+');
+                documentHolder.addToken(sheetTestName, '1');
+                const documentJSON = documentHolder.addToken(sheetTestName, '+');
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -78,10 +101,11 @@ describe('DocumentHolder', () => {
             });
 
             it('should not add a cell that references to itself', () => {
+                const sheetTestName = 'test' + 5
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                const documentJSON = documentHolder.addCell('test', 'A1');
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A1');
 
 
                 // unpack the JSON
@@ -96,11 +120,12 @@ describe('DocumentHolder', () => {
             });
 
             it('should add a cell that references another cell', () => {
+                const sheetTestName = 'test' + 6
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
 
-                const documentJSON = documentHolder.addCell('test', 'A2');
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A2');
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -118,13 +143,14 @@ describe('DocumentHolder', () => {
             });
 
             it('should be able to edit A1 and A2', () => {
+                const sheetTestName = 'test' + 7
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
 
-                documentHolder.addCell('test', 'A2');
-                documentHolder.setWorkingCellByLabel('test', 'A2');
-                const documentJSON = documentHolder.addToken('test', '1');
+                documentHolder.addCell(sheetTestName, 'A2');
+                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
+                const documentJSON = documentHolder.addToken(sheetTestName, '1');
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -155,11 +181,12 @@ describe('DocumentHolder', () => {
                 expect(valueA2).toEqual(1);
             });
             it('should remove a token from the formula', () => {
+                const sheetTestName = 'test' + 8
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
 
-                const documentJSON = documentHolder.addCell('test', 'A2');
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A2');
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -174,7 +201,7 @@ describe('DocumentHolder', () => {
                 const error = cell.error;
                 expect(error).toEqual("#REF!");
 
-                const documentJSON2 = documentHolder.removeToken('test');
+                const documentJSON2 = documentHolder.removeToken(sheetTestName);
 
                 // unpack the JSON
                 const document2 = JSON.parse(documentJSON2);
@@ -192,15 +219,16 @@ describe('DocumentHolder', () => {
             });
 
             it('should not add a cell that makes a loop', () => {
+                const sheetTestName = 'test' + 9
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
 
-                documentHolder.addCell('test', 'A2');
-                documentHolder.setWorkingCellByLabel('test', 'A2');
-                documentHolder.addCell('test', 'B1');
-                documentHolder.setWorkingCellByLabel('test', 'B1');
-                const documentJSON = documentHolder.addCell('test', 'A1');
+                documentHolder.addCell(sheetTestName, 'A2');
+                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
+                documentHolder.addCell(sheetTestName, 'B1');
+                documentHolder.setWorkingCellByLabel(sheetTestName, 'B1');
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A1');
 
 
 
@@ -220,12 +248,13 @@ describe('DocumentHolder', () => {
             });
 
             it('should clear the formula', () => {
+                const sheetTestName = 'test' + 10
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
 
-                documentHolder.addCell('test', 'A2');
-                const documentJSON = documentHolder.addToken('test', '+');
+                documentHolder.addCell(sheetTestName, 'A2');
+                const documentJSON = documentHolder.addToken(sheetTestName, '+');
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -237,7 +266,7 @@ describe('DocumentHolder', () => {
                 // the formula should be ["A2"] and the error "#REF!"
                 expect(formula).toEqual(["A2", "+"]);
 
-                const documentJSON2 = documentHolder.clearFormula('test');
+                const documentJSON2 = documentHolder.clearFormula(sheetTestName);
 
                 // unpack the JSON
                 const document2 = JSON.parse(documentJSON2);
@@ -256,40 +285,42 @@ describe('DocumentHolder', () => {
             });
 
             it('should return the FormulaString for the controler', () => {
+                const sheetTestName = 'test' + 11
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
-                documentHolder.addToken('test', '2');
-                documentHolder.addToken('test', '+');
-                const documentJSON = documentHolder.addToken('test', '2');
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
+                documentHolder.addToken(sheetTestName, '2');
+                documentHolder.addToken(sheetTestName, '+');
+                const documentJSON = documentHolder.addToken(sheetTestName, '2');
 
-                const formulaString = documentHolder.getFormulaString('test');
+                const formulaString = documentHolder.getFormulaString(sheetTestName);
 
                 expect(formulaString).toEqual("2 + 2");
 
-                const resultString = documentHolder.getResultString('test');
+                const resultString = documentHolder.getResultString(sheetTestName);
 
                 expect(resultString).toEqual("4");
             });
 
             it('should return the working cell label when it is set to A2', () => {
+                const sheetTestName = 'test' + 12
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                documentHolder.setWorkingCellByLabel('test', 'A2');
-                documentHolder.addToken('test', '2');
-                documentHolder.addToken('test', '+');
-                const documentJSON = documentHolder.addToken('test', '2');
+                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
+                documentHolder.addToken(sheetTestName, '2');
+                documentHolder.addToken(sheetTestName, '+');
+                const documentJSON = documentHolder.addToken(sheetTestName, '2');
 
-                const label = documentHolder.getWorkingCellLabel('test');
+                const label = documentHolder.getWorkingCellLabel(sheetTestName);
 
 
                 expect(label).toEqual("A2");
 
-                const formulaString = documentHolder.getFormulaString('test');
+                const formulaString = documentHolder.getFormulaString(sheetTestName);
 
                 expect(formulaString).toEqual("2 + 2");
 
-                const resultString = documentHolder.getResultString('test');
+                const resultString = documentHolder.getResultString(sheetTestName);
 
                 expect(resultString).toEqual("4");
 
@@ -297,18 +328,19 @@ describe('DocumentHolder', () => {
             });
 
             it('should return edit status true it is set', () => {
+                const sheetTestName = 'test' + 13
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument('test', 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                documentHolder.setWorkingCellByLabel('test', 'A2');
-                documentHolder.addToken('test', '2');
-                documentHolder.setEditStatus('test', true);
+                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
+                documentHolder.addToken(sheetTestName, '2');
+                documentHolder.setEditStatus(sheetTestName, true);
 
-                const editStatus = documentHolder.getEditStatus('test');
+                const editStatus = documentHolder.getEditStatus(sheetTestName);
 
                 expect(editStatus).toBeTruthy();
 
-                const editStatusString = documentHolder.getEditStatusString('test');
+                const editStatusString = documentHolder.getEditStatusString(sheetTestName);
 
                 expect(editStatusString).toEqual("editing: A2");
 

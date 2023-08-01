@@ -52,8 +52,15 @@ export class DocumentHolder {
     private _loadDocuments(): void {
         const files = fs.readdirSync(this._documentFolder);
         files.forEach(file => {
+            console.log(file)
             const documentPath = path.join(this._documentFolder, file);
             const documentJSON = fs.readFileSync(documentPath, 'utf8');
+
+            // create a new controller
+            const controller = SpreadSheetController.spreadsheetFromJSON(documentJSON)
+            // add the controller to the map this assumes all files are .json
+            this._documents.set(file.slice(0, -5), controller);
+
         }
         );
     }
@@ -69,6 +76,11 @@ export class DocumentHolder {
         }
     }
 
+    public getDocumentNames(): string[] {
+        const documentNames = Array.from(this._documents.keys());
+        return documentNames;
+    }
+
     public createDocument(name: string, columns: number, rows: number): boolean {
         if (this._documents.has(name)) {
             return false
@@ -76,14 +88,25 @@ export class DocumentHolder {
         let document = new SpreadSheetController(columns, rows);
         this._documents.set(name, document);
         this._saveDocument(name);
+
         return true;
     }
 
-    public addToken(name: string, token: string): string {
+    public getDocument(name: string): string {
         let document = this._documents.get(name);
         if (document) {
-            document.addToken(token);
-            this._saveDocument(name);
+            // get the json string for the controler
+            const documentJSON = document.sheetToJSON();
+            return documentJSON;
+        }
+        throw new Error('Document not found');
+    }
+
+    public addToken(docName: string, user: string, token: string): string {
+        let document = this._documents.get(docName);
+        if (document) {
+            document.addToken(token, user);
+            this._saveDocument(docName);
             // get the json string for the controler
             const documentJSON = document.sheetToJSON();
             return documentJSON;

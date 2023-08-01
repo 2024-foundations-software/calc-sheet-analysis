@@ -30,6 +30,13 @@
     },
     {
       "type": "node-terminal",
+      "name": "Test Data Server",
+      "request": "launch",
+      "command": "npm run test-server",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Run Script: eject",
       "request": "launch",
       "command": "npm run eject",
