@@ -33,9 +33,10 @@ describe('DocumentHolder', () => {
     describe('createDocument', () => {
         it('should create a document', () => {
             const sheetTestName = 'test' + 1
+            const userName = 'testUser';
             const documentHolder = new DocumentHolder(documentTestPath);
-            documentHolder.createDocument('test1', 2, 2);
-            // the document should be in the right folder
+            documentHolder.createDocument('test1', 2, 2, userName);
+
 
             expect(documentHolder).toBeDefined();
         });
@@ -44,9 +45,10 @@ describe('DocumentHolder', () => {
     describe('getDocument', () => {
         it('should get a document', () => {
             const sheetTestName = 'test' + 2
-            const documentHolder = new DocumentHolder(documentTestPath);
-            documentHolder.createDocument(sheetTestName, 2, 2);
             const userName = 'testUser';
+            const documentHolder = new DocumentHolder(documentTestPath);
+            documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
             documentHolder.requestViewAccess(sheetTestName, 'A1', userName);
             const documentJSON = documentHolder.getDocumentJSON(sheetTestName, 'testUser');
             // unpack the JSON
@@ -67,10 +69,11 @@ describe('DocumentHolder', () => {
         describe('Formula Editing', () => {
             it('should add a token to the current formula', () => {
                 const sheetTestName = 'test' + 3
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
-
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
+
 
                 const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
@@ -89,9 +92,10 @@ describe('DocumentHolder', () => {
 
             it('should add a second token to the current formula', () => {
                 const sheetTestName = 'test' + 4
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
                 const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
                 documentHolder.addToken(sheetTestName, '1', userName);
                 const documentJSON = documentHolder.addToken(sheetTestName, '+', userName);
@@ -114,7 +118,7 @@ describe('DocumentHolder', () => {
                 const userName = 'testUser';
 
                 const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
 
                 const documentJSON = documentHolder.addCell(sheetTestName, 'A1', userName);
 
@@ -132,10 +136,11 @@ describe('DocumentHolder', () => {
 
             it('should add a cell that references another cell', () => {
                 const sheetTestName = 'test' + 6
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
-
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
+
 
                 const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
@@ -160,8 +165,9 @@ describe('DocumentHolder', () => {
             it('should be able to edit A1 and A2', () => {
                 const sheetTestName = 'test' + 7
                 const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
                 const userName = 'testUser';
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
@@ -201,9 +207,10 @@ describe('DocumentHolder', () => {
 
             it('should remove a token from the formula', () => {
                 const sheetTestName = 'test' + 8
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
@@ -241,9 +248,10 @@ describe('DocumentHolder', () => {
 
             it('should not add a cell that makes a loop', () => {
                 const sheetTestName = 'test' + 9
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
@@ -273,9 +281,10 @@ describe('DocumentHolder', () => {
 
             it('should clear the formula', () => {
                 const sheetTestName = 'test' + 10
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
@@ -312,9 +321,10 @@ describe('DocumentHolder', () => {
 
             it('should return the FormulaString for the controler', () => {
                 const sheetTestName = 'test' + 11
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
                 documentHolder.addToken(sheetTestName, '2', userName);
@@ -332,10 +342,11 @@ describe('DocumentHolder', () => {
 
             it('should return the working cell label when it is set to A2', () => {
                 const sheetTestName = 'test' + 12
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
-
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
+
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
 
                 documentHolder.addToken(sheetTestName, '2', userName);
@@ -360,10 +371,11 @@ describe('DocumentHolder', () => {
 
             it('should return edit status true it is set', () => {
                 const sheetTestName = 'test' + 13
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
-
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
+
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
 
                 documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
@@ -382,10 +394,10 @@ describe('DocumentHolder', () => {
 
             it('should return the formula string for the selected cell even if it cannot edit', () => {
                 const sheetTestName = 'test' + 14
-                const documentHolder = new DocumentHolder(documentTestPath);
-                let result = documentHolder.createDocument(sheetTestName, 2, 2);
-
                 const userName = 'testUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
                 const otherUserName = 'otherUser';
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
                 documentHolder.addToken(sheetTestName, '2', userName);
