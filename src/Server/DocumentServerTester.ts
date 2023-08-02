@@ -13,6 +13,20 @@ const serverPort = PortsGlobal.serverPort;
 
 const baseURL = `http://localhost:${serverPort}`;
 
+interface Cell {
+    formula: string[];
+    value: number;
+    error: string;
+}
+interface Document {
+    columns: number;
+    rows: number;
+    cells: Map<string, Cell>;
+    formula: string;
+    value: string;
+    currentCell: string;
+}
+
 function cleanFiles() {
     return axios.post(`${baseURL}/documents/reset`)
         .then(response => {
@@ -64,7 +78,7 @@ function addCell(docName: string, cell: string, user: string) {
     return axios.put(`${baseURL}/document/addcell/${docName}/${cell}`, { "userName": userName })
         .then(response => {
             const result = response.data;
-            return result;
+            return result as Document;
         });
 }
 
@@ -77,6 +91,8 @@ function requestEditCell(docName: string, cell: string, user: string): Promise<b
             return result;
         });
 }
+
+
 
 
 // this is the main function that runs the tests
@@ -106,13 +122,60 @@ async function runTests() {
     const cell1 = 'A1';
     const cell2 = 'B2';
 
-    let result = await requestEditCell(testDocument1, cell1, user1);
-    result = await addToken(testDocument1, '1', user1);
-    result = await addToken(testDocument1, '2', user1);
-    result = await addToken(testDocument1, '+', user1);
-    result = await addCell(testDocument1, cell2, user1);
+    let resultBoolean = await requestEditCell(testDocument1, cell1, user1);
+    if (!resultBoolean) {
+        console.log('requestEditCell failed, this should have succeeded');
+        return;
+    }
 
-    result = await requestEditCell(testDocument1, cell2, user2);
+    let resultDocument = await addToken(testDocument1, '1', user1);
+    let cells = resultDocument.cells;
+
+    let cellA1 = cells[cell1];
+    if (!cellA1) {
+        console.log('cellA1 not found, this should have succeeded');
+        return;
+    }
+    if (cellA1.value !== 1) {
+        console.log('cellA1 value is not 1, this should have succeeded');
+        return;
+    }
+    if (cellA1.formula.length !== 1) {
+        console.log('cellA1 formula length is not 1, this should have succeeded');
+        return;
+    }
+    if (cellA1.formula[0] !== '1') {
+        console.log('cellA1 formula is not 1, this should have succeeded');
+        return;
+    }
+
+    await addToken(testDocument1, '2', user1);
+    await addToken(testDocument1, '+', user1);
+    await addCell(testDocument1, cell2, user1);
+
+    resultBoolean = await requestEditCell(testDocument1, cell2, user2);
+    resultDocument = await addToken(testDocument1, '3', user2) as Document;
+
+    cells = resultDocument.cells;
+    let cellB2 = cells[cell2];
+    cellA1 = cells[cell1];
+
+    if (cellA1.value !== 15) {
+        console.log('cellA1 value is not 15, this should have succeeded');
+        return;
+    } else {
+        console.log('cellA1 value is 15, this succeeded');
+    }
+
+    if (cellB2.value !== 3) {
+        console.log('cellB2 value is not 3, this should have succeeded');
+        return;
+    } else {
+        console.log('cellB2 value is 3, this succeeded');
+    }
+
+
+
 
 
 }
