@@ -211,7 +211,7 @@ export class SheetMemory {
      * get a json representation of the sheet We only need to store
      * the formula, value, and error for each cell
      * */
-    public sheetToJSON(): string {
+    public sheetContainer(): any {
         const sheetObject: any = {
             columns: this._numColumns,
             rows: this._numRows,
@@ -232,7 +232,13 @@ export class SheetMemory {
             }
         }
 
-        return JSON.stringify(sheetObject);
+        return sheetObject;
+    }
+
+    public sheetToJSON(): string {
+        const sheetObject = this.sheetContainer();
+        const sheetJSON = JSON.stringify(sheetObject);
+        return sheetJSON;
     }
 
     public updateSheetFromJSON(jsonString: string): void {

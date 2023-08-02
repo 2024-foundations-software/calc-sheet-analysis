@@ -5,13 +5,22 @@
 
 import { FormulaBuilder } from "./FormulaBuilder";
 
-export class EditingUser {
+export class ContributingUser {
     private _formulaBuilder: FormulaBuilder;
     private _cellLabel: string;
+    private _isEditing: boolean = false;
 
     constructor(cellLabel: string) {
         this._formulaBuilder = new FormulaBuilder();
         this._cellLabel = cellLabel;
+    }
+
+    public get isEditing(): boolean {
+        return this._isEditing;
+    }
+
+    public set isEditing(isEditing: boolean) {
+        this._isEditing = isEditing;
     }
 
     public set cellLabel(cellLabel: string) {

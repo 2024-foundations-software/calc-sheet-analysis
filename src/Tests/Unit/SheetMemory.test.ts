@@ -201,12 +201,12 @@ describe('SheetMemory', () => {
         cell.setValue(0);
         cell.setError("#REF!");
 
-        const sheetJSON = sheet.sheetToJSON();
+        const sheetJSON = sheet.sheetContainer();
 
 
 
         const expectedJSON = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1","+","2"],"value":3,"error":""},"A2":{"formula":["B2"],"value":0,"error":"#REF!"},"B1":{"formula":["A1"],"value":3,"error":""},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}';
-        expect(sheet.sheetToJSON()).toEqual(expectedJSON);
+        expect(sheet.sheetContainer()).toEqual(expectedJSON);
       });
     });
 

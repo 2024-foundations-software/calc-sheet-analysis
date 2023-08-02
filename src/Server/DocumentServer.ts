@@ -62,9 +62,16 @@ app.get('/documents', (req: express.Request, res: express.Response) => {
     res.send(documentNames);
 });
 
-// GET /documents/:name
-app.get('/documents/:name', (req: express.Request, res: express.Response) => {
+// PUT /documents/:name
+// userName is in the document body
+app.put('/documents/:name', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
+    // get the userName from the body
+    const userName = req.body.userName;
+    if (!userName) {
+        res.status(400).send('userName is required');
+        return;
+    }
     // is this name valid?
     const documentNames = documentHolder.getDocumentNames();
     if (documentNames.indexOf(name) === -1) {
@@ -73,35 +80,32 @@ app.get('/documents/:name', (req: express.Request, res: express.Response) => {
     }
 
     // get the document
-    const document = documentHolder.getDocument(name);
+    const document = documentHolder.getDocumentJSON(name, userName);
 
     res.status(200).send(document);
 });
 
 app.post('/documents/create/:name', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
+
+    // get the userName from the body
+    const userName = req.body.userName;
+
     // is this name valid?
     const documentNames = documentHolder.getDocumentNames();
-    if (documentNames.indexOf(name) !== -1) {
-        res.status(400).send(`Document ${name} already exists`);
-        return;
+    if (documentNames.indexOf(name) === -1) {
+        const documentOK = documentHolder.createDocument(name, 5, 8, userName);
     }
+    documentHolder.requestViewAccess(name, 'A1', userName);
+    const documentJSON = documentHolder.getDocumentJSON(name, userName);
 
-    // create the document
-    const documentOK = documentHolder.createDocument(name, 5, 8);
-    if (documentOK) {
-        const document = documentHolder.getDocument(name);
-        res.status(200).send(document);
-    }
-    else {
-        res.status(500).send(`Document ${name} could not be created`);
-    }
+    res.status(200).send(documentJSON);
+
 });
 
 
 
-
-app.put('/document/request/cell/:name/:cell', (req: express.Request, res: express.Response) => {
+app.put('/document/cell/edit/:name/:cell', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
     const cell = req.params.cell;
     // is this name valid?
@@ -116,11 +120,97 @@ app.put('/document/request/cell/:name/:cell', (req: express.Request, res: expres
         res.status(400).send('userName is required');
         return;
     }
+    // request access to the cell
+    const result = documentHolder.requestEditAccess(name, cell, userName);
 
     res.status(200).send(`request cell ${cell} from document ${name} for user ${userName}`);
 });
 
+app.put('/document/cell/view/:name/:cell', (req: express.Request, res: express.Response) => {
+    const name = req.params.name;
+    const cell = req.params.cell;
+    // is this name valid?
+    const documentNames = documentHolder.getDocumentNames();
+    if (documentNames.indexOf(name) === -1) {
+        res.status(404).send(`Document ${name} not found`);
+        return;
+    }
+    // get the user name from the body
+    const userName = req.body.userName;
+    if (!userName) {
+        res.status(400).send('userName is required');
+        return;
+    }
+    // request access to the cell
+    const result = documentHolder.requestEditAccess(name, cell, userName);
 
+    res.status(200).send(`request cell ${cell} from document ${name} for user ${userName}`);
+});
+
+app.put('/document/addtoken/:name/:token', (req: express.Request, res: express.Response) => {
+    const name = req.params.name;
+    const token = req.params.token;
+    // is this name valid?
+    const documentNames = documentHolder.getDocumentNames();
+    if (documentNames.indexOf(name) === -1) {
+        res.status(404).send(`Document ${name} not found`);
+        return;
+    }
+    // get the user name from the body
+    const userName = req.body.userName;
+    if (!userName) {
+        res.status(400).send('userName is required');
+        return;
+    }
+    // add the
+    const resultJSON = documentHolder.addToken(name, token, userName);
+
+
+    res.status(200).send(resultJSON);
+});
+
+app.put('/document/addcell/:name/:cell', (req: express.Request, res: express.Response) => {
+    const name = req.params.name;
+    const token = req.params.token;
+    // is this name valid?
+    const documentNames = documentHolder.getDocumentNames();
+    if (documentNames.indexOf(name) === -1) {
+        res.status(404).send(`Document ${name} not found`);
+        return;
+    }
+    // get the user name from the body
+    const userName = req.body.userName;
+    if (!userName) {
+        res.status(400).send('userName is required');
+        return;
+    }
+    // add the token
+    const resultJSON = documentHolder.addCell(name, token, userName);
+
+
+    res.status(200).send(resultJSON);
+});
+
+app.put('/document/removetoken/:name', (req: express.Request, res: express.Response) => {
+    const name = req.params.name;
+    // is this name valid?
+    const documentNames = documentHolder.getDocumentNames();
+    if (documentNames.indexOf(name) === -1) {
+        res.status(404).send(`Document ${name} not found`);
+        return;
+    }
+    // get the user name from the body
+    const userName = req.body.userName;
+    if (!userName) {
+        res.status(400).send('userName is required');
+        return;
+    }
+    // remove the tokenn
+    const resultJSON = documentHolder.removeToken(name, userName);
+
+
+    res.status(200).send(resultJSON);
+});
 
 // get the port we should be using
 const port = PortsGlobal.serverPort;

@@ -80,9 +80,10 @@ describe("SpreadSheetController", () => {
       machine.addToken("5", "user2");
 
       const user1Formula = machine.getFormulaStringForUser("user1");
+      const user2Formula = machine.getFormulaStringForUser("user2");
 
       expect(machine.getFormulaStringForUser("user1")).toEqual("1 + 7");
-      expect(machine.getFormulaStringForUser("user2")).toEqual("");
+      expect(machine.getFormulaStringForUser("user2")).toEqual("1 + 7");
 
     });
 

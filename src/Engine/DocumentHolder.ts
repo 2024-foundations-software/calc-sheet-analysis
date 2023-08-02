@@ -81,104 +81,123 @@ export class DocumentHolder {
         return documentNames;
     }
 
-    public createDocument(name: string, columns: number, rows: number): boolean {
+    public createDocument(name: string, columns: number, rows: number, user: string): boolean {
         if (this._documents.has(name)) {
             return false
         }
         let document = new SpreadSheetController(columns, rows);
         this._documents.set(name, document);
         this._saveDocument(name);
-
+        // by default the first cell is the cell a new document looks at
+        this.requestViewAccess(name, 'A1', user);
         return true;
     }
 
-    public getDocument(name: string): string {
+    public getDocumentJSON(name: string, userName: string): string {
         let document = this._documents.get(name);
         if (document) {
             // get the json string for the controler
-            const documentJSON = document.sheetToJSON();
+            const documentContainer = document.documentContainer(userName);
+            // convert to JSON
+            const documentJSON = JSON.stringify(documentContainer);
             return documentJSON;
         }
         throw new Error('Document not found');
     }
+    public requestViewAccess(docName: string, cellLabel: string, user: string) {
+        let document = this._documents.get(docName);
+        if (!document) {
+            return false;
+        }
+        document.requestViewAccess(user, cellLabel);
+        return true;
+    }
 
-    public addToken(docName: string, user: string, token: string): string {
+    public requestEditAccess(docName: string, cellLabel: string, user: string): boolean {
+        let document = this._documents.get(docName);
+        if (!document) {
+            return false;
+        }
+        return document.requestEditAccess(user, cellLabel);
+    }
+
+    public addToken(docName: string, token: string, user: string,): any {
         let document = this._documents.get(docName);
         if (document) {
             document.addToken(token, user);
             this._saveDocument(docName);
             // get the json string for the controler
-            const documentJSON = document.sheetToJSON();
+            const documentJSON = this.getDocumentJSON(docName, user);
             return documentJSON;
         }
         throw new Error('Document not found');
 
     }
 
-    public addCell(name: string, cell: string): string {
-        let document = this._documents.get(name);
+    public addCell(docName: string, cell: string, user: string): string {
+        let document = this._documents.get(docName);
         if (document) {
-            document.addCell(cell);
-            this._saveDocument(name);
+            document.addCell(cell, user);
+            this._saveDocument(docName);
             // get the json string for the controler
-            const documentJSON = document.sheetToJSON();
+            const documentJSON = this.getDocumentJSON(docName, user);
             return documentJSON;
         }
         throw new Error('Document not found');
     }
 
-    public removeToken(name: string): string {
-        let document = this._documents.get(name);
+    public removeToken(docName: string, user: string): string {
+        let document = this._documents.get(docName);
         if (document) {
-            document.removeToken();
-            this._saveDocument(name);
+            document.removeToken(user);
+            this._saveDocument(docName);
             // get the json string for the controler
-            const documentJSON = document.sheetToJSON();
+            const documentJSON = this.getDocumentJSON(docName, user);
             return documentJSON;
         }
         throw new Error('Document not found');
     }
 
-    public clearFormula(name: string): string {
-        let document = this._documents.get(name);
+    public clearFormula(docName: string, user: string): string {
+        let document = this._documents.get(docName);
         if (document) {
-            document.clearFormula();
-            this._saveDocument(name);
+            document.clearFormula(user);
+            this._saveDocument(docName);
             // get the json string for the controler
-            const documentJSON = document.sheetToJSON();
+            const documentJSON = this.getDocumentJSON(docName, user);
             return documentJSON;
         }
         throw new Error('Document not found');
     }
 
-    public getFormulaString(name: string): string {
+    public getFormulaString(name: string, user: string): string {
         let document = this._documents.get(name);
         if (document) {
-            const formulaString = document.getFormulaString();
+            const formulaString = document.getFormulaStringForUser(user);
             return formulaString;
         }
         throw new Error('Document not found');
     }
 
-    public getResultString(name: string): string {
+    public getResultString(name: string, user: string): string {
         let document = this._documents.get(name);
         if (document) {
-            const resultString = document.getResultString();
+            const resultString = document.getResultStringForUser(user);
             return resultString;
         }
         throw new Error('Document not found');
     }
 
-    public getWorkingCellLabel(name: string): string {
+    public getWorkingCellLabel(name: string, user: string): string {
         let document = this._documents.get(name);
         if (document) {
-            const workingCellLabel = document.getWorkingCellLabel();
+            const workingCellLabel = document.getWorkingCellLabel(user);
             return workingCellLabel;
         }
         throw new Error('Document not found');
     }
 
-
+    // TODO detemine if needed
     public setWorkingCellByLabel(name: string, label: string): string {
         let document = this._documents.get(name);
         if (document) {
@@ -191,31 +210,22 @@ export class DocumentHolder {
         throw new Error('Document not found');
     }
 
-    public getEditStatus(name: string): boolean {
+    // TODO determine if needed
+    public getEditStatus(name: string, user: string): boolean {
         let document = this._documents.get(name);
         if (document) {
-            const editStatus = document.getEditStatus();
+            const editStatus = document.getEditStatus(user);
             return editStatus;
         }
         throw new Error('Document not found');
     }
 
-    public setEditStatus(name: string, bool: boolean): string {
-        let document = this._documents.get(name);
-        if (document) {
-            document.setEditStatus(bool);
-            this._saveDocument(name);
-            // get the json string for the controler
-            const documentJSON = document.sheetToJSON();
-            return documentJSON;
-        }
-        throw new Error('Document not found');
-    }
 
-    public getEditStatusString(name: string): string {
+    // TODO determine if needed
+    public getEditStatusString(name: string, user: string): string {
         let document = this._documents.get(name);
         if (document) {
-            const editStatusString = document.getEditStatusString();
+            const editStatusString = document.getEditStatusString(user);
             return editStatusString;
         }
         throw new Error('Document not found');

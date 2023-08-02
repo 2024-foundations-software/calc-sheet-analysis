@@ -46,7 +46,9 @@ describe('DocumentHolder', () => {
             const sheetTestName = 'test' + 2
             const documentHolder = new DocumentHolder(documentTestPath);
             documentHolder.createDocument(sheetTestName, 2, 2);
-            const documentJSON = documentHolder.getDocument(sheetTestName);
+            const userName = 'testUser';
+            documentHolder.requestViewAccess(sheetTestName, 'A1', userName);
+            const documentJSON = documentHolder.getDocumentJSON(sheetTestName, 'testUser');
             // unpack the JSON
             const document = JSON.parse(documentJSON);
 
@@ -68,7 +70,11 @@ describe('DocumentHolder', () => {
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                const documentJSON = documentHolder.addToken(sheetTestName, '1');
+                const userName = 'testUser';
+
+                const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
+
+                const documentJSON = documentHolder.addToken(sheetTestName, '1', userName,);
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -85,9 +91,10 @@ describe('DocumentHolder', () => {
                 const sheetTestName = 'test' + 4
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
-
-                documentHolder.addToken(sheetTestName, '1');
-                const documentJSON = documentHolder.addToken(sheetTestName, '+');
+                const userName = 'testUser';
+                const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
+                documentHolder.addToken(sheetTestName, '1', userName);
+                const documentJSON = documentHolder.addToken(sheetTestName, '+', userName);
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -103,9 +110,13 @@ describe('DocumentHolder', () => {
             it('should not add a cell that references to itself', () => {
                 const sheetTestName = 'test' + 5
                 const documentHolder = new DocumentHolder(documentTestPath);
+
+                const userName = 'testUser';
+
+                const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                const documentJSON = documentHolder.addCell(sheetTestName, 'A1');
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A1', userName);
 
 
                 // unpack the JSON
@@ -124,8 +135,12 @@ describe('DocumentHolder', () => {
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
+                const userName = 'testUser';
 
-                const documentJSON = documentHolder.addCell(sheetTestName, 'A2');
+                const accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
+
+
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A2', userName);
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -146,11 +161,13 @@ describe('DocumentHolder', () => {
                 const sheetTestName = 'test' + 7
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
+                const userName = 'testUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
-                documentHolder.addCell(sheetTestName, 'A2');
-                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
-                const documentJSON = documentHolder.addToken(sheetTestName, '1');
+                documentHolder.addCell(sheetTestName, 'A2', userName);
+                accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
+                const documentJSON = documentHolder.addToken(sheetTestName, '1', userName);
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -180,13 +197,17 @@ describe('DocumentHolder', () => {
                 const valueA2 = cellA2.value;
                 expect(valueA2).toEqual(1);
             });
+
+
             it('should remove a token from the formula', () => {
                 const sheetTestName = 'test' + 8
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
+                const userName = 'testUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
-                const documentJSON = documentHolder.addCell(sheetTestName, 'A2');
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A2', userName);
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -201,7 +222,7 @@ describe('DocumentHolder', () => {
                 const error = cell.error;
                 expect(error).toEqual("#REF!");
 
-                const documentJSON2 = documentHolder.removeToken(sheetTestName);
+                const documentJSON2 = documentHolder.removeToken(sheetTestName, userName);
 
                 // unpack the JSON
                 const document2 = JSON.parse(documentJSON2);
@@ -222,13 +243,16 @@ describe('DocumentHolder', () => {
                 const sheetTestName = 'test' + 9
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
+                const userName = 'testUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
-                documentHolder.addCell(sheetTestName, 'A2');
-                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
-                documentHolder.addCell(sheetTestName, 'B1');
-                documentHolder.setWorkingCellByLabel(sheetTestName, 'B1');
-                const documentJSON = documentHolder.addCell(sheetTestName, 'A1');
+                documentHolder.addCell(sheetTestName, 'A2', userName);
+                accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
+                documentHolder.addCell(sheetTestName, 'B1', userName);
+                accessOK = documentHolder.requestEditAccess(sheetTestName, 'B1', userName);
+
+                const documentJSON = documentHolder.addCell(sheetTestName, 'A1', userName);
 
 
 
@@ -251,10 +275,12 @@ describe('DocumentHolder', () => {
                 const sheetTestName = 'test' + 10
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
+                const userName = 'testUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
-                documentHolder.addCell(sheetTestName, 'A2');
-                const documentJSON = documentHolder.addToken(sheetTestName, '+');
+                documentHolder.addCell(sheetTestName, 'A2', userName);
+                const documentJSON = documentHolder.addToken(sheetTestName, '+', userName);
 
                 // unpack the JSON
                 const document = JSON.parse(documentJSON);
@@ -266,7 +292,7 @@ describe('DocumentHolder', () => {
                 // the formula should be ["A2"] and the error "#REF!"
                 expect(formula).toEqual(["A2", "+"]);
 
-                const documentJSON2 = documentHolder.clearFormula(sheetTestName);
+                const documentJSON2 = documentHolder.clearFormula(sheetTestName, userName);
 
                 // unpack the JSON
                 const document2 = JSON.parse(documentJSON2);
@@ -288,15 +314,18 @@ describe('DocumentHolder', () => {
                 const sheetTestName = 'test' + 11
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
-                documentHolder.addToken(sheetTestName, '2');
-                documentHolder.addToken(sheetTestName, '+');
-                const documentJSON = documentHolder.addToken(sheetTestName, '2');
+                const userName = 'testUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
-                const formulaString = documentHolder.getFormulaString(sheetTestName);
+                documentHolder.addToken(sheetTestName, '2', userName);
+                documentHolder.addToken(sheetTestName, '+', userName);
+                const documentJSON = documentHolder.addToken(sheetTestName, '2', userName);
+
+                const formulaString = documentHolder.getFormulaString(sheetTestName, userName);
 
                 expect(formulaString).toEqual("2 + 2");
 
-                const resultString = documentHolder.getResultString(sheetTestName);
+                const resultString = documentHolder.getResultString(sheetTestName, userName);
 
                 expect(resultString).toEqual("4");
             });
@@ -306,21 +335,23 @@ describe('DocumentHolder', () => {
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
-                documentHolder.addToken(sheetTestName, '2');
-                documentHolder.addToken(sheetTestName, '+');
-                const documentJSON = documentHolder.addToken(sheetTestName, '2');
+                const userName = 'testUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
 
-                const label = documentHolder.getWorkingCellLabel(sheetTestName);
+                documentHolder.addToken(sheetTestName, '2', userName);
+                documentHolder.addToken(sheetTestName, '+', userName);
+                const documentJSON = documentHolder.addToken(sheetTestName, '2', userName);
+
+                const label = documentHolder.getWorkingCellLabel(sheetTestName, userName);
 
 
                 expect(label).toEqual("A2");
 
-                const formulaString = documentHolder.getFormulaString(sheetTestName);
+                const formulaString = documentHolder.getFormulaString(sheetTestName, userName);
 
                 expect(formulaString).toEqual("2 + 2");
 
-                const resultString = documentHolder.getResultString(sheetTestName);
+                const resultString = documentHolder.getResultString(sheetTestName, userName);
 
                 expect(resultString).toEqual("4");
 
@@ -332,17 +363,43 @@ describe('DocumentHolder', () => {
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2);
 
-                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
-                documentHolder.addToken(sheetTestName, '2');
-                documentHolder.setEditStatus(sheetTestName, true);
+                const userName = 'testUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
 
-                const editStatus = documentHolder.getEditStatus(sheetTestName);
+                documentHolder.setWorkingCellByLabel(sheetTestName, 'A2');
+                documentHolder.addToken(sheetTestName, '2', userName);
+
+
+                const editStatus = documentHolder.getEditStatus(sheetTestName, userName);
 
                 expect(editStatus).toBeTruthy();
 
-                const editStatusString = documentHolder.getEditStatusString(sheetTestName);
+                const editStatusString = documentHolder.getEditStatusString(sheetTestName, userName);
 
                 expect(editStatusString).toEqual("editing: A2");
+
+            });
+
+            it('should return the formula string for the selected cell even if it cannot edit', () => {
+                const sheetTestName = 'test' + 14
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2);
+
+                const userName = 'testUser';
+                const otherUserName = 'otherUser';
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
+                documentHolder.addToken(sheetTestName, '2', userName);
+                documentHolder.addToken(sheetTestName, '+', userName);
+                documentHolder.addToken(sheetTestName, '2', userName);
+
+                accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', otherUserName);
+                const resultString = documentHolder.getResultString(sheetTestName, otherUserName);
+                expect(resultString).toEqual("4");
+
+                documentHolder.addToken(sheetTestName, '+', otherUserName);
+                const formulaString = documentHolder.getFormulaString(sheetTestName, otherUserName);
+                expect(formulaString).toEqual("2 + 2");
+
 
             });
         });
