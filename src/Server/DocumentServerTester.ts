@@ -14,14 +14,11 @@ const serverPort = PortsGlobal.serverPort;
 const baseURL = `http://localhost:${serverPort}`;
 
 function cleanFiles() {
-    const documentFolder = path.join(__dirname, '..', '..', 'documents');
-    const files = fs.readdirSync(documentFolder);
-    // delete all files that start with xxx
-    files.forEach(file => {
-        if (file.startsWith('xxx')) {
-            fs.unlinkSync(path.join(documentFolder, file));
-        }
-    });
+    return axios.post(`${baseURL}/documents/reset`)
+        .then(response => {
+            const result = response.data;
+            return result;
+        });
 }
 
 function getDocuments() {
@@ -32,8 +29,11 @@ function getDocuments() {
         });
 }
 
-function createDocument(name: string) {
-    return axios.post(`${baseURL}/documents/create/${name}`)
+function createDocument(name: string, user: string) {
+    // put the user name in the body
+    const userName = user;
+
+    return axios.post(`${baseURL}/documents/create/${name}`, { "userName": userName })
         .then(response => {
             const result = response.data;
             return result;
@@ -48,20 +48,30 @@ function getDocument(name: string) {
         });
 }
 
-function modifyDocument(name: string, cell: string) {
+function addToken(docName: string, token: string, user: string) {
     // put the user name in the body
-    const userName = 'testUser';
-    return axios.put(`${baseURL}/document/request/cell/${name}/${cell}`, { "userName": userName })
+    const userName = user;
+    return axios.put(`${baseURL}/document/addtoken/${docName}/${token}`, { "userName": userName })
         .then(response => {
             const result = response.data;
             return result;
         });
 }
 
-function requestCell(docName: string, cell: string, user: string): Promise<boolean> {
+function addCell(docName: string, cell: string, user: string) {
     // put the user name in the body
     const userName = user;
-    return axios.put(`${baseURL}/document/request/cell/${docName}/${cell}`, { "userName": userName })
+    return axios.put(`${baseURL}/document/addcell/${docName}/${cell}`, { "userName": userName })
+        .then(response => {
+            const result = response.data;
+            return result;
+        });
+}
+
+function requestEditCell(docName: string, cell: string, user: string): Promise<boolean> {
+    // put the user name in the body
+    const userName = user;
+    return axios.put(`${baseURL}/document/cell/edit/${docName}/${cell}`, { "userName": userName })
         .then(response => {
             const result = response.data;
             return result;
@@ -83,9 +93,9 @@ async function runTests() {
     const user3 = 'jose';
 
 
-    await createDocument(testDocument1);
-    await createDocument(testDocument2);
-    await createDocument(testDocument3);
+    await createDocument(testDocument1, user1);
+    await createDocument(testDocument2, user2);
+    await createDocument(testDocument3, user3);
 
     // first, get the list of documents
     const documents = await getDocuments();
@@ -96,7 +106,15 @@ async function runTests() {
     const cell1 = 'A1';
     const cell2 = 'B2';
 
-    const result1 = await requestCell(testDocument1, cell1, user1);
+    let result = await requestEditCell(testDocument1, cell1, user1);
+    result = await addToken(testDocument1, '1', user1);
+    result = await addToken(testDocument1, '2', user1);
+    result = await addToken(testDocument1, '+', user1);
+    result = await addCell(testDocument1, cell2, user1);
+
+    result = await requestEditCell(testDocument1, cell2, user2);
+
+
 }
 
 // call the test runner

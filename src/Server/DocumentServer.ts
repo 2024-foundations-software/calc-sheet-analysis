@@ -85,6 +85,11 @@ app.put('/documents/:name', (req: express.Request, res: express.Response) => {
     res.status(200).send(document);
 });
 
+app.post('/documents/reset', (req: express.Request, res: express.Response) => {
+    documentHolder.reset();
+    res.status(200).send('reset');
+});
+
 app.post('/documents/create/:name', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
 
@@ -171,7 +176,8 @@ app.put('/document/addtoken/:name/:token', (req: express.Request, res: express.R
 
 app.put('/document/addcell/:name/:cell', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
-    const token = req.params.token;
+    const token = req.params.cell;
+
     // is this name valid?
     const documentNames = documentHolder.getDocumentNames();
     if (documentNames.indexOf(name) === -1) {

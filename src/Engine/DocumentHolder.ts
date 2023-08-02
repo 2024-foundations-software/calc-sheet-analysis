@@ -49,6 +49,19 @@ export class DocumentHolder {
         }
     }
 
+    /** clean out all the files in the directory that start with xxx
+     *  to be used in testing
+     */
+    private _cleanFiles(): void {
+        const files = fs.readdirSync(this._documentFolder);
+        // delete all files that start with xxx
+        files.forEach(file => {
+            if (file.startsWith('xxx')) {
+                fs.unlinkSync(path.join(this._documentFolder, file));
+            }
+        });
+    }
+
     private _loadDocuments(): void {
         const files = fs.readdirSync(this._documentFolder);
         files.forEach(file => {
@@ -74,6 +87,16 @@ export class DocumentHolder {
             const documentPath = path.join(this._documentFolder, name + '.json');
             fs.writeFileSync(documentPath, documentJSON);
         }
+    }
+
+    /**
+     * a function for development for the tests.
+     */
+    public reset(): void {
+        this._documents = new Map<string, SpreadSheetController>();
+        this._initializeDocumentDirectory();
+        this._cleanFiles();
+        this._loadDocuments();
     }
 
     public getDocumentNames(): string[] {
