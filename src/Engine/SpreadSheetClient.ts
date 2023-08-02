@@ -22,10 +22,11 @@ class SpreadSheetClient {
     private _documentName: string = 'test';
     private _document: DocumentTransport;
 
-    constructor(userName: string, documentName: string) {
+    constructor(documentName: string, userName: string) {
         this._userName = userName;
         this._documentName = documentName;
         this.getDocument(this._documentName, this._userName);
+
         this._document = this._initializeBlankDocument();
     }
 
@@ -80,13 +81,13 @@ class SpreadSheetClient {
         }
         const columns = this._document.columns;
         const rows = this._document.rows;
-        const cells = this._document.cells;
+        const cells: Map<string, CellTransport> = this._document.cells;
         const sheetDisplayStrings: string[][] = [];
         // create a 2d array of strings that is [row][column]
         for (let row = 0; row < rows; row++) {
             sheetDisplayStrings[row] = [];
             for (let column = 0; column < columns; column++) {
-                const cellName = Cell.columnRowToCell(column, row);
+                const cellName = Cell.columnRowToCell(column, row)!;
                 const cell = cells.get(cellName);
                 if (cell) {
                     if (cell.error === '') {
@@ -156,7 +157,9 @@ class SpreadSheetClient {
     public getDocument(name: string, user: string) {
         // put the user name in the body
         const userName = user;
-        fetch(`${this._baseURL}/documents/${name}`, {
+        const fetchURL = `${this._baseURL}/documents/${name}`;
+        console.log(fetchURL);
+        fetch(fetchURL, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -164,9 +167,11 @@ class SpreadSheetClient {
             body: JSON.stringify({ "userName": userName })
         })
             .then(response => {
+                console.log(response);
                 return response.json() as Promise<DocumentTransport>;
             }).then((document: DocumentTransport) => {
                 this._document = document;
+                console.log(document);
 
             });
 
