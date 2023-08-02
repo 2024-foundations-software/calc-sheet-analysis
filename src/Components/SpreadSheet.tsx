@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Formula from "./Formula";
 import Status from "./Status";
 import KeyPad from "./KeyPad";
-import SpreadSheetController from "../Engine/SpreadSheetController";
+import SpreadSheetClient from "../Engine/SpreadSheetClient";
 import SheetHolder from "./SheetHolder";
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
@@ -16,28 +16,26 @@ import { ButtonNames } from "../Engine/GlobalDefinitions";
  *
  * */
 
-
-
-// make this a variable so we can resize it later (this would necessitate a new machine)
-let spreadSheetController: SpreadSheetController = new SpreadSheetController(5, 8);
+// create the client that talks to the backend.
+const spreadSheetClient = new SpreadSheetClient('test', 'juancho');
 
 function SpreadSheet() {
-  const [formulaString, setFormulaString] = useState(spreadSheetController.getFormulaString())
-  const [resultString, setResultString] = useState(spreadSheetController.getResultString())
-  const [cells, setCells] = useState(spreadSheetController.getSheetDisplayStringsForGUI());
-  const [statusString, setStatusString] = useState(spreadSheetController.getEditStatusString());
-  const [currentCell, setCurrentCell] = useState(spreadSheetController.getWorkingCellLabel());
-  const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetController.getEditStatus());
+  const [formulaString, setFormulaString] = useState(spreadSheetClient.getFormulaString())
+  const [resultString, setResultString] = useState(spreadSheetClient.getResultString())
+  const [cells, setCells] = useState(spreadSheetClient.getSheetDisplayStringsForGUI());
+  const [statusString, setStatusString] = useState(spreadSheetClient.getEditStatusString());
+  const [currentCell, setCurrentCell] = useState(spreadSheetClient.getWorkingCellLabel());
+  const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetClient.getEditStatus());
 
 
   function updateDisplayValues(): void {
 
-    setFormulaString(spreadSheetController.getFormulaString());
-    setResultString(spreadSheetController.getResultString());
-    setStatusString(spreadSheetController.getEditStatusString());
-    setCells(spreadSheetController.getSheetDisplayStringsForGUI());
-    setCurrentCell(spreadSheetController.getWorkingCellLabel());
-    setCurrentlyEditing(spreadSheetController.getEditStatus());
+    setFormulaString(spreadSheetClient.getFormulaString());
+    setResultString(spreadSheetClient.getResultString());
+    setStatusString(spreadSheetClient.getEditStatusString());
+    setCells(spreadSheetClient.getSheetDisplayStringsForGUI());
+    setCurrentCell(spreadSheetClient.getWorkingCellLabel());
+    setCurrentlyEditing(spreadSheetClient.getEditStatus());
   }
 
   /**
@@ -58,19 +56,19 @@ function SpreadSheet() {
     switch (text) {
       case ButtonNames.edit_toggle:
         if (currentlyEditing) {
-          spreadSheetController.setEditStatus(false);
+          spreadSheetClient.setEditStatus(false);
         } else {
-          spreadSheetController.setEditStatus(true);
+          spreadSheetClient.setEditStatus(true);
         }
-        setStatusString(spreadSheetController.getEditStatusString());
+        setStatusString(spreadSheetClient.getEditStatusString());
         break;
 
       case ButtonNames.clear:
-        spreadSheetController.removeToken();
+        spreadSheetClient.removeToken();
         break;
 
       case ButtonNames.allClear:
-        spreadSheetController.clearFormula();
+        spreadSheetClient.clearFormula();
         break;
 
     }
@@ -90,8 +88,8 @@ function SpreadSheet() {
 
     const text = event.currentTarget.textContent;
     let trueText = text ? text : "";
-    spreadSheetController.setEditStatus(true);
-    spreadSheetController.addToken(trueText);
+    spreadSheetClient.setEditStatus(true);
+    spreadSheetClient.addToken(trueText);
 
     updateDisplayValues();
 
@@ -110,18 +108,18 @@ function SpreadSheet() {
     const cellLabel = event.currentTarget.getAttribute("cell-label");
     // calculate the current row and column of the clicked on cell
 
-    const editStatus = spreadSheetController.getEditStatus();
+    const editStatus = spreadSheetClient.getEditStatus();
     let realCellLabel = cellLabel ? cellLabel : "";
 
 
     // if the edit status is true then add the token to the machine
     if (editStatus) {
-      spreadSheetController.addCell(realCellLabel);  // this will never be ""
+      spreadSheetClient.addCell(realCellLabel);  // this will never be ""
       updateDisplayValues();
     }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
-      spreadSheetController.setWorkingCellByLabel(realCellLabel);
+      spreadSheetClient.setWorkingCellByLabel(realCellLabel);
       updateDisplayValues();
     }
 

@@ -20,4 +20,17 @@ export const ButtonNames = {
 }
 
 
+export interface CellTransport {
+  formula: string[];
+  value: number;
+  error: string;
+}
+export interface DocumentTransport {
+  columns: number;
+  rows: number;
+  cells: Map<string, CellTransport>;
+  formula: string;
+  value: string;
+  currentCell: string;
+}
 

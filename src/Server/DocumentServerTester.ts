@@ -1,31 +1,20 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { DocumentTransport, CellTransport } from '../Engine/GlobalDefinitions';
 
 
 // this will run a bunch of tests against the server.
 
 // the server should be running on theport in PortsGlobal.ts
 
-import { PortsGlobal } from '../PortsGlobal';
+import * as PortsGlobal from '../PortsGlobal';
 
-const serverPort = PortsGlobal.serverPort;
+const serverPort = PortsGlobal.PortsGlobal.serverPort;
 
 const baseURL = `http://localhost:${serverPort}`;
 
-interface Cell {
-    formula: string[];
-    value: number;
-    error: string;
-}
-interface Document {
-    columns: number;
-    rows: number;
-    cells: Map<string, Cell>;
-    formula: string;
-    value: string;
-    currentCell: string;
-}
+
 
 function cleanFiles() {
     return axios.post(`${baseURL}/documents/reset`)
@@ -78,7 +67,7 @@ function addCell(docName: string, cell: string, user: string) {
     return axios.put(`${baseURL}/document/addcell/${docName}/${cell}`, { "userName": userName })
         .then(response => {
             const result = response.data;
-            return result as Document;
+            return result as DocumentTransport;
         });
 }
 
@@ -131,7 +120,7 @@ async function runTests() {
     let resultDocument = await addToken(testDocument1, '1', user1);
     let cells = resultDocument.cells;
 
-    let cellA1 = cells[cell1];
+    let cellA1 = cells[cell1] as CellTransport;
     if (!cellA1) {
         console.log('cellA1 not found, this should have succeeded');
         return;
@@ -154,11 +143,11 @@ async function runTests() {
     await addCell(testDocument1, cell2, user1);
 
     resultBoolean = await requestEditCell(testDocument1, cell2, user2);
-    resultDocument = await addToken(testDocument1, '3', user2) as Document;
+    resultDocument = await addToken(testDocument1, '3', user2) as DocumentTransport;
 
     cells = resultDocument.cells;
-    let cellB2 = cells[cell2];
-    cellA1 = cells[cell1];
+    let cellB2 = cells[cell2] as CellTransport;
+    cellA1 = cells[cell1] as CellTransport;
 
     if (cellA1.value !== 15) {
         console.log('cellA1 value is not 15, this should have succeeded');

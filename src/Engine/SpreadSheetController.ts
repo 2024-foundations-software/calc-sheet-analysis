@@ -519,6 +519,12 @@ export class SpreadSheetController {
     // get the current formula for the cell of this user
     let container = this._memory.sheetContainer();
 
+    // for the purposes of this simple demo we will add the user if they are not present
+
+    if (!this._contributingUsers.has(user)) {
+      this.requestViewAccess(user, 'A1');
+    }
+
     let userData = this._contributingUsers.get(user)!;
     let cellFocused = userData.cellLabel;
     container.currentCell = cellFocused;
