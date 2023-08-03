@@ -154,7 +154,7 @@ class SpreadSheetClient {
     }
 
     public getEditStatus(): boolean {
-
+        console.log("edit status" + this._document.isEditing + " " + this._document.currentCell)
         return this._document.isEditing;
     }
 
@@ -163,11 +163,15 @@ class SpreadSheetClient {
      * @param bool 
      * @returns 
      */
-    public setEditStatus(bool: boolean): void {
+    public setEditStatus(isEditing: boolean): void {
+
         // request edit statut sof the current cell
-        const requestEditURL = `${this._baseURL}/document/cell/edit/${this._documentName}/${this._document.currentCell}`;
-        console.log(requestEditURL);
-        fetch(requestEditURL, {
+        let requestEditViewURL = `${this._baseURL}/document/cell/view/${this._documentName}/${this._document.currentCell}`;
+        if (isEditing) {
+            requestEditViewURL = `${this._baseURL}/document/cell/edit/${this._documentName}/${this._document.currentCell}`;
+        }
+        console.log(requestEditViewURL);
+        fetch(requestEditViewURL, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -186,15 +190,64 @@ class SpreadSheetClient {
 
 
     public addToken(token: string): void {
-        return;
+        const requestAddTokenURL = `${this._baseURL}/document/addtoken/${this._documentName}/${token}`;
+        console.log(requestAddTokenURL);
+        fetch(requestAddTokenURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+            .then(response => {
+                console.log(response);
+                return response.json() as Promise<DocumentTransport>;
+            }
+            ).then((document: DocumentTransport) => {
+                this._updateDocument(document);
+                console.log(document);
+            });
     }
 
     public addCell(cell: string): void {
-        return;
+        const requestAddCellURL = `${this._baseURL}/document/addcell/${this._documentName}/${cell}`;
+        console.log(requestAddCellURL);
+        fetch(requestAddCellURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+            .then(response => {
+                console.log(response);
+                return response.json() as Promise<DocumentTransport>;
+            }
+            ).then((document: DocumentTransport) => {
+                this._updateDocument(document);
+                console.log(document);
+            });
+
     }
 
     public removeToken(): void {
-        return;
+        const requestRemoveTokenURL = `${this._baseURL}/document/removetoken/${this._documentName}`;
+        console.log(requestRemoveTokenURL);
+        fetch(requestRemoveTokenURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+            .then(response => {
+                console.log(response);
+                return response.json() as Promise<DocumentTransport>;
+            }
+            ).then((document: DocumentTransport) => {
+                this._updateDocument(document);
+                console.log(document);
+            });
     }
 
     public requestViewByLabel(label: string): void {
@@ -261,6 +314,8 @@ class SpreadSheetClient {
         const columns = document.columns;
         const rows = document.rows;
         const isEditing = document.isEditing;
+        console.log("isEditing" + isEditing)
+        console.log("isEditing rows" + rows)
 
         // create the document
         this._document = {

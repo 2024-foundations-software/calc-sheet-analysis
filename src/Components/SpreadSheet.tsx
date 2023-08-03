@@ -38,11 +38,11 @@ function SpreadSheet() {
     setCurrentlyEditing(spreadSheetClient.getEditStatus());
   }
 
-  // useEffect to refetch the data every 1/3 of a secon
+  // useEffect to refetch the data every 1/20 of a second
   useEffect(() => {
     const interval = setInterval(() => {
       updateDisplayValues();
-    }, 100);
+    }, 50);
     return () => clearInterval(interval);
   });
 

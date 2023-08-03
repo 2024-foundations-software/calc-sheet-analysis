@@ -86,18 +86,16 @@ export class SpreadSheetController {
       userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
     }
 
-    // now see if we need to change the cell that the user is viewing
-    // if the user is already viewing the cell then do nothing
-    let currentCellLabel = this._contributingUsers.get(user)?.cellLabel;
-    if (currentCellLabel === cellLabel) {
-      return;
-    }
-
-
-    // get the user from the users who have access (we know it exists, we throw error in case)
+    // Get the user since we know the user is there.
     userData = this._contributingUsers.get(user)!;
     if (!userData) {
       throw new Error("user not found");
+    }
+    // if the user is editing/viewing this cell then there is nothing to do
+    let currentCellLabel = this._contributingUsers.get(user)?.cellLabel;
+    if (currentCellLabel === cellLabel) {
+      userData.isEditing = false;
+      return;
     }
 
     // if the user is editing a cell then free that one up
@@ -110,7 +108,7 @@ export class SpreadSheetController {
     userData.cellLabel = cellLabel;
     userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
 
-    // add the user to the list of users who are viewing the cell
+    // update the user data 
     this._contributingUsers.set(user, userData);
 
   }
@@ -118,9 +116,13 @@ export class SpreadSheetController {
 
 
   requestEditAccess(user: string, cellLabel: string): boolean {
-    this.requestViewAccess(user, cellLabel);
-
+    // if the user is not an editor then we will first add them as a viewer
+    // this will release previous cell that they were editing
     let userData = this._contributingUsers.get(user);
+
+    if (userData?.cellLabel !== cellLabel) {
+      this.requestViewAccess(user, cellLabel);
+    }
 
     // if the cell is being edited by the user then return true
     if (this._cellsBeingEdited.has(cellLabel) && this._cellsBeingEdited.get(cellLabel) === user) {
@@ -530,7 +532,7 @@ export class SpreadSheetController {
     container.currentCell = cellFocused;
     container.formula = this.getFormulaStringForUser(user);
     container.result = this.getResultStringForUser(user);
-    container.editStatus = userData.isEditing;
+    container.isEditing = userData.isEditing;
     return container;
   }
 
