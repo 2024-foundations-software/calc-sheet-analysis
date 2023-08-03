@@ -24,7 +24,7 @@ describe("SpreadSheet ", () => {
 
     it("selects A3 enters 88 then presses done then selects A1 clicks on edit then clicks on A3 and sees 88", () => {
         const { getByText, getByTestId } = render(
-            <SpreadSheet />
+            <SpreadSheet documentName={'test'} />
         );
         const statusComponent = getByTestId("StatusComponent");
         const formulaValue = getByTestId("FormulaValue");

@@ -17,7 +17,7 @@ import { PortsGlobal } from '../PortsGlobal';
 
 class SpreadSheetClient {
     private _serverPort: number = PortsGlobal.serverPort;
-    private _baseURL: string = `http://localhost:${this._serverPort}`;
+    private _baseURL: string = `http://pencil.local:${this._serverPort}`;
     private _userName: string = 'juancho';
     private _documentName: string = 'test';
     private _document: DocumentTransport;
@@ -91,6 +91,14 @@ class SpreadSheetClient {
         this._userName = userName;
     }
 
+    public get documentName(): string {
+        return this._documentName;
+    }
+
+    public set documentName(documentName: string) {
+        this._documentName = documentName;
+    }
+
     public getFormulaString(): string {
         if (!this._document) {
             return '';
@@ -151,7 +159,13 @@ class SpreadSheetClient {
     }
 
     public getEditStatusString(): string {
-        return "edit status string";
+        if (!this._document) {
+            return 'no document';
+        }
+        if (this._document.isEditing) {
+            return `editing: ${this._document.currentCell}`;
+        }
+        return `viewing: ${this._document.currentCell}`;
     }
 
     public getWorkingCellLabel(): string {

@@ -8,7 +8,9 @@ import SheetHolder from "./SheetHolder";
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 
 
-
+interface SpreadSheetProps {
+  documentName: string;
+}
 
 /**
  * the main component for the Spreadsheet.  It is the parent of all the other components
@@ -19,7 +21,7 @@ import { ButtonNames } from "../Engine/GlobalDefinitions";
 // create the client that talks to the backend.
 const spreadSheetClient = new SpreadSheetClient('test', 'juancho');
 
-function SpreadSheet() {
+function SpreadSheet({ documentName }: SpreadSheetProps) {
   const [formulaString, setFormulaString] = useState(spreadSheetClient.getFormulaString())
   const [resultString, setResultString] = useState(spreadSheetClient.getResultString())
   const [cells, setCells] = useState(spreadSheetClient.getSheetDisplayStringsForGUI());
@@ -30,7 +32,8 @@ function SpreadSheet() {
 
 
   function updateDisplayValues(): void {
-
+    spreadSheetClient.userName = userName;
+    spreadSheetClient.documentName = documentName;
     setFormulaString(spreadSheetClient.getFormulaString());
     setResultString(spreadSheetClient.getResultString());
     setStatusString(spreadSheetClient.getEditStatusString());

@@ -18,7 +18,7 @@ import { act } from "react-dom/test-utils";
 
 it("updates the current cell when a cell is clicked on", () => {
     const { getByText, getByTestId } = render(
-        <SpreadSheet />
+        <SpreadSheet documentName={'test'} />
     );
     const statusComponent = getByTestId("StatusComponent");
 
@@ -39,7 +39,7 @@ describe("CalculatorInputProcessor", () => {
     it("renders the formula, status, sheet holder, and keypad", () => {
 
         const { getByTestId } = render(
-            <SpreadSheet />
+            <SpreadSheet documentName={'test'} />
         );
         const formula = getByTestId("FormulaTitle");
 

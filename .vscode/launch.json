@@ -30,6 +30,13 @@
     },
     {
       "type": "node-terminal",
+      "name": "Start Public Server",
+      "request": "launch",
+      "command": "HOST=0.0.0.0 npm run start-server",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Test Data Server",
       "request": "launch",
       "command": "npm run test-server",

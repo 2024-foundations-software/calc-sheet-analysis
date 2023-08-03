@@ -42,7 +42,13 @@ if (!debug) {
 
 
 const app = express();
-
+app.use(cors());
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'http://pencil.local:3000');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//     next();
+// });
 app.use(bodyParser.json());
 
 // Add a middleware function to log incoming requests
@@ -52,7 +58,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use(cors());
+
 
 const documentHolder = new DocumentHolder();
 
@@ -72,11 +78,15 @@ app.put('/documents/:name', (req: express.Request, res: express.Response) => {
         res.status(400).send('userName is required');
         return;
     }
+
+
     // is this name valid?
     const documentNames = documentHolder.getDocumentNames();
+
+
     if (documentNames.indexOf(name) === -1) {
-        res.status(404).send(`Document ${name} not found`);
-        return;
+        console.log(`Document ${name} not found, creating it`);
+        documentHolder.createDocument(name, 5, 8, userName);
     }
 
     // get the document

@@ -27,7 +27,7 @@ import { act } from "react-dom/test-utils";
 
 it("when editing a cell a circular reference is ignored", () => {
     const { getByText, getByTestId } = render(
-        <SpreadSheet />
+        <SpreadSheet documentName={'test'} />
     );
 
     const formulaValue = getByTestId("FormulaValue");

@@ -84,6 +84,7 @@ export class SpreadSheetController {
       userData.isEditing = false;
       this._contributingUsers.set(user, userData);
       userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
+      return;
     }
 
     // Get the user since we know the user is there.
@@ -95,6 +96,11 @@ export class SpreadSheetController {
     let currentCellLabel = this._contributingUsers.get(user)?.cellLabel;
     if (currentCellLabel === cellLabel) {
       userData.isEditing = false;
+      // if this cell was being edited by the user then free it up
+      if (this._cellsBeingEdited.has(cellLabel)) {
+        this._cellsBeingEdited.delete(cellLabel);
+      }
+      // clean up the cell being edited
       return;
     }
 
@@ -130,16 +136,25 @@ export class SpreadSheetController {
     }
 
     // if the cell is being edited by another user return false
+    const userEditingThisCell = this._cellsBeingEdited.get(cellLabel);
+    if (userEditingThisCell && userEditingThisCell !== user) {
+      return false;
+    }
+
+
     if (this._cellsBeingEdited.has(cellLabel) && this._cellsBeingEdited.get(cellLabel) !== user) {
       return false;
     }
 
     // if the user is editing another cell then free that one up
     if (this._contributingUsers.has(user)) {
+      const userData = this._contributingUsers.get(user);
+      if (!userData) {
+        throw new Error("user not found");
+      }
 
-      let cellBeingEdited = this._contributingUsers.get(user)?.cellLabel;
-      if (cellBeingEdited) {
-        this._cellsBeingEdited.delete(cellBeingEdited);
+      if (userData.cellLabel !== '' && userData.cellLabel !== cellLabel) {
+        this._cellsBeingEdited.delete(userData.cellLabel);
       }
     }
 

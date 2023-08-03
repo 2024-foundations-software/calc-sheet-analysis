@@ -78,6 +78,24 @@ export class DocumentHolder {
         );
     }
 
+    private _checkForNewDocuments(): void {
+        const files = fs.readdirSync(this._documentFolder);
+        // if the file is not in the map, add it
+        files.forEach(file => {
+            if (!this._documents.has(file.slice(0, -5))) {
+                const documentPath = path.join(this._documentFolder, file);
+                const documentJSON = fs.readFileSync(documentPath, 'utf8');
+
+                // create a new controller
+                const controller = SpreadSheetController.spreadsheetFromJSON(documentJSON)
+                // add the controller to the map this assumes all files are .json
+                this._documents.set(file.slice(0, -5), controller);
+                console.log('added document', file.slice(0, -5));
+            }
+        }
+        );
+    }
+
 
 
     private _saveDocument(name: string): void {
@@ -100,6 +118,7 @@ export class DocumentHolder {
     }
 
     public getDocumentNames(): string[] {
+        this._checkForNewDocuments();
         const documentNames = Array.from(this._documents.keys());
         return documentNames;
     }

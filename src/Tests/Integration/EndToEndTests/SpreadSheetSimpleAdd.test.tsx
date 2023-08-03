@@ -23,7 +23,7 @@ describe("SpreadSheet 1 + 2 ", () => {
     });
     it("updates the formula and result strings when a number button is clicked", async () => {
         render(
-            <SpreadSheet />
+            <SpreadSheet documentName={'test'} />
         );
 
 

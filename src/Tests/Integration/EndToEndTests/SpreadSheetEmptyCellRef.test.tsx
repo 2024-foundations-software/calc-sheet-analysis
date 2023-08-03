@@ -23,7 +23,7 @@ import { act } from "react-dom/test-utils";
 
 it("the formula result is #REF! when cell reference points to an empty cell", () => {
     const { getByText, getByTestId } = render(
-        <SpreadSheet />
+        <SpreadSheet documentName={'test'} />
     );
 
     const formulaValue = getByTestId("FormulaValue");

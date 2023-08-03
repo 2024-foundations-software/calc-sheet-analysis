@@ -24,7 +24,7 @@ import { act } from "react-dom/test-utils";
 describe("SpreadSheet clear and all clear", () => {
     it("clear and all clear work as expected.", () => {
         const { getByText, getByTestId } = render(
-            <SpreadSheet />
+            <SpreadSheet documentName={'test'} />
         );
 
         const formulaValue = getByTestId("FormulaValue");

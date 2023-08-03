@@ -24,7 +24,7 @@ describe("SpreadSheet A2 + A2", () => {
 
     it("Can add up two identical cells A2 + A2, A2 is 2, result should be A1 has the formula and the value 4", async () => {
         render(
-            <SpreadSheet />
+            <SpreadSheet documentName={'test'} />
         );
 
         const A1cell = screen.getByTestId("A1");
