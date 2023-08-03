@@ -26,6 +26,7 @@ function SpreadSheet() {
   const [statusString, setStatusString] = useState(spreadSheetClient.getEditStatusString());
   const [currentCell, setCurrentCell] = useState(spreadSheetClient.getWorkingCellLabel());
   const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetClient.getEditStatus());
+  const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
 
 
   function updateDisplayValues(): void {
@@ -47,6 +48,23 @@ function SpreadSheet() {
   });
 
 
+  function getUserLogin() {
+    return <div>
+      <input
+        type="text"
+        placeholder="User name"
+        defaultValue={userName}
+        onChange={(event) => {
+          // get the text from the input
+          let userName = event.target.value;
+          window.sessionStorage.setItem('userName', userName);
+          // set the user name
+          setUserName(userName);
+          spreadSheetClient.userName = userName;
+        }} />
+    </div>
+
+  }
 
   /**
    * 
@@ -117,8 +135,6 @@ function SpreadSheet() {
   function onCellClick(event: React.MouseEvent<HTMLButtonElement>): void {
 
     const cellLabel = event.currentTarget.getAttribute("cell-label");
-    console.log("cell label is " + cellLabel);
-    console.log("cell label edit status is " + spreadSheetClient.getEditStatus());
     // calculate the current row and column of the clicked on cell
 
     const editStatus = spreadSheetClient.getEditStatus();
@@ -133,7 +149,7 @@ function SpreadSheet() {
     // if the edit status is false then set the current cell to the clicked on cell
     else {
       spreadSheetClient.requestViewByLabel(realCellLabel);
-      console.log("requesting view by label " + realCellLabel);
+
       updateDisplayValues();
     }
 
@@ -150,6 +166,7 @@ function SpreadSheet() {
       <KeyPad onButtonClick={onButtonClick}
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
+      {getUserLogin()}
     </div>
   )
 };

@@ -47,7 +47,7 @@ app.use(bodyParser.json());
 
 // Add a middleware function to log incoming requests
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
+    //console.log(`${req.method} ${req.url}`);
     next();
 });
 
