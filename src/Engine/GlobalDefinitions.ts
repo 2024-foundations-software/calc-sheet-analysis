@@ -25,12 +25,17 @@ export interface CellTransport {
   value: number;
   error: string;
 }
+
+export interface CellTransportMap {
+  [key: string]: CellTransport;
+}
 export interface DocumentTransport {
   columns: number;
   rows: number;
   cells: Map<string, CellTransport>;
   formula: string;
-  value: string;
+  result: string;
   currentCell: string;
+  isEditing: boolean;
 }
 

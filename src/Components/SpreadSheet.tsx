@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Formula from "./Formula";
 import Status from "./Status";
 import KeyPad from "./KeyPad";
@@ -37,6 +37,16 @@ function SpreadSheet() {
     setCurrentCell(spreadSheetClient.getWorkingCellLabel());
     setCurrentlyEditing(spreadSheetClient.getEditStatus());
   }
+
+  // useEffect to refetch the data every 1/3 of a secon
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateDisplayValues();
+    }, 100);
+    return () => clearInterval(interval);
+  });
+
+
 
   /**
    * 
@@ -105,7 +115,10 @@ function SpreadSheet() {
    * If the edit status is false then it will ask the machine to update the current formula.
    */
   function onCellClick(event: React.MouseEvent<HTMLButtonElement>): void {
+
     const cellLabel = event.currentTarget.getAttribute("cell-label");
+    console.log("cell label is " + cellLabel);
+    console.log("cell label edit status is " + spreadSheetClient.getEditStatus());
     // calculate the current row and column of the clicked on cell
 
     const editStatus = spreadSheetClient.getEditStatus();
@@ -119,7 +132,8 @@ function SpreadSheet() {
     }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
-      spreadSheetClient.setWorkingCellByLabel(realCellLabel);
+      spreadSheetClient.requestViewByLabel(realCellLabel);
+      console.log("requesting view by label " + realCellLabel);
       updateDisplayValues();
     }
 

@@ -8,7 +8,7 @@
  * getDocument(name: string, user: string): Promise<Document>
  */
 
-import { DocumentTransport, CellTransport, ErrorMessages } from '../Engine/GlobalDefinitions';
+import { DocumentTransport, CellTransport, CellTransportMap, ErrorMessages } from '../Engine/GlobalDefinitions';
 import { Cell } from '../Engine/Cell';
 
 import { PortsGlobal } from '../PortsGlobal';
@@ -28,6 +28,7 @@ class SpreadSheetClient {
         this.getDocument(this._documentName, this._userName);
 
         this._document = this._initializeBlankDocument();
+        this._timedFetch();
     }
 
     private _initializeBlankDocument(): DocumentTransport {
@@ -35,8 +36,9 @@ class SpreadSheetClient {
             columns: 5,
             rows: 8,
             formula: 'holding',
-            value: 'holding',
+            result: 'holding',
             currentCell: 'A1',
+            isEditing: false,
             cells: new Map<string, CellTransport>(),
         };
         for (let row = 0; row < document.rows; row++) {
@@ -51,6 +53,34 @@ class SpreadSheetClient {
             }
         }
         return document;
+    }
+    /**
+     * 
+     * Every .1 seconds, fetch the document from the server
+     */
+    private async _timedFetch(): Promise<Response> {
+        const url = `${this._baseURL}/documents/${this._documentName}`;
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        };
+
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                fetch(url, options)
+                    .then(response => {
+                        this.getDocument(this._documentName, this._userName);
+                        this._timedFetch();
+                        resolve(response);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            }, 100);
+        });
     }
 
     public getFormulaString(): string {
@@ -68,37 +98,44 @@ class SpreadSheetClient {
         if (!this._document) {
             return '';
         }
-        const result = this._document.value;
+        console.log(this._document)
+        const result = this._document.result;
         if (result) {
             return result;
         }
         return '';
     }
 
+    private _getCellValue(cellTransport: CellTransport): string {
+        if (cellTransport.error === '') {
+            return cellTransport.value.toString();
+        } else if (cellTransport.error === ErrorMessages.emptyFormula) {
+            return '';
+        } else {
+            return cellTransport.error;
+        }
+    }
     public getSheetDisplayStringsForGUI(): string[][] {
         if (!this._document) {
             return [];
         }
         const columns = this._document.columns;
         const rows = this._document.rows;
-        const cells: Map<string, CellTransport> = this._document.cells;
+        const cells: Map<string, CellTransport> = this._document.cells as Map<string, CellTransport>;
         const sheetDisplayStrings: string[][] = [];
         // create a 2d array of strings that is [row][column]
+
+
+
         for (let row = 0; row < rows; row++) {
             sheetDisplayStrings[row] = [];
             for (let column = 0; column < columns; column++) {
                 const cellName = Cell.columnRowToCell(column, row)!;
-                const cell = cells.get(cellName);
+                const cell = cells.get(cellName) as CellTransport;
                 if (cell) {
-                    if (cell.error === '') {
-                        sheetDisplayStrings[row][column] = cell.value.toString();
-                    } else if (cell.error === ErrorMessages.emptyFormula) {
-                        sheetDisplayStrings[row][column] = '';
-                    } else {
-                        sheetDisplayStrings[row][column] = cell.error;
-                    }
+                    sheetDisplayStrings[row][column] = this._getCellValue(cell);
                 } else {
-                    sheetDisplayStrings[row][column] = 'XXX';
+                    sheetDisplayStrings[row][column] = 'xxx';
                 }
             }
         }
@@ -117,12 +154,36 @@ class SpreadSheetClient {
     }
 
     public getEditStatus(): boolean {
-        return true;
+
+        return this._document.isEditing;
     }
 
+    /**
+     * ask for permission to edit a cell
+     * @param bool 
+     * @returns 
+     */
     public setEditStatus(bool: boolean): void {
-        return;
+        // request edit statut sof the current cell
+        const requestEditURL = `${this._baseURL}/document/cell/edit/${this._documentName}/${this._document.currentCell}`;
+        console.log(requestEditURL);
+        fetch(requestEditURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+            .then(response => {
+                console.log(response);
+                return response.json() as Promise<DocumentTransport>;
+            }).then((document: DocumentTransport) => {
+                this._updateDocument(document);
+                console.log(document);
+            });
     }
+
+
 
     public addToken(token: string): void {
         return;
@@ -136,8 +197,23 @@ class SpreadSheetClient {
         return;
     }
 
-    public setWorkingCellByLabel(label: string): void {
-        return;
+    public requestViewByLabel(label: string): void {
+        const requestViewURL = `${this._baseURL}/document/cell/view/${this._documentName}/${label}`;
+        console.log(requestViewURL);
+        fetch(requestViewURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+            .then(response => {
+                console.log(response);
+                return response.json() as Promise<DocumentTransport>;
+            }).then((document: DocumentTransport) => {
+                this._updateDocument(document);
+                console.log(document);
+            });
     }
 
     public clearFormula(): void {
@@ -170,12 +246,52 @@ class SpreadSheetClient {
                 console.log(response);
                 return response.json() as Promise<DocumentTransport>;
             }).then((document: DocumentTransport) => {
-                this._document = document;
+                this._updateDocument(document);
                 console.log(document);
 
             });
 
     }
+
+
+    private _updateDocument(document: DocumentTransport): void {
+        const formula = document.formula;
+        const result = document.result;
+        const currentCell = document.currentCell;
+        const columns = document.columns;
+        const rows = document.rows;
+        const isEditing = document.isEditing;
+
+        // create the document
+        this._document = {
+            formula: formula,
+            result: result,
+
+            currentCell: currentCell,
+            columns: columns,
+            rows: rows,
+            isEditing: isEditing,
+            cells: new Map<string, CellTransport>(),
+        };
+        // create the cells
+        const cells = document.cells as unknown as CellTransportMap;
+        console.log(cells)
+        for (let cellName in cells) {
+            console.log(cellName)
+            let cellTransport = cells[cellName];
+            const [column, row] = Cell.cellToColumnRow(cellName);
+            const cell: CellTransport = {
+                formula: cellTransport.formula,
+                value: cellTransport.value,
+                error: cellTransport.error,
+            };
+            this._document!.cells.set(cellName, cell);
+        }
+
+    }
+
 }
+
+
 
 export default SpreadSheetClient;

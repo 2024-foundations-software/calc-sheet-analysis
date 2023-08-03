@@ -163,6 +163,11 @@ async function runTests() {
         console.log('cellB2 value is 3, this succeeded');
     }
 
+    const testDocument = 'test';
+
+    await requestEditCell(testDocument, 'A1', 'juancho');
+    await addToken(testDocument, '+', 'juancho');
+    await addToken(testDocument, '1', 'juancho');
 
 
 

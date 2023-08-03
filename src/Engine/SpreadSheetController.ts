@@ -530,6 +530,7 @@ export class SpreadSheetController {
     container.currentCell = cellFocused;
     container.formula = this.getFormulaStringForUser(user);
     container.result = this.getResultStringForUser(user);
+    container.editStatus = userData.isEditing;
     return container;
   }
 
