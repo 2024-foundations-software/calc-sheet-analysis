@@ -33,7 +33,7 @@ import { DocumentHolder } from '../Engine/DocumentHolder';
 import { PortsGlobal } from '../PortsGlobal';
 
 // define a debug flag to turn on debugging
-const debug = true;
+let debug = true;
 
 // define a shim for console.log so we can turn off debugging
 if (!debug) {
@@ -53,7 +53,9 @@ app.use(bodyParser.json());
 
 // Add a middleware function to log incoming requests
 app.use((req, res, next) => {
-    //console.log(`${req.method} ${req.url}`);
+    if (debug) {
+        console.log(`${req.method} ${req.url}`);
+    }
     next();
 });
 
@@ -93,6 +95,13 @@ app.put('/documents/:name', (req: express.Request, res: express.Response) => {
     const document = documentHolder.getDocumentJSON(name, userName);
 
     res.status(200).send(document);
+});
+
+app.get('/debug', (req: express.Request, res: express.Response) => {
+    debug = !debug
+    console.log(`debug is ${debug}`);
+    res.status(200).send(`debug is ${debug}`);
+
 });
 
 app.post('/documents/reset', (req: express.Request, res: express.Response) => {

@@ -205,8 +205,10 @@ describe('SheetMemory', () => {
 
 
 
-        const expectedJSON = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1","+","2"],"value":3,"error":""},"A2":{"formula":["B2"],"value":0,"error":"#REF!"},"B1":{"formula":["A1"],"value":3,"error":""},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}';
-        expect(sheet.sheetContainer()).toEqual(expectedJSON);
+        const expectedJSON = '{"cells": {"A1": {"error": "", "formula": ["1", "+", "2"], "value": 3}, "A2": {"error": "#REF!", "formula": ["B2"], "value": 0}, "B1": {"error": "", "formula": ["A1"], "value": 3}, "B2": {"error": "#EMPTY!", "formula": [], "value": 0}}, "columns": 2, "rows": 2}';
+        const expected = JSON.parse(expectedJSON);
+
+        expect(sheetJSON).toEqual(expected);
       });
     });
 

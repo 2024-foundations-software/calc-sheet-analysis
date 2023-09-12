@@ -34,6 +34,4 @@ export class ContributingUser {
     public get formulaBuilder(): FormulaBuilder {
         return this._formulaBuilder;
     }
-
-
 }
