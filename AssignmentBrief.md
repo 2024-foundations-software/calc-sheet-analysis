@@ -25,6 +25,12 @@ He was also required to provide a message when the user was not logged in to the
 
 He did do us a favor and he left us the unit tests for `FormulaEvaluator.ts` You can find these unit tests in `FormulaEvaluator.test.ts`.  But we are not completely sure that he did not add something there to confuse the people who are replacing him.
 
+### Learning outcomes.
+The intention of this assignment is to start you in the world of working in existing code.  Typically when you join a team in a company you are starting to work with existing code.  The first task that most engineers are given is usually to fix a bug.  In this assignment we are having you fix a bug in the existing prototype.   The bug that you are fixing is that there is no indication given to the user when there is no user name in the input element on the page.
+
+
+The second task that most engineers get is to get up to speed on existing code.   We have fabricated the scenario here to provide you with the experience of having to understand a system, how the system is built, and how the system is deployed.   The calculator that you have inherited will return a number for each calculation (Bilbo had set this up to test the whole system.)
+
 ### How the current version works 
 short description here and demo in class.
 
