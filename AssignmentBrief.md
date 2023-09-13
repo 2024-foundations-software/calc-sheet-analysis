@@ -31,6 +31,8 @@ The intention of this assignment is to start you in the world of working in exis
 
 The second task that most engineers get is to get up to speed on existing code.   We have fabricated the scenario here to provide you with the experience of having to understand a system, how the system is built, and how the system is deployed.   The calculator that you have inherited will return a number for each calculation (Bilbo had set this up to test the whole system.)
 
+The Third task that most engineers experience is to do a code review.  With this in mind we would like you to do a code review of one of the team mates in your team.   You should update the CodeReview.md file that is included in this repository.
+
 ### How the current version works 
 short description here and demo in class.
 
@@ -55,7 +57,7 @@ short description here and demo in class.
     Implement Calculation engine
     </td>
     <td>
-    Implement the calculation engine so that the unit test pass.  Also look out to see if there is a bad unit test
+    Implement the calculation engine so that the basic calculator works (it passes the unit testsunit test pass. <br /> Also look out to see if there is a bad unit test
     </td>
     <td>
     30
@@ -87,11 +89,70 @@ short description here and demo in class.
 </table>
 
 ### Implementation strategy
-1. implement the calculator functionality first.  get that working 
-1. implement the missing login functionality
-1. help your team mates if needed
-1. do the code review at any point (its better if you do it when the code is not finished)
+1. Implement the missing login functionality
+1. Implement the calculator functionality first.  get that working 
+1. Do the code review with your team mates, in particular if one of your team mates is struggling do a code review.<br/>
+     - If you are struggling, ask for a code review.
+1. Do the code review at any point (its better if you do it when the code is not finished)
 
 At the end of this  assignment you should be able to have separate tabs on your browser with different users using the same spread sheet.
 
 
+### How do you run this thing.
+
+The version of the spreadsheet that you have runs as two processes.   There is a backend server that does the calculation and there is a front end server that renders the spreadsheet and sends request for updates to the backend server.
+
+In order to start the backend server you can do run the DocumentServer.ts by issuing the command 
+
+```bash
+npm run start-server
+```
+
+at that poinn you should see some thing that looks like this run in that terminal.
+
+```bash
+~/C/s/calc-sheet ❯ npm run start-server
+Debugger attached.
+
+> calc-sheet@0.1.0 start-server
+> ts-node ./src/Server/DocumentServer.ts
+
+Debugger attached.
+test.json
+test1.json
+test2.json
+test32.json
+test5.json
+test999.json
+testd.json
+xxxtestDocument1.json
+xxxtestDocument2.json
+xxxtestDocument3.json
+listening on port 3005
+```
+
+Then in a second terminal you can run the command 
+
+```bash
+npm run start
+
+```
+
+This should start your frontend server and will start a tab in your current browser.  In that terminal you will see
+```bash
+Compiled successfully!
+
+You can now view calc-sheet in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://10.18.195.99:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+    
+```
