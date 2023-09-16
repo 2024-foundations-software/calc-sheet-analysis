@@ -6,9 +6,9 @@ Welcome to ACME software.  We are happy to have you on board here at our start u
 
 #### Onboarding
 
-Your first assignment (should you choose to accept it) is to pick up a project that Bilbo Baggins was working on when he left the company.   He said he had some sort of important quest or something.  
+Your first assignment (should you choose to accept it) is to pick up a project that Bilbo Buggins was working on when they left the company.   They said they had some sort of important quest or something.  
 
-Anyhow.  What was Bilbo Baggins working on?
+Anyhow.  What was Bilbo Buggins working on?
 
 ### The demonstratable Spreadsheet.
 
@@ -16,20 +16,20 @@ We are building a spreadsheet that will be used by teachers in primary school an
 
 #### The problem we have.
 
-Bilbo was well on his way to getting the work done however he ended up with some code that kinda works.
+Bilbo was well on their way to getting the work done however they ended up with some code that kinda works.
 
 
-Bilbo did a couple of things on his way out.   He deleted the core calculator in `FormulaEvaluator.ts`  
+Bilbo did a couple of things on their way out.  They deleted the core calculator in `FormulaEvaluator.ts`  
 
-He was also required to provide a message when the user was not logged in to the main page.  
+They were also required to provide a message when the user was not logged in to the main page.  
 
-He did do us a favor and he left us the unit tests for `FormulaEvaluator.ts` You can find these unit tests in `FormulaEvaluator.test.ts`.  But we are not completely sure that he did not add something there to confuse the people who are replacing him.
+They did do us a favour left us the unit tests for `FormulaEvaluator.ts` You can find these unit tests in `FormulaEvaluator.test.ts`.  But we are not completely sure that they did not add something there to confuse the people who are replacing them!  They didn't leave any official bug reports, and there doesn't appear to be history in the repository. 
 
 ### Learning outcomes.
-The intention of this assignment is to start you in the world of working in existing code.  Typically when you join a team in a company you are starting to work with existing code.  The first task that most engineers are given is usually to fix a bug.  In this assignment we are having you fix a bug in the existing prototype.   The bug that you are fixing is that there is no indication given to the user when there is no user name in the input element on the page.
+The intention of this assignment is to start you in the world of working in existing code.  Typically when you join a team in a company you are starting to work with existing code.  The first task that most engineers are given is usually to fix a bug.  In this assignment we are having you fix a bug in the existing prototype.   The bug that you are fixing is that there is no indication given to the user when there is no user name in the input element on the page.  It sure would be nice to actually have a but report to work with, but there isn't one.  Before you fix this bug, create what you think a good bug report would look like for this issue.
 
 
-The second task that most engineers get is to get up to speed on existing code.   We have fabricated the scenario here to provide you with the experience of having to understand a system, how the system is built, and how the system is deployed.   The calculator that you have inherited will return a number for each calculation (Bilbo had set this up to test the whole system.)
+The second task that most engineers get is to get up to speed on existing code.   We have fabricated the scenario here to provide you with the experience of having to understand a system, how the system is built, and how the system is deployed.   The calculator that you have inherited will return a number for each calculation (Bilbo had set this up to test the whole system.  When you are making changes to this existing system, do it through pull requests, so that you start to create a systematic communication mechanism with other people who are working on this code base!
 
 The Third task that most engineers experience is to do a code review.  With this in mind we would like you to do a code review of one of the team mates in your team.   You should update the CodeReview.md file that is included in this repository.
 
@@ -89,13 +89,13 @@ short description here and demo in class.
 </table>
 
 ### Implementation strategy
-1. Implement the missing login functionality
-1. Implement the calculator functionality first.  get that working 
+1. Crate the bug report and implement the missing login functionality
+1. Implement the calculator functionality first.  Get that working, and practice putting together meaningful pull requests for these changes. 
 1. Do the code review with your team mates, in particular if one of your team mates is struggling do a code review.<br/>
      - If you are struggling, ask for a code review.
 1. Do the code review at any point (its better if you do it when the code is not finished)
 
-At the end of this  assignment you should be able to have separate tabs on your browser with different users using the same spread sheet.
+At the end of this  assignment you should be able to have separate tabs on your browser with different users using the same spread sheet.  Be ready to go over all of this work with your TA in your weekly standup!
 
 
 ### How do you run this thing.
