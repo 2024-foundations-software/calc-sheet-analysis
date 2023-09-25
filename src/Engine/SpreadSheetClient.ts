@@ -264,7 +264,7 @@ class SpreadSheetClient {
 
     public requestViewByLabel(label: string): void {
         const requestViewURL = `${this._baseURL}/document/cell/view/${this._documentName}/${label}`;
-
+        console.log(this._userName);
         fetch(requestViewURL, {
             method: 'PUT',
             headers: {

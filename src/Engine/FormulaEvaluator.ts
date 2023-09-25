@@ -156,9 +156,6 @@ export class FormulaEvaluator {
    * 
    */
   private factor(): number {
-    if (this._errorOccured) {
-      return 0;
-    }
     let result = 0;
     // if the formula is empty set errorOccured to true 
     // and set the errorMessage to "PARTIAL"

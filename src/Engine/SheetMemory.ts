@@ -164,17 +164,6 @@ export class SheetMemory {
     }
 
     /**
-     * 
-     * get current cell formula
-     * 
-     * @returns the formula of the current cell
-     * 
-     */
-    getCurrentCellFormula(): FormulaType {
-        return this._cells[this._currentColumn][this._currentRow].getFormula()
-    }
-
-    /**
      * set current cell value
      *  
      * @param value

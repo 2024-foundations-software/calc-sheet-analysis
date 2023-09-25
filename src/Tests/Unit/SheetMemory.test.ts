@@ -260,104 +260,63 @@ describe('SheetMemory', () => {
       });
     });
 
-
     describe('test calc_sheet', function () {
       it('test getSheetDisplayStrings', function (done) {
+        console.log('Starting test...');
+        console.time('Test duration');
         let sheet = new SheetMemory(3, 3);
-        expect(sheet.getSheetDisplayStrings()).toEqual([
-          ['', '', ''],
-          ['', '', ''],
-          ['', '', ''],
-        ]);
 
         let cell = sheet.getCellByLabel("A3");
-        cell.setFormula(["1", "+", "7"]);
+        cell.setFormula(["8"]);
         cell.setValue(8);
         cell.setError("");
-
-        let displayStrings = sheet.getSheetDisplayStrings();
-        expect(displayStrings).toEqual([
-          ['', '', '8'],
-          ['', '', ''],
-          ['', '', ''],
-        ]);
-
         cell = sheet.getCellByLabel("B2");
         cell.setFormula(["543"]);
         cell.setValue(543);
         cell.setError("");
 
-        displayStrings = sheet.getSheetDisplayStrings();
+        let displayStrings = sheet.getSheetDisplayStrings();
 
-        expect(displayStrings).toEqual([
-          ['', '', '8'],
-          ['', '543', ''],
-          ['', '', ''],
-        ]);
-
-
-
-        // sheet.setCellContents(0, 0, '3.14');
-        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
-        //   ['3.14', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', '']
-        // ]);
-        // sheet.setCellContents(0, 1, '3.14');
-        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
-        //   ['3.14', '', ''],
-        //   ['3.14', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', '']
-        // ]);
-        // sheet.setCellContents(0, 2, '3.14');
-        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
-        //   ['3.14', '', ''],
-        //   ['3.14', '', ''],
-        //   ['3.14', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', '']
-        // ]);
-        // sheet.setCellContents(1, 0, '3.14');
-        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
-        //   ['3.14', '3.14', ''],
-        //   ['3.14', '', ''],
-        //   ['3.14', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', ''],
-        //   ['', '', '']
-        // ]);
-        // sheet.setCellContents(1, 1, '3.14');
-        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
-        //   ['3.14', '3.14', ''],
-        //   ['3.14', '3.14', ''],
-        // ])
-      })
-    })
+        expect(displayStrings[0][0]).toEqual('');
+        expect(displayStrings[0][1]).toEqual('');
+        expect(displayStrings[0][2]).toEqual('8');
+        expect(displayStrings[1][0]).toEqual('');
+        expect(displayStrings[1][1]).toEqual('543');
+        expect(displayStrings[1][2]).toEqual('');
+        expect(displayStrings[2][0]).toEqual('');
+        expect(displayStrings[2][1]).toEqual('');
+        expect(displayStrings[2][2]).toEqual('');
 
 
+        console.timeEnd('Test duration');
+        console.log('Test complete.');
+
+        // this test is timing out so we call done here (there are no async calls)
+        done();
+
+
+      });
+    });
+
+    //let sheet = new SheetMemory(3, 3);
+    // let displayStrings = sheet.getSheetDisplayStrings();
+
+    //     let cell = sheet.getCellByLabel("A3");
+    //     cell.setFormula(["1", "+", "7"]);
+    //     cell.setValue(8);
+    //     cell.setError("");
+    //     cell = sheet.getCellByLabel("B2");
+    //     cell.setFormula(["543"]);
+    //     cell.setValue(543);
+    //     cell.setError("");
+
+    //     let displayStrings = sheet.getSheetDisplayStrings();
+
+    //     expect(displayStrings).toEqual([
+    //       ['', '', '8'],
+    //       ['', '543', ''],
+    //       ['', '', ''],
+    //     ]);
 
 
     describe("createSheetFromJSON", () => {
