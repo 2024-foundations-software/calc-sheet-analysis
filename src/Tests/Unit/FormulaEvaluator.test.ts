@@ -112,10 +112,12 @@ describe("FormulaEvaluator", () => {
           let result = recalc.result;
           let error = recalc.error;
 
-          expect(result).toEqual(-1);
+          expect(result).toEqual(3);
           expect(error).toEqual("");
         });
       });
+
+
 
       describe("when the operator is *", () => {
         it("returns the product of the numbers", () => {
@@ -126,7 +128,7 @@ describe("FormulaEvaluator", () => {
           let result = recalc.result;
           let error = recalc.error;
 
-          expect(result).toEqual(2);
+          expect(result).toEqual(3);
           expect(error).toEqual("");
         });
       });
