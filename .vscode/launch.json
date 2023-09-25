@@ -72,6 +72,13 @@
     },
     {
       "type": "node-terminal",
+      "name": "Jest FormulaEvaluator",
+      "request": "launch",
+      "command": "npx jest FormulaEvaluator",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Jest Calculation",
       "request": "launch",
       "command": "npx jest CalculationManager",
