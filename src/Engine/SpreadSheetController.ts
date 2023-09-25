@@ -89,9 +89,7 @@ export class SpreadSheetController {
 
     // Get the user since we know the user is there.
     userData = this._contributingUsers.get(user)!;
-    if (!userData) {
-      throw new Error("user not found");
-    }
+
     // if the user is editing/viewing this cell then there is nothing to do
     let currentCellLabel = this._contributingUsers.get(user)?.cellLabel;
     if (currentCellLabel === cellLabel) {

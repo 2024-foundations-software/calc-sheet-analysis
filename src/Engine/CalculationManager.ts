@@ -67,8 +67,7 @@ export default class CalculationManager {
     public okToAddNewDependency(currentCellLabel: string, newDependsOnCell: string, sheetMemory: SheetMemory): boolean {
         // get the current cell
         let currentCell = sheetMemory.getCellByLabel(currentCellLabel);
-        console.log("currentCell", currentCellLabel)
-        console.log("newDependsOnCell", newDependsOnCell)
+
 
         // the dependsOn list for the current cell is up to because we update it everyt time we render
         const dependsOn: string[] = currentCell.getDependsOn();

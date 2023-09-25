@@ -33,7 +33,7 @@ import { DocumentHolder } from '../Engine/DocumentHolder';
 import { PortsGlobal } from '../PortsGlobal';
 
 // define a debug flag to turn on debugging
-let debug = true;
+let debug = false;
 
 // define a shim for console.log so we can turn off debugging
 if (!debug) {

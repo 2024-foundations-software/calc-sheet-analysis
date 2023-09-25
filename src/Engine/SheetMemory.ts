@@ -187,6 +187,7 @@ export class SheetMemory {
 
 
 
+
     /**
      * Get Sheet display strings
      * 
@@ -206,7 +207,6 @@ export class SheetMemory {
         }
         return displayStrings;
     }
-
     /** 
      * get a json representation of the sheet We only need to store
      * the formula, value, and error for each cell

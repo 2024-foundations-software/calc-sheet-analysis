@@ -246,6 +246,117 @@ describe('SheetMemory', () => {
       });
     });
 
+    describe("Update from JSON", () => {
+      it("should throw an error when the dimentions do not match", () => {
+        const sheet = new SheetMemory(2, 3);
+        let cell = sheet.getCellByLabel("A1");
+        cell.setFormula(["1", "+", "7"]);
+        cell.setValue(8);
+        cell.setError("");
+
+        const jsonString = '{"columns":2,"rows":2,"cells":{"A1":{"formula":["1","+","2"],"value":3,"error":""},"A2":{"formula":["B2"],"value":0,"error":"#REF!"},"B1":{"formula":["A1"],"value":3,"error":""},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}';
+        expect(() => sheet.updateSheetFromJSON(jsonString)).toThrow();
+
+      });
+    });
+
+
+    describe('test calc_sheet', function () {
+      it('test getSheetDisplayStrings', function (done) {
+        let sheet = new SheetMemory(3, 3);
+        expect(sheet.getSheetDisplayStrings()).toEqual([
+          ['', '', ''],
+          ['', '', ''],
+          ['', '', ''],
+        ]);
+
+        let cell = sheet.getCellByLabel("A3");
+        cell.setFormula(["1", "+", "7"]);
+        cell.setValue(8);
+        cell.setError("");
+
+        let displayStrings = sheet.getSheetDisplayStrings();
+        expect(displayStrings).toEqual([
+          ['', '', '8'],
+          ['', '', ''],
+          ['', '', ''],
+        ]);
+
+        cell = sheet.getCellByLabel("B2");
+        cell.setFormula(["543"]);
+        cell.setValue(543);
+        cell.setError("");
+
+        displayStrings = sheet.getSheetDisplayStrings();
+
+        expect(displayStrings).toEqual([
+          ['', '', '8'],
+          ['', '543', ''],
+          ['', '', ''],
+        ]);
+
+
+
+        // sheet.setCellContents(0, 0, '3.14');
+        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
+        //   ['3.14', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', '']
+        // ]);
+        // sheet.setCellContents(0, 1, '3.14');
+        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
+        //   ['3.14', '', ''],
+        //   ['3.14', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', '']
+        // ]);
+        // sheet.setCellContents(0, 2, '3.14');
+        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
+        //   ['3.14', '', ''],
+        //   ['3.14', '', ''],
+        //   ['3.14', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', '']
+        // ]);
+        // sheet.setCellContents(1, 0, '3.14');
+        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
+        //   ['3.14', '3.14', ''],
+        //   ['3.14', '', ''],
+        //   ['3.14', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', ''],
+        //   ['', '', '']
+        // ]);
+        // sheet.setCellContents(1, 1, '3.14');
+        // assert.deepEqual(sheet.getSheetDisplayStrings(), [
+        //   ['3.14', '3.14', ''],
+        //   ['3.14', '3.14', ''],
+        // ])
+      })
+    })
+
 
 
 

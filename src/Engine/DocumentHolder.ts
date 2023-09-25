@@ -65,7 +65,7 @@ export class DocumentHolder {
     private _loadDocuments(): void {
         const files = fs.readdirSync(this._documentFolder);
         files.forEach(file => {
-            console.log(file)
+
             const documentPath = path.join(this._documentFolder, file);
             const documentJSON = fs.readFileSync(documentPath, 'utf8');
 
@@ -90,7 +90,7 @@ export class DocumentHolder {
                 const controller = SpreadSheetController.spreadsheetFromJSON(documentJSON)
                 // add the controller to the map this assumes all files are .json
                 this._documents.set(file.slice(0, -5), controller);
-                console.log('added document', file.slice(0, -5));
+
             }
         }
         );
