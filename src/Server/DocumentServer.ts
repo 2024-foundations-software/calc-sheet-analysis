@@ -73,8 +73,10 @@ app.get('/documents', (req: express.Request, res: express.Response) => {
 // PUT /documents/:name
 // userName is in the document body
 app.put('/documents/:name', (req: express.Request, res: express.Response) => {
+    console.log('PUT /documents/:name');
     const name = req.params.name;
     // get the userName from the body
+    console.log(`PUT /documents/:name ${name}`);
     const userName = req.body.userName;
     if (!userName) {
         res.status(400).send('userName is required');
