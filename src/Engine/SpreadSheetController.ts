@@ -247,6 +247,9 @@ export class SpreadSheetController {
   clearFormula(user: string): void {
 
     const userEditing = this._contributingUsers.get(user);
+    if (!userEditing!.isEditing) {
+      return;
+    }
 
     userEditing!.formulaBuilder.setFormula([]);
     let cellBeingEdited = this._contributingUsers.get(user)?.cellLabel;
