@@ -71,7 +71,13 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
 
   }
 
-
+  function checkUserName(): boolean {
+    if (userName === "") {
+      alert("Please enter a user name");
+      return false;
+    }
+    return true;
+  }
 
   /**
    * 
@@ -87,8 +93,13 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
    */
   async function onCommandButtonClick(text: string): Promise<void> {
 
+    if (!checkUserName()) {
+      return;
+    }
 
     switch (text) {
+
+
       case ButtonNames.edit_toggle:
         if (currentlyEditing) {
           spreadSheetClient.setEditStatus(false);
@@ -120,7 +131,9 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
    * 
    * */
   function onButtonClick(event: React.MouseEvent<HTMLButtonElement>): void {
-
+    if (!checkUserName()) {
+      return;
+    }
     const text = event.currentTarget.textContent;
     let trueText = text ? text : "";
     spreadSheetClient.setEditStatus(true);
@@ -147,6 +160,10 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
    */
   function onCellClick(event: React.MouseEvent<HTMLButtonElement>): void {
 
+    if (userName === "") {
+      alert("Please enter a user name");
+      return;
+    }
     const cellLabel = event.currentTarget.getAttribute("cell-label");
     // calculate the current row and column of the clicked on cell
 
