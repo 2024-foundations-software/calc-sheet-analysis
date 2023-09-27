@@ -17,7 +17,8 @@ import { PortsGlobal } from '../PortsGlobal';
 
 class SpreadSheetClient {
     private _serverPort: number = PortsGlobal.serverPort;//https://calc-sheet-backend.onrender.com/documents
-    private _baseURL: string = `https://calc-sheet-backend.onrender.com:${this._serverPort}`;
+    private _baseURL: string = `https://calc-sheet-backend.onrender.com`;
+    //`https://calc-sheet-backend.onrender.com:${this._serverPort}`;
     private _userName: string = 'juancho';
     private _documentName: string = 'test';
     private _document: DocumentTransport;

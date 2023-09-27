@@ -5,11 +5,12 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import SpreadSheet from './Components/SpreadSheet';
+
 function App() {
 
 
   const [documentName, setDocumentName] = useState(getDocumentNameFromWindow());
-
+  //const memoryUsage = process.memoryUsage();
   useEffect(() => {
     if (window.location.href) {
       setDocumentName(getDocumentNameFromWindow());
@@ -66,6 +67,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <MemoryStats />
         <SpreadSheet documentName={documentName} />
       </header>
 

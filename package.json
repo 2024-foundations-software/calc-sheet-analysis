@@ -63,6 +63,7 @@
     "@types/node": "^20.3.1",
     "@types/uuid": "^9.0.2",
     "axios": "^1.4.0",
+    "react-memory-stats": "^0.2.0",
     "ts-jest": "^29.1.0",
     "uuid": "^9.0.0"
   }
