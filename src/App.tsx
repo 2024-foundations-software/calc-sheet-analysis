@@ -67,7 +67,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <MemoryStats />
         <SpreadSheet documentName={documentName} />
       </header>
 
