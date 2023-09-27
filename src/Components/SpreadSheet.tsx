@@ -6,6 +6,7 @@ import SpreadSheetClient from "../Engine/SpreadSheetClient";
 import SheetHolder from "./SheetHolder";
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
+import ServerSelector from "./ServerSelector";
 
 
 interface SpreadSheetProps {
@@ -29,6 +30,7 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
   const [currentCell, setCurrentCell] = useState(spreadSheetClient.getWorkingCellLabel());
   const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetClient.getEditStatus());
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
+  const [serverSelected, setServerSelected] = useState("localhost");
 
 
   function updateDisplayValues(): void {
@@ -68,6 +70,8 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
     </div>
 
   }
+
+
 
   /**
    * 
@@ -126,6 +130,12 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
 
   }
 
+  // this is to help with development,  it allows us to select the server
+  function serverSelector(buttonName: string) {
+    setServerSelected(buttonName);
+    spreadSheetClient.setServerSelector(buttonName);
+  }
+
 
   /**
    * 
@@ -170,6 +180,7 @@ function SpreadSheet({ documentName }: SpreadSheetProps) {
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
       {getUserLogin()}
+      <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
     </div>
   )
 };

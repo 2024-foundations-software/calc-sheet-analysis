@@ -8,7 +8,7 @@ import { DocumentTransport, CellTransport } from '../Engine/GlobalDefinitions';
 
 // the server should be running on theport in PortsGlobal.ts
 
-import * as PortsGlobal from '../PortsGlobal';
+import * as PortsGlobal from '../ServerDataDefinitions';
 
 const serverPort = PortsGlobal.PortsGlobal.serverPort;
 

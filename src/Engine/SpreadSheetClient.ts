@@ -11,25 +11,36 @@
 import { DocumentTransport, CellTransport, CellTransportMap, ErrorMessages } from '../Engine/GlobalDefinitions';
 import { Cell } from '../Engine/Cell';
 
-import { PortsGlobal } from '../PortsGlobal';
+import { PortsGlobal, LOCAL_SERVER_URL, RENDER_SERVER_URL } from '../ServerDataDefinitions';
 
 
 
 class SpreadSheetClient {
-    private _serverPort: number = PortsGlobal.serverPort;//https://calc-sheet-backend.onrender.com/documents
-    private _baseURL: string = `https://calc-sheet-backend.onrender.com`;
-    //`https://calc-sheet-backend.onrender.com:${this._serverPort}`;
+
+    // get the environment variable SERVER_LOCAL 
+    // if it is true then use the local server
+    // otherwise use the render server
+
+
+
+    private _serverPort: number = PortsGlobal.serverPort;
+    private _baseURL: string = `${LOCAL_SERVER_URL}:${this._serverPort}`;
     private _userName: string = 'juancho';
     private _documentName: string = 'test';
     private _document: DocumentTransport;
+    private _server: string = '';
 
     constructor(documentName: string, userName: string) {
         this._userName = userName;
         this._documentName = documentName;
-        this.getDocument(this._documentName, this._userName);
+
+        this.setServerSelector('localhost');  // change this to renderhost if you want to default to renderhost
 
         this._document = this._initializeBlankDocument();
         this._timedFetch();
+
+        console.log(`process.env = ${JSON.stringify(process.env)}`);
+
     }
 
     private _initializeBlankDocument(): DocumentTransport {
@@ -55,6 +66,8 @@ class SpreadSheetClient {
         }
         return document;
     }
+
+
     /**
      * 
      * Every .1 seconds, fetch the document from the server
@@ -368,8 +381,24 @@ class SpreadSheetClient {
 
     }
 
-}
+    /**
+     * Server selector for the fetch
+     */
+    setServerSelector(server: string): void {
+        if (server === this._server) {
+            return;
+        }
+        if (server === 'localhost') {
+            this._baseURL = `${LOCAL_SERVER_URL}:${this._serverPort}`;
+        } else {
+            this._baseURL = RENDER_SERVER_URL;
+        }
 
+        this.getDocument(this._documentName, this._userName);
+        this._server = server;
+
+    }
+}
 
 
 export default SpreadSheetClient;

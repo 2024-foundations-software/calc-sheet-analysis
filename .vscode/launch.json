@@ -9,7 +9,14 @@
     },
     {
       "type": "node-terminal",
-      "name": "Start Calculator",
+      "name": "Start Calculator Local Server",
+      "request": "launch",
+      "command": "NODE_ENV=production npm run start",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Start Calculator Render Server",
       "request": "launch",
       "command": "npm run start",
       "cwd": "${workspaceFolder}"
