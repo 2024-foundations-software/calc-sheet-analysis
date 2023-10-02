@@ -373,6 +373,47 @@ describe('DocumentHolder', () => {
 
             });
 
+            it('should not clear the formula if not owner', () => {
+                const sheetTestName = 'test' + 10.1
+                const userName = 'testUser';
+                const otherUserName = 'otherUser';
+                const documentHolder = new DocumentHolder(documentTestPath);
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
+
+
+                documentHolder.addCell(sheetTestName, 'A2', userName);
+                const documentJSON = documentHolder.addToken(sheetTestName, '+', userName);
+
+                // unpack the JSON
+                const document = JSON.parse(documentJSON);
+
+                // get the cell A1 from the cells
+                const cell = document.cells["A1"]
+                // get the formula from the cell
+                const formula = cell.formula;
+                // the formula should be ["A2"] and the error "#REF!"
+                expect(formula).toEqual(["A2", "+"]);
+
+
+                let documentJSON2 = documentHolder.clearFormula(sheetTestName, otherUserName);
+
+
+
+                // unpack the JSON
+                const document2 = JSON.parse(documentJSON2);
+
+                // get the cell A1 from the cells
+                const cell2 = document2.cells["A1"]
+                // get the formula from the cell
+                const formula2 = cell2.formula;
+
+                // the formula should be [] and the error "#EMPTY!"
+                expect(formula2).toEqual(["A2", "+"]);
+
+            });
+
             it('should return the FormulaString for the controler', () => {
                 const sheetTestName = 'test' + 11
                 const userName = 'testUser';

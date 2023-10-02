@@ -241,13 +241,13 @@ export class SpreadSheetController {
 
   /**
    * 
-   * clear the current formula
+   * clear the current formula only the owner can 
    * 
    */
   clearFormula(user: string): void {
 
     const userEditing = this._contributingUsers.get(user);
-    if (!userEditing!.isEditing) {
+    if (!userEditing || !userEditing!.isEditing) {
       return;
     }
 

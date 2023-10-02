@@ -172,6 +172,17 @@ function checkFormulaAndDisplay(document: any, formula: string, result: string) 
     }
     return true;
 }
+function checkIsEditing(document: any, isEditing: boolean) {
+    const isEditingFound = document.isEditing;
+
+    if (isEditingFound !== isEditing) {
+        console.log(`FAILURE: isEditing is not ${isEditing}, found ${isEditingFound} instead`);
+        return false;
+    } else {
+        console.log(`SUCCESS: isEditing is ${isEditing}, this succeeded`);
+    }
+    return true;
+}
 
 // this function returns a boolean, in the current implementation we are not checking the result
 function checkCell(document: any, cell: string, value: number, formula: string[], error: string) {
@@ -242,21 +253,28 @@ async function runTests() {
 
     // add the token 1 to the document in A1
     let resultDocument = await addToken(testDocument1, '1', user1);
-
+    checkFormulaAndDisplay(resultDocument, '1', '1');
     checkCell(resultDocument, cellA1, 1, ['1'], '');
 
-
-    // add 2 (makes 12) + B2
+    // add 2 (makes 12) 
     resultDocument = await addToken(testDocument1, '2', user1);
+    checkFormulaAndDisplay(resultDocument, '12', '12');
     checkCell(resultDocument, cellA1, 12, ['12'], '');
 
+
+    // add a +
     resultDocument = await addToken(testDocument1, '+', user1);
+    checkFormulaAndDisplay(resultDocument, '12 +', '#ERR');
     checkCell(resultDocument, cellA1, 12, ['12', '+'], '#ERR');
 
+    // add a reference to B2
     resultDocument = await addCell(testDocument1, cellB2, user1);
+    checkFormulaAndDisplay(resultDocument, '12 + B2', '#REF!');
     checkCell(resultDocument, cellA1, 12, ['12', '+', 'B2'], '#REF!');
 
-    resultBoolean = await requestEditCell(testDocument1, cellB2, user2);
+    resultDocument = await requestEditCell(testDocument1, cellB2, user2);
+    checkFormulaAndDisplay(resultDocument, '', '');
+    checkCell(resultDocument, cellB2, 0, [], '#EMPTY!');
 
     resultDocument = await addToken(testDocument1, '3', user2);
     checkCell(resultDocument, cellB2, 3, ['3'], '');
@@ -299,6 +317,8 @@ async function runTests() {
     resultDocument = await getDocument(testDocument2, user3);
     checkFormulaAndDisplay(resultDocument, '', '');
     checkCell(resultDocument, cellA1, 0, [], '#EMPTY!');
+
+    resultDocument = await requestEditCell(testDocument2, cellA1, user2);
     resultDocument = await addToken(testDocument2, '1', user2);
     checkFormulaAndDisplay(resultDocument, '1', '1');
     checkCell(resultDocument, cellA1, 1, ['1'], '');
@@ -308,7 +328,42 @@ async function runTests() {
     checkFormulaAndDisplay(resultDocument, '12 + B2', '15');
 
 
-    // add more tests here if you need
+    // check for failed request edit cell
+    // user 1 requests edit
+    resultDocument = await requestEditCell(testDocument1, cellA1, user1);
+    checkFormulaAndDisplay(resultDocument, '12 + B2', '15');
+    checkIsEditing(resultDocument, true);
+
+    // user 2 requests edit and fails
+    resultDocument = await requestEditCell(testDocument1, cellA1, user2);
+    checkFormulaAndDisplay(resultDocument, '12 + B2', '15');
+    checkIsEditing(resultDocument, false);
+
+    // user 1 adds a +
+    resultDocument = await addToken(testDocument1, '+', user1);
+    checkFormulaAndDisplay(resultDocument, '12 + B2 +', '#ERR');
+
+    // user 2 requests view and sees the change
+    resultDocument = await requestViewCell(testDocument1, cellA1, user2);
+    checkFormulaAndDisplay(resultDocument, '12 + B2 +', '#ERR');
+
+    // user1 releases the cell
+    resultDocument = await requestViewCell(testDocument1, cellA1, user1);
+    checkIsEditing(resultDocument, false);
+
+    // user2 requests edit to fix the bug
+    resultDocument = await requestEditCell(testDocument1, cellA1, user2);
+    checkFormulaAndDisplay(resultDocument, '12 + B2 +', '#ERR');
+    checkIsEditing(resultDocument, true);
+
+    // user2 adds a 1
+    resultDocument = await addToken(testDocument1, '1', user2);
+    checkFormulaAndDisplay(resultDocument, '12 + B2 + 1', '16');
+
+    // user1 requests Edit and faile
+    resultDocument = await requestEditCell(testDocument1, cellA1, user1);
+    checkFormulaAndDisplay(resultDocument, '12 + B2 + 1', '16');
+    checkIsEditing(resultDocument, false);
 
 
 
