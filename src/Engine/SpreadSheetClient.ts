@@ -247,14 +247,19 @@ class SpreadSheetClient {
     }
 
     public addCell(cell: string): void {
-        const requestAddCellURL = `${this._baseURL}/document/addcell/${this._documentName}/${cell}`;
+        const requestAddCellURL = `${this._baseURL}/document/addcell/${this._documentName}`;
+
+        const body = {
+            "userName": this._userName,
+            "cell": cell
+        };
 
         fetch(requestAddCellURL, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "userName": this._userName })
+            body: JSON.stringify(body)
         })
             .then(response => {
                 return response.json() as Promise<DocumentTransport>;

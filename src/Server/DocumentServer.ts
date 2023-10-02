@@ -141,6 +141,7 @@ app.put('/document/cell/edit/:name/:cell', (req: express.Request, res: express.R
         return;
     }
     // get the user name from the body
+    // get the cell from the body
     const userName = req.body.userName;
     if (!userName) {
         res.status(400).send('userName is required');
@@ -198,9 +199,9 @@ app.put('/document/addtoken/:name', (req: express.Request, res: express.Response
     res.status(200).send(resultJSON);
 });
 
-app.put('/document/addcell/:name/:cell', (req: express.Request, res: express.Response) => {
+app.put('/document/addcell/:name', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
-    const token = req.params.cell;
+
 
     // is this name valid?
     const documentNames = documentHolder.getDocumentNames();
@@ -208,14 +209,15 @@ app.put('/document/addcell/:name/:cell', (req: express.Request, res: express.Res
         res.status(404).send(`Document ${name} not found`);
         return;
     }
-    // get the user name from the body
+    // get the user name  and the cell from the body
     const userName = req.body.userName;
+    const cell = req.body.cell;
     if (!userName) {
         res.status(400).send('userName is required');
         return;
     }
     // add the token
-    const resultJSON = documentHolder.addCell(name, token, userName);
+    const resultJSON = documentHolder.addCell(name, cell, userName);
 
 
     res.status(200).send(resultJSON);
