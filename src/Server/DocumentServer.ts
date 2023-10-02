@@ -131,9 +131,9 @@ app.post('/documents/create/:name', (req: express.Request, res: express.Response
 
 
 
-app.put('/document/cell/edit/:name/:cell', (req: express.Request, res: express.Response) => {
+app.put('/document/cell/edit/:name', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
-    const cell = req.params.cell;
+
     // is this name valid?
     const documentNames = documentHolder.getDocumentNames();
     if (documentNames.indexOf(name) === -1) {
@@ -143,6 +143,7 @@ app.put('/document/cell/edit/:name/:cell', (req: express.Request, res: express.R
     // get the user name from the body
     // get the cell from the body
     const userName = req.body.userName;
+    const cell = req.body.cell;
     if (!userName) {
         res.status(400).send('userName is required');
         return;
@@ -154,9 +155,9 @@ app.put('/document/cell/edit/:name/:cell', (req: express.Request, res: express.R
     res.status(200).send(documentJSON);
 });
 
-app.put('/document/cell/view/:name/:cell', (req: express.Request, res: express.Response) => {
+app.put('/document/cell/view/:name', (req: express.Request, res: express.Response) => {
     const name = req.params.name;
-    const cell = req.params.cell;
+
     // is this name valid?
     const documentNames = documentHolder.getDocumentNames();
     if (documentNames.indexOf(name) === -1) {
@@ -165,6 +166,7 @@ app.put('/document/cell/view/:name/:cell', (req: express.Request, res: express.R
     }
     // get the user name from the body
     const userName = req.body.userName;
+    const cell = req.body.cell;
     if (!userName) {
         res.status(400).send('userName is required');
         return;

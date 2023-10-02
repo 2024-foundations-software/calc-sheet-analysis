@@ -324,6 +324,10 @@ export class SpreadSheetController {
     // get the current formula for the cell of this user
     let container = this._memory.sheetContainer();
 
+    // if the user is not a contributing user we request view access to A1
+    if (!this._contributingUsers.has(user)) {
+      this.requestViewAccess(user, 'A1');
+    }
     let userData = this._contributingUsers.get(user)!;
     let cellFocused = userData.cellLabel;
     container.currentCell = cellFocused;

@@ -51,6 +51,13 @@
     },
     {
       "type": "node-terminal",
+      "name": "Run test suite for server",
+      "request": "launch",
+      "command": "ts-node src/Server/DocumentServerTester.ts",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Run Script: eject",
       "request": "launch",
       "command": "npm run eject",

@@ -200,10 +200,14 @@ class SpreadSheetClient {
      */
     public setEditStatus(isEditing: boolean): void {
 
-        // request edit statut sof the current cell
-        let requestEditViewURL = `${this._baseURL}/document/cell/view/${this._documentName}/${this._document.currentCell}`;
+        // request edit status of the current cell
+        const body = {
+            "userName": this._userName,
+            "cell": this._document.currentCell
+        };
+        let requestEditViewURL = `${this._baseURL}/document/cell/view/${this._documentName}`;
         if (isEditing) {
-            requestEditViewURL = `${this._baseURL}/document/cell/edit/${this._documentName}/${this._document.currentCell}`;
+            requestEditViewURL = `${this._baseURL}/document/cell/edit/${this._documentName}`;
         }
 
         fetch(requestEditViewURL, {
@@ -211,7 +215,7 @@ class SpreadSheetClient {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "userName": this._userName })
+            body: JSON.stringify(body)
         })
             .then(response => {
                 return response.json() as Promise<DocumentTransport>;
@@ -288,14 +292,18 @@ class SpreadSheetClient {
     }
 
     public requestViewByLabel(label: string): void {
-        const requestViewURL = `${this._baseURL}/document/cell/view/${this._documentName}/${label}`;
+        const requestViewURL = `${this._baseURL}/document/cell/view/${this._documentName}`;
         console.log(this._userName);
+        const body = {
+            "userName": this._userName,
+            "cell": label
+        };
         fetch(requestViewURL, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "userName": this._userName })
+            body: JSON.stringify(body)
         })
             .then(response => {
                 return response.json() as Promise<DocumentTransport>;

@@ -9,6 +9,7 @@ import { DocumentTransport, CellTransport } from '../Engine/GlobalDefinitions';
 // the server should be running on theport in PortsGlobal.ts
 
 import * as PortsGlobal from '../ServerDataDefinitions';
+import e from 'express';
 
 const serverPort = PortsGlobal.PortsGlobal.serverPort;
 
@@ -43,18 +44,41 @@ function createDocument(name: string, user: string) {
         });
 }
 
-function getDocument(name: string) {
-    return axios.get(`${baseURL}/documents/${name}`)
+function getDocument(name: string, userName: string) {
+    const body = {
+        "userName": userName,
+    }
+    return axios.put(`${baseURL}/documents/${name}`, body)
         .then(response => {
             const result = response.data;
             return result;
         });
 }
 
+function clearFormula(docName: string, user: string) {
+    // put the user name in the body
+    const userName = user;
+    const body = {
+        "userName": userName,
+    }
+
+    return axios.put(`${baseURL}/document/clear/formula/${docName}`, body)
+        .then(response => {
+            const result = response.data;
+            return result;
+        });
+}
+
+
 function addToken(docName: string, token: string, user: string) {
     // put the user name in the body
     const userName = user;
-    return axios.put(`${baseURL}/document/addtoken/${docName}/${token}`, { "userName": userName })
+    const body = {
+        "userName": userName,
+        "token": token
+    }
+
+    return axios.put(`${baseURL}/document/addtoken/${docName}`, body)
         .then(response => {
             const result = response.data;
             return result;
@@ -64,17 +88,52 @@ function addToken(docName: string, token: string, user: string) {
 function addCell(docName: string, cell: string, user: string) {
     // put the user name in the body
     const userName = user;
-    return axios.put(`${baseURL}/document/addcell/${docName}/${cell}`, { "userName": userName })
+    const body = {
+        "userName": userName,
+        "cell": cell
+    }
+    return axios.put(`${baseURL}/document/addcell/${docName}`, body)
         .then(response => {
             const result = response.data;
             return result as DocumentTransport;
         });
 }
 
+function removeToken(docName: string, user: string): Promise<boolean> {
+    // put the user name in the body
+    const userName = user;
+    const body = {
+        "userName": userName,
+    }
+    return axios.put(`${baseURL}/document/removetoken/${docName}`, body)
+        .then(response => {
+            const result = response.data;
+            return result;
+        });
+}
+
 function requestEditCell(docName: string, cell: string, user: string): Promise<boolean> {
     // put the user name in the body
     const userName = user;
-    return axios.put(`${baseURL}/document/cell/edit/${docName}/${cell}`, { "userName": userName })
+    const body = {
+        "userName": userName,
+        "cell": cell
+    }
+    return axios.put(`${baseURL}/document/cell/edit/${docName}`, body)
+        .then(response => {
+            const result = response.data;
+            return result;
+        });
+}
+
+function requestViewCell(docName: string, cell: string, user: string): Promise<boolean> {
+    // put the user name in the body
+    const userName = user;
+    const body = {
+        "userName": userName,
+        "cell": cell
+    }
+    return axios.put(`${baseURL}/document/cell/view/${docName}`, body)
         .then(response => {
             const result = response.data;
             return result;
@@ -83,6 +142,69 @@ function requestEditCell(docName: string, cell: string, user: string): Promise<b
 
 
 
+function checkFormula(expected: string[], found: string[]): boolean {
+    for (let i = 0; i < expected.length; i++) {
+        if (expected[i] !== found[i]) {
+            console.log(`expected ${expected[i]} found ${found[i]}`);
+            return false;
+        }
+    }
+    return true;
+}
+
+// this function returns a boolean, in the current implementation we are not checking the result
+function checkFormulaAndDisplay(document: any, formula: string, result: string) {
+    const formulaFound = document.formula;
+    const resultFound = document.result;
+
+    if (formulaFound !== formula) {
+        console.log(`FAILURE: formula is not ${formula}, found ${formulaFound} instead`);
+        return false;
+    } else {
+        console.log(`SUCCESS: formula is ${formula}, this succeeded`);
+    }
+
+    if (resultFound !== result) {
+        console.log(`FAILURE: result is not ${result}, found ${resultFound} instead`);
+        return false;
+    } else {
+        console.log(`SUCCESS: result is ${result}, this succeeded`);
+    }
+    return true;
+}
+
+// this function returns a boolean, in the current implementation we are not checking the result
+function checkCell(document: any, cell: string, value: number, formula: string[], error: string) {
+    const cells = document.cells;
+    const cellTransport = cells[cell] as CellTransport;
+    if (cellTransport.value !== value) {
+        console.log(`FAILURE: cell ${cell} value is not ${value}, found ${cellTransport.value} instead`);
+        return false;
+    } else {
+        console.log(`SUCCESS: cell ${cell} value is ${value}, this succeeded`);
+    }
+    if (cellTransport.formula.length !== formula.length) {
+        console.log(`FAILURE: cell ${cell} formula length is not ${formula.length}, found ${cellTransport.formula.length} instead`);
+        return false;
+    } else {
+        console.log(`SUCCESS: cell ${cell} formula length is ${formula.length}, this succeeded`);
+    }
+    const foundFormula = cellTransport.formula as string[];
+    if (!checkFormula(formula, foundFormula)) {
+        console.log(`FAILURE: cell ${cell} formula is not [${formula}], found [${cellTransport.formula}] instead`);
+        return false;
+    } else {
+        console.log(`SUCCESS: cell ${cell} formula is [${formula}], this succeeded`);
+    }
+    if (cellTransport.error !== error) {
+        console.log(`FAILURE: cell ${cell} error is not ${error}, found ${cellTransport.error} instead`);
+        return false;
+    }
+    else {
+        console.log(`SUCCESS: cell ${cell} error is "${error}", this succeeded`);
+    }
+    return true;
+}
 
 // this is the main function that runs the tests
 async function runTests() {
@@ -108,66 +230,85 @@ async function runTests() {
 
     // ask for a cell in the first document for user1
 
-    const cell1 = 'A1';
-    const cell2 = 'B2';
+    const cellA1 = 'A1';
+    const cellB2 = 'B2';
+    const cellC3 = 'C3';
 
-    let resultBoolean = await requestEditCell(testDocument1, cell1, user1);
+    let resultBoolean = await requestEditCell(testDocument1, cellA1, user1);
     if (!resultBoolean) {
         console.log('requestEditCell failed, this should have succeeded');
         return;
     }
 
+    // add the token 1 to the document in A1
     let resultDocument = await addToken(testDocument1, '1', user1);
-    let cells = resultDocument.cells;
 
-    let cellA1 = cells[cell1] as CellTransport;
-    if (!cellA1) {
-        console.log('cellA1 not found, this should have succeeded');
-        return;
-    }
-    if (cellA1.value !== 1) {
-        console.log('cellA1 value is not 1, this should have succeeded');
-        return;
-    }
-    if (cellA1.formula.length !== 1) {
-        console.log('cellA1 formula length is not 1, this should have succeeded');
-        return;
-    }
-    if (cellA1.formula[0] !== '1') {
-        console.log('cellA1 formula is not 1, this should have succeeded');
-        return;
-    }
+    checkCell(resultDocument, cellA1, 1, ['1'], '');
 
-    await addToken(testDocument1, '2', user1);
-    await addToken(testDocument1, '+', user1);
-    await addCell(testDocument1, cell2, user1);
 
-    resultBoolean = await requestEditCell(testDocument1, cell2, user2);
-    resultDocument = await addToken(testDocument1, '3', user2) as DocumentTransport;
+    // add 2 (makes 12) + B2
+    resultDocument = await addToken(testDocument1, '2', user1);
+    checkCell(resultDocument, cellA1, 12, ['12'], '');
 
-    cells = resultDocument.cells;
-    let cellB2 = cells[cell2] as CellTransport;
-    cellA1 = cells[cell1] as CellTransport;
+    resultDocument = await addToken(testDocument1, '+', user1);
+    checkCell(resultDocument, cellA1, 12, ['12', '+'], '#ERR');
 
-    if (cellA1.value !== 15) {
-        console.log('cellA1 value is not 15, this should have succeeded');
-        return;
-    } else {
-        console.log('cellA1 value is 15, this succeeded');
-    }
+    resultDocument = await addCell(testDocument1, cellB2, user1);
+    checkCell(resultDocument, cellA1, 12, ['12', '+', 'B2'], '#REF!');
 
-    if (cellB2.value !== 3) {
-        console.log('cellB2 value is not 3, this should have succeeded');
-        return;
-    } else {
-        console.log('cellB2 value is 3, this succeeded');
-    }
+    resultBoolean = await requestEditCell(testDocument1, cellB2, user2);
 
-    const testDocument = 'test';
+    resultDocument = await addToken(testDocument1, '3', user2);
+    checkCell(resultDocument, cellB2, 3, ['3'], '');
+    checkCell(resultDocument, cellA1, 15, ['12', '+', 'B2'], '');
 
-    await requestEditCell(testDocument, 'A1', 'juancho');
-    await addToken(testDocument, '+', 'juancho');
-    await addToken(testDocument, '1', 'juancho');
+    // check for period
+    resultDocument = await addToken(testDocument1, '.', user2);
+    checkCell(resultDocument, cellB2, 3, ['3.'], '');
+
+    // check for period
+    resultDocument = await addToken(testDocument1, '.', user2);
+    checkCell(resultDocument, cellB2, 3, ['3.'], '');
+
+    // check for back space
+    resultDocument = await removeToken(testDocument1, user2);
+    checkCell(resultDocument, cellB2, 3, ['3'], '');
+
+    // check for request view cell
+    resultDocument = await requestViewCell(testDocument1, cellB2, user3);
+    checkFormulaAndDisplay(resultDocument, '3', '3');
+
+    // check for request view cell on another cell
+    resultDocument = await requestViewCell(testDocument1, cellA1, user3);
+    checkFormulaAndDisplay(resultDocument, '12 + B2', '15');
+
+    resultDocument = await requestEditCell(testDocument1, cellC3, user3);
+    checkFormulaAndDisplay(resultDocument, '', '');
+
+    resultDocument = await addToken(testDocument1, '4', user3);
+    checkFormulaAndDisplay(resultDocument, '4', '4');
+
+    resultDocument = await addToken(testDocument1, '4', user3);
+    checkFormulaAndDisplay(resultDocument, '44', '44');
+
+    resultDocument = await clearFormula(testDocument1, user3);
+    checkFormulaAndDisplay(resultDocument, '', '');
+    checkCell(resultDocument, cellC3, 0, [], '#EMPTY!');
+
+    // Check for request document
+    resultDocument = await getDocument(testDocument2, user3);
+    checkFormulaAndDisplay(resultDocument, '', '');
+    checkCell(resultDocument, cellA1, 0, [], '#EMPTY!');
+    resultDocument = await addToken(testDocument2, '1', user2);
+    checkFormulaAndDisplay(resultDocument, '1', '1');
+    checkCell(resultDocument, cellA1, 1, ['1'], '');
+
+    resultDocument = await getDocument(testDocument1, user3);
+    resultDocument = await requestViewCell(testDocument1, cellA1, user3);
+    checkFormulaAndDisplay(resultDocument, '12 + B2', '15');
+
+
+    // add more tests here if you need
 
 
 
