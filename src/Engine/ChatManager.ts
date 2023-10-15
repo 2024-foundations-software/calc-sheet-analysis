@@ -23,7 +23,7 @@ import path from 'path';
  * 
  */
 
-class ChatMessage {
+export class ChatMessage {
     message: string;
     userName: string;
     timeStamp: Date;
@@ -32,6 +32,7 @@ class ChatMessage {
         this.userName = userName;
         this.timeStamp = new Date();
     }
+
 }
 
 class ChatManager {
@@ -56,7 +57,7 @@ class ChatManager {
         this._messages.push(chatMessage);
     }
 
-    public getMessages(documentName: string, token: string): [ChatMessage[], string] {
+    private prepareMessages(token: string): [ChatMessage[], string] {
         let result: ChatMessage[] = [];
         let nextToken: string = "";
         let startIndex = 0;
@@ -65,16 +66,18 @@ class ChatManager {
         }
         else if (token === "noMore") {
             startIndex = this._messages.length;
+            nextToken = "noMore"
+            return [[], nextToken];
         }
         else {
             startIndex = parseInt(token);
         }
-
+        nextToken = "noMore";
         if (startIndex < this._messages.length) {
             let endIndex = startIndex + 20;
             if (endIndex > this._messages.length) {
                 endIndex = this._messages.length;
-                nextToken = "noMore";
+
             }
             else {
                 nextToken = endIndex.toString();
@@ -84,7 +87,29 @@ class ChatManager {
         return [result, nextToken];
     }
 
+    /**
+     * getMessages(documentName:string, token:string): ChatMessage[], nextToken: string
+     * @param documentName 
+     * @param token 
+     * 
+     * returns a JSON object with the following structure:
+     * {
+     * messages: ChatMessage[],
+     * nextToken: string
+     * }
+     */
+    public getMessages(token: string): string {
+        let [messages, nextToken] = this.prepareMessages(token);
+        return JSON.stringify({
+            messages: messages,
+            nextToken: nextToken
+        });
+    }
+
+
     public clearMessages(): void {
         this._messages = [];
     }
 }
+
+export default ChatManager;

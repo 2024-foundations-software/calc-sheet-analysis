@@ -100,6 +100,13 @@
     },
     {
       "type": "node-terminal",
+      "name": "Jest ChatManager",
+      "request": "launch",
+      "command": "npx jest ChatManager",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Jest Calculation",
       "request": "launch",
       "command": "npx jest CalculationManager",

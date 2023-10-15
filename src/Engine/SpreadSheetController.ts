@@ -1,5 +1,5 @@
 import SheetMemory from "./SheetMemory"
-import FormulaEvaluator from "./FormulaEvaluator"
+import FormulaEvaluator from "./NewFormulaEvaluator"
 import CalculationManager from "./CalculationManager"
 import FormulaBuilder from "./FormulaBuilder";
 import Cell from "./Cell";
