@@ -506,6 +506,34 @@ describe("FormulaEvaluator", () => {
             });
         });
 
+        describe("when the formula is 2  1/x sqr 1/x' ", () => {
+            it("returns the number 0.25", () => {
+                const formula = ["2", "1/x", "sqr", "1/x"];
+
+                recalc.evaluate(formula);
+
+                let result = recalc.result;
+                let error = recalc.error;
+
+                expect(result).toEqual(4);
+                expect(error).toEqual("");
+            });
+        });
+
+        describe("when the formula is ( 1 + 1 ) sqr sqr sqr' ", () => {
+            it("returns the number 0.25", () => {
+                const formula = ["(", "1", "+", "1", ")", "sqr", "sqr", "sqr"];
+
+                recalc.evaluate(formula);
+
+                let result = recalc.result;
+                let error = recalc.error;
+
+                expect(result).toEqual(256);
+                expect(error).toEqual("");
+            });
+        });
+
 
     });
 });
