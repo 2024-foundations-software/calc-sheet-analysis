@@ -34,7 +34,7 @@ class SpreadSheetClient {
         this._userName = userName;
         this._documentName = documentName;
 
-        this.setServerSelector('localhost');  // change this to renderhost if you want to default to renderhost
+        this.setServerSelector('renderhost');  // change this to renderhost if you want to default to renderhost
 
         this._document = this._initializeBlankDocument();
         this._timedFetch();
