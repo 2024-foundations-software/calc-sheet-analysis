@@ -12,7 +12,7 @@
 import SheetMemory from "./SheetMemory";
 import Cell from "./Cell";
 import FormulaBuilder from "./FormulaBuilder";
-import FormulaEvaluator from "./FormulaEvaluator";
+import FormulaEvaluator from "./NewFormulaEvaluator";
 
 
 

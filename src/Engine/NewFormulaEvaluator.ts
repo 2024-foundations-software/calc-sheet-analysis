@@ -10,7 +10,7 @@
  * term = factor { ("*" | "/") factor }
  * factor = number | "(" expression ")" | unary_op factor | factor postfix_op   
  * unary_op = "-"
- * postfix_op = % | +/- | sin | cos | tan | asin | acos | atan | sqrt | pow | sqr
+ * postfix_op = ["+/-", "sin", "cos", "tan", "asin", "acos", "atan", "sqrt", "sqr", "cube", "1/x", "cuberoot"]
  * 
  * 
  * 
@@ -45,6 +45,7 @@ class FormulaEvaluator {
             this._result = 0;
 
             this._errorMessage = ErrorMessages.emptyFormula;
+            return;
         }
 
         this._errorMessage = "";
@@ -194,7 +195,15 @@ class FormulaEvaluator {
         if (this._postfixOperators.includes(tokenPeek)) {
             let token = this._currentFormula.shift();
             result = this.postfixOperation(token, result);
+
+
         }
+        // see if there is another postfix operator
+        tokenPeek = this._currentFormula[0];
+        if (this._postfixOperators.includes(tokenPeek)) {
+            result = this.postfix(result);
+        }
+
         return result;
     }
 

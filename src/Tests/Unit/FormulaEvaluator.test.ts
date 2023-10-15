@@ -324,5 +324,33 @@ describe("FormulaEvaluator", () => {
       });
     });
 
+    describe("when the formula is 2 sqr sqr sqr ) ", () => {
+      it("returns the number", () => {
+        const formula = ["2", "sqr", "sqr", "sqr", ")"];
+
+        recalc.evaluate(formula);
+
+        let result = recalc.result;
+        let error = recalc.error;
+
+        expect(result).toEqual(256);
+        expect(error).toEqual(ErrorMessages.invalidFormula);
+      });
+    });
+
+    describe("when the formula is 2 sqr sqrt  ) ", () => {
+      it("returns the number", () => {
+        const formula = ["2", "sqr", "sqr", "sqr", ")"];
+
+        recalc.evaluate(formula);
+
+        let result = recalc.result;
+        let error = recalc.error;
+
+        expect(result).toEqual(2);
+        expect(error).toEqual(ErrorMessages.invalidFormula);
+      });
+    });
+
   });
 });
