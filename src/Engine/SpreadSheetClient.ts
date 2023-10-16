@@ -147,6 +147,12 @@ class SpreadSheetClient {
             return cellTransport.error;
         }
     }
+
+
+    // Interim solution for pushing the editing data through to the GUI
+    // we will add a | to each cell value and we will then add the name of 
+    // the user who is editing that cell.   If there is no user then the 
+    // user is blank.  This is a hack to get the data through to the GUI
     public getSheetDisplayStringsForGUI(): string[][] {
         if (!this._document) {
             return [];
@@ -165,9 +171,10 @@ class SpreadSheetClient {
                 const cellName = Cell.columnRowToCell(column, row)!;
                 const cell = cells.get(cellName) as CellTransport;
                 if (cell) {
+                    // add the cell value and the editing status
                     sheetDisplayStrings[row][column] = this._getCellValue(cell) + "|" + cell.editing;
                 } else {
-                    sheetDisplayStrings[row][column] = 'xxx';
+                    throw new Error(`cell ${cellName} not found`);
                 }
             }
         }

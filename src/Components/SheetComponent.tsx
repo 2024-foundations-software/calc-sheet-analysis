@@ -34,7 +34,7 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
    * 
    * otherwise the cell will be rendered with the class name "cell"
    */
-  function getCellClass(cellLabel: string, editor: string) {
+  function getCellClass(cellLabel: string) {
 
     if (cellLabel === currentCell && currentlyEditing) {
       return "cell-editing";
@@ -44,6 +44,8 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
     }
     return "cell";
   }
+
+  // T
 
   function getCellValue(cell: string) {
     // split on | return the first part
@@ -76,7 +78,7 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
                   value={cell}
                   cell-label={Cell.columnRowToCell(colIndex, rowIndex)}
                   data-testid={Cell.columnRowToCell(colIndex, rowIndex)}
-                  className={(getCellClass(Cell.columnRowToCell(colIndex, rowIndex), getCellEditor(cell)))}
+                  className={(getCellClass(Cell.columnRowToCell(colIndex, rowIndex)))}
                 >
                   {getCellValue(cell)}
                   <label className="cell-label">{getCellEditor(cell)}</label>

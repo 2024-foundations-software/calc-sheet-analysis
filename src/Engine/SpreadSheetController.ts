@@ -77,25 +77,38 @@ export class SpreadSheetController {
 
   requestViewAccess(user: string, cellLabel: string) {
     // if the user is not in the list of users then we will add them with an unasigned cell
+    // if it does not exist them make and give view access
     let userData: ContributingUser;
+    if (!this._contributingUsers.has(user)) {
+      userData = new ContributingUser(cellLabel)
+      this._contributingUsers.set(user, userData);
+      userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
+      userData.isEditing = false;
+    }
 
-    // check to see if the user is editing another cell.
-    if (this._contributingUsers.has(user)) {
-      const userData = this._contributingUsers.get(user);
-      if (userData!.cellLabel !== '' && userData!.cellLabel !== cellLabel) {
-        this._cellsBeingEdited.delete(userData!.cellLabel);
-      }
+    userData = this._contributingUsers.get(user)!;
+
+
+
+    // nThe user is just viewing the sheet update their cell and be done with it.
+    if (!userData.isEditing) {
+      userData.cellLabel = cellLabel;
+      return;
+    }
+
+    // the user could be editing this cell but now just wants to view
+
+    if (userData.cellLabel === cellLabel) {
+      userData.isEditing = false;
       this.releaseEditAccess(user);
     }
 
-    // if it does not exist them make and give view access
-    if (!this._contributingUsers.has(user)) {
-      let userData = new ContributingUser(cellLabel)
-      userData.isEditing = false;
-      this._contributingUsers.set(user, userData);
-      userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
-      return;
-    }
+    // the user is editing a different cell
+
+
+
+
+
   }
 
 
@@ -135,15 +148,22 @@ export class SpreadSheetController {
 
   releaseEditAccess(user: string): void {
     // if the user is editing a cell then free that one up
-    const editingCell: string | undefined = this._contributingUsers.get(user)?.cellLabel;
-    if (editingCell) {
-      if (this._cellsBeingEdited.has(editingCell)) {
-        this._cellsBeingEdited.delete(editingCell);
-      }
+    const userData = this._contributingUsers.get(user);
+
+    // guard for userData
+    if (!userData) {
+      return;
+    }
+    const cellBeingEdited = userData.cellLabel;
+
+    // check that the cell is being edited by this user
+
+    const userEditingCell = this._cellsBeingEdited.get(cellBeingEdited);
+    if (userEditingCell && userEditingCell === user) {
+      this._cellsBeingEdited.delete(cellBeingEdited);
     }
 
-    // remove the user from the list of users
-    this._contributingUsers.delete(user);
+    userData.isEditing = false;
 
   }
 
