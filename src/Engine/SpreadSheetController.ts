@@ -334,6 +334,18 @@ export class SpreadSheetController {
     container.formula = this.getFormulaStringForUser(user);
     container.result = this.getResultStringForUser(user);
     container.isEditing = userData.isEditing;
+
+    container.contributingUsers = [];
+    this._contributingUsers.forEach((value: ContributingUser, key: string) => {
+      let user = {
+        user: key,
+        cell: value.cellLabel,
+        isEditing: value.isEditing
+      }
+      if (value.isEditing) {
+        container.contributingUsers.push(user);
+      }
+    });
     return container;
   }
 
