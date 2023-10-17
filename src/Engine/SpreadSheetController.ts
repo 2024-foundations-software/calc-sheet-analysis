@@ -76,65 +76,69 @@ export class SpreadSheetController {
   }
 
   requestViewAccess(user: string, cellLabel: string) {
-    // if the user is not in the list of users then we will add them with an unasigned cell
+    // if it does not exist them make and give view access
     let userData: ContributingUser;
 
-    // check to see if the user is editing another cell.
-    if (this._contributingUsers.has(user)) {
-      const userData = this._contributingUsers.get(user);
-      if (userData!.cellLabel !== '' && userData!.cellLabel !== cellLabel) {
-        this._cellsBeingEdited.delete(userData!.cellLabel);
-      }
-      this.releaseEditAccess(user);
+    if (!this._contributingUsers.has(user)) {
+      userData = new ContributingUser(cellLabel)
+
+    } else {
+      userData = this._contributingUsers.get(user)!;
+      userData.cellLabel = cellLabel;
     }
 
-    // if it does not exist them make and give view access
-    if (!this._contributingUsers.has(user)) {
-      let userData = new ContributingUser(cellLabel)
-      userData.isEditing = false;
-      this._contributingUsers.set(user, userData);
-      userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
-      return;
-    }
+    this.releaseEditAccess(user);
+    userData.isEditing = false;
+    this._contributingUsers.set(user, userData);
+    userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
   }
 
 
 
   requestEditAccess(user: string, cellLabel: string): boolean {
-    // if the user is not an editor then we will first add them as a viewer
-    // this will release previous cell that they were editing
-    let userData = this._contributingUsers.get(user);
 
-    // requestViewAccess will remove edit from another cell if the user is editing another cell
-    if (userData?.cellLabel !== cellLabel) {
-      this.requestViewAccess(user, cellLabel);
+    // is the user a contributingUser for this document. // this is for testing
+    if (!this._contributingUsers.has(user)) {
+      throw new Error('User is not a contributing user, this should not happen for a request to edit');
     }
 
-    // if the cell is being edited by the user then return true
-    if (this._cellsBeingEdited.has(cellLabel) && this._cellsBeingEdited.get(cellLabel) === user) {
+    // now we know that the user is a viewer for sure and this line will succeed
+    let userData = this._contributingUsers.get(user);
+
+    // Is the user editing another cell? If so then release the other cell
+    if (userData!.isEditing && userData!.cellLabel !== cellLabel) {
+      this.releaseEditAccess(user);
+    }
+
+    // at this point the user is a contributing user and is not editing another cell
+    // make them a viewer of this cell
+    userData!.cellLabel = cellLabel;
+
+    // if the cell is not being edited then we can edit it
+    if (!this._cellsBeingEdited.has(cellLabel)) {
+      userData!.isEditing = true;
+      this._cellsBeingEdited.set(cellLabel, user);
       return true;
     }
 
-    // if the cell is being edited by another user return false
-    const userEditingThisCell = this._cellsBeingEdited.get(cellLabel);
-    if (userEditingThisCell && userEditingThisCell !== user) {
-      return false;
+    // if the cell is being edited by this user then return true
+    if (this._cellsBeingEdited.get(cellLabel) === user) {
+      return true;
     }
 
-    // now we know we can assign the ownership of the cell to the user
-    this._cellsBeingEdited.set(cellLabel, user);
-    const userEditing = this._contributingUsers.get(user);
+    // at this point we cannot assign the user as an editor
 
-
-    userEditing!.isEditing = true;
-
-    return true;
+    return false;
   }
 
 
 
   releaseEditAccess(user: string): void {
-    // if the user is editing a cell then free that one up
+    // if the user is not editing a cell then we are done
+    if (!this._contributingUsers.get(user)?.isEditing) {
+      return;
+    }
+
     const editingCell: string | undefined = this._contributingUsers.get(user)?.cellLabel;
     if (editingCell) {
       if (this._cellsBeingEdited.has(editingCell)) {
@@ -142,8 +146,8 @@ export class SpreadSheetController {
       }
     }
 
-    // remove the user from the list of users
-    this._contributingUsers.delete(user);
+    // // remove the user from the list of users
+    // this._contributingUsers.delete(user);
 
   }
 

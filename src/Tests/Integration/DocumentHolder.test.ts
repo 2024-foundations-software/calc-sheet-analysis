@@ -226,6 +226,7 @@ describe('DocumentHolder', () => {
 
 
                 documentHolder.addCell(sheetTestName, 'A2', userName);
+                const viewAccess = documentHolder.requestViewAccess(sheetTestName, 'A2', userName);
                 accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
                 const documentJSON = documentHolder.addToken(sheetTestName, '1', userName);
 
@@ -256,6 +257,33 @@ describe('DocumentHolder', () => {
 
                 const valueA2 = cellA2.value;
                 expect(valueA2).toEqual(1);
+            });
+
+            it('should not allow a user to edit a cell that is being edited by another user', () => {
+                const sheetTestName = 'test' + 7.1
+                const documentHolder = new DocumentHolder(documentTestPath);
+                const userName = 'testUser';
+                const otherUserName = 'otherUser';
+                let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
+
+                let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
+                // this is a regression test where the other user would view the current cell
+                // then they would view and edit another cell
+                // then they would stop editing that cell and come back to the A1 cell and enter a
+                // token.
+
+                let viewAccess = documentHolder.requestViewAccess(sheetTestName, 'A1', otherUserName);
+                accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', otherUserName);
+                expect(accessOK).toBeFalsy();
+
+                documentHolder.requestViewAccess(sheetTestName, 'A2', otherUserName);
+                accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', otherUserName);
+                expect(accessOK).toBeTruthy();
+                documentHolder.requestViewAccess(sheetTestName, 'A2', otherUserName);
+                documentHolder.requestViewAccess(sheetTestName, 'A1', otherUserName);
+
+                accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', otherUserName);
+                expect(accessOK).toBeFalsy();
             });
 
 
@@ -305,13 +333,15 @@ describe('DocumentHolder', () => {
                 const userName = 'testUser';
                 const documentHolder = new DocumentHolder(documentTestPath);
                 let result = documentHolder.createDocument(sheetTestName, 2, 2, userName);
-
+                let viewAccess = documentHolder.requestViewAccess(sheetTestName, 'A1', userName);
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', userName);
 
 
                 documentHolder.addCell(sheetTestName, 'A2', userName);
+                viewAccess = documentHolder.requestViewAccess(sheetTestName, 'A2', userName);
                 accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
                 documentHolder.addCell(sheetTestName, 'B1', userName);
+                viewAccess = documentHolder.requestViewAccess(sheetTestName, 'B1', userName);
                 accessOK = documentHolder.requestEditAccess(sheetTestName, 'B1', userName);
 
                 const documentJSON = documentHolder.addCell(sheetTestName, 'A1', userName);
@@ -487,7 +517,7 @@ describe('DocumentHolder', () => {
                 let result = documentHolder.createDocument(sheetTestName, 2, 2, otherUserName);
 
                 let accessOK = documentHolder.requestEditAccess(sheetTestName, 'A2', otherUserName);
-
+                const viewAccess = documentHolder.requestViewAccess(sheetTestName, 'A2', userName);
                 const editAccess = documentHolder.requestEditAccess(sheetTestName, 'A2', userName);
 
                 expect(editAccess).toBeFalsy();
@@ -537,7 +567,7 @@ describe('DocumentHolder', () => {
                 documentHolder.addToken(sheetTestName, '2', userName);
                 documentHolder.addToken(sheetTestName, '+', userName);
                 documentHolder.addToken(sheetTestName, '2', userName);
-
+                const viewAccess = documentHolder.requestViewAccess(sheetTestName, 'A1', otherUserName);
                 accessOK = documentHolder.requestEditAccess(sheetTestName, 'A1', otherUserName);
                 const resultString = documentHolder.getResultString(sheetTestName, otherUserName);
                 expect(resultString).toEqual("4");
