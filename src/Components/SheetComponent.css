@@ -61,3 +61,29 @@
     left: 0;
     font-size: 8px;
 }
+
+.row-label {
+    position: relative;
+
+    text-align: right;
+
+    vertical-align: middle;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: helvetica;
+
+    color: rgb(249, 249, 246);
+}
+
+.column-label {
+
+    position: relative;
+
+    text-align: center;
+    vertical-align: bottom;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: helvetica;
+
+    color: rgb(249, 249, 246);
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import './LoginPageComponent.css';
 
 /**
  * Login PageComponent is the component that will be used to display the login page
@@ -39,13 +39,15 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
         type="text"
         placeholder="User name"
         defaultValue={userName}
-        onChange={(event) => {
-          // get the text from the input
-          let userName = event.target.value;
-          window.sessionStorage.setItem('userName', userName);
-          // set the user name
-          setUserName(userName);
-          spreadSheetClient.userName = userName;
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            // get the text from the input
+            let userName = (event.target as HTMLInputElement).value;
+            window.sessionStorage.setItem('userName', userName);
+            // set the user name
+            setUserName(userName);
+            spreadSheetClient.userName = userName;
+          }
         }} />
     </div>
 
@@ -62,32 +64,51 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
     // set the document name
     spreadSheetClient.documentName = documentName;
     // reload the page
-    
+
     // the href needs to be updated.   Remove /documnents from the end of the URL
     const href = window.location.href;
     const index = href.lastIndexOf('/');
     let newURL = href.substring(0, index);
-    newURL = newURL+"/"+documentName
+    newURL = newURL + "/" + documentName
     window.history.pushState({}, '', newURL);
     window.location.reload();
 
   }
 
+
+  function logout() {
+    // clear the user name
+    window.sessionStorage.setItem('userName', "");
+    // reload the page
+    window.location.reload();
+  }
+
+
   function buildFileSelector() {
+    if (userName === "") {
+      return <div>
+        <h4>Please enter a user name</h4>
+        <br />
+        You must be logged in to<br />
+        access the documents!
+      </div>;
+    }
+
     const sheets: string[] = spreadSheetClient.getSheets();
     // make a table with the list of sheets and a button beside each one to edit the sheet
     return <div>
       <table>
         <thead>
-          <tr>
-            <th>Document Name</th>
+          <tr className="selector-title">
+            <th>Document Name---</th>
             <th>Actions</th>
+
           </tr>
         </thead>
         <tbody>
           {sheets.map((sheet) => {
-            return <tr>
-              <td>{sheet}</td>
+            return <tr className="selector-item">
+              <td >{sheet}</td>
               <td><button onClick={() => loadDocument(sheet)}>
                 Edit
               </button></td>
@@ -98,15 +119,29 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
     </div >
   }
 
-  function loginPage() {
-    if (!checkUserName()) {
+  function getLoginPanel() {
+    return <div>
+      <h5 >Login Page</h5>
+      {getUserLogin()}
+      <button onClick={() => logout()}>Logout</button>
+    </div>
+  }
 
-      return <div>
-        <h1>Login Page</h1>
-        {getUserLogin()}
-      </div>
-    }
-    return buildFileSelector()
+  function loginPage() {
+    return <table>
+      <tbody>
+        <tr>
+          <td>
+            {getLoginPanel()}
+          </td>
+          <td>
+            {buildFileSelector()}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
   }
 
 

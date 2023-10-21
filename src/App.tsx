@@ -12,7 +12,7 @@ function App() {
 
 
   const [documentName, setDocumentName] = useState(getDocumentNameFromWindow());
-  const spreadSheetClient = new SpreadSheetClient('test', 'juancho');
+  const spreadSheetClient = new SpreadSheetClient('documents', '');
   //const memoryUsage = process.memoryUsage();
   useEffect(() => {
     if (window.location.href) {

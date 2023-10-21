@@ -75,29 +75,24 @@ class SpreadSheetClient {
     /**
      * 
      * Every .1 seconds, fetch the document from the server
+     * call this.getDocument(name, user) to get the document
+     * and this.getDocuments(user) to get the list of documents
      */
-    private async _timedFetch(): Promise<Response> {
-        const url = `${this._baseURL}/documents/${this._documentName}`;
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ "userName": this._userName })
-        };
 
+    private async _timedFetch(): Promise<Response> {
+
+        // only get the document list every 2 seconds
+        let documentListInterval = 20;
+        let documentFetchCount = 0;
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                fetch(url, options)
-                    .then(response => {
-                        this.getDocument(this._documentName, this._userName);
-                        this.getDocuments(this._userName);
-                        this._timedFetch();
-                        resolve(response);
-                    })
-                    .catch(error => {
-                        reject(error);
-                    });
+                this.getDocument(this._documentName, this._userName);
+                documentFetchCount++;
+                if (documentFetchCount > documentListInterval) {
+                    documentFetchCount = 0;
+                    this.getDocuments(this._userName);
+                }
+                this._timedFetch();
             }, 100);
         });
     }
@@ -356,6 +351,9 @@ class SpreadSheetClient {
      */
     public getDocument(name: string, user: string) {
         // put the user name in the body
+        if (name === "documents") {
+            return;  // This is not ready for production but for this assignment will do
+        }
         const userName = user;
         const fetchURL = `${this._baseURL}/documents/${name}`;
         fetch(fetchURL, {

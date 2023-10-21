@@ -52,22 +52,19 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     return () => clearInterval(interval);
   });
 
+  function returnToLoginPage() {
 
-  function getUserLogin() {
-    return <div>
-      <input
-        type="text"
-        placeholder="User name"
-        defaultValue={userName}
-        onChange={(event) => {
-          // get the text from the input
-          let userName = event.target.value;
-          window.sessionStorage.setItem('userName', userName);
-          // set the user name
-          setUserName(userName);
-          spreadSheetClient.userName = userName;
-        }} />
-    </div>
+    // set the document name
+    spreadSheetClient.documentName = documentName;
+    // reload the page
+
+    // the href needs to be updated.   Remove /<sheetname> from the end of the URL
+    const href = window.location.href;
+    const index = href.lastIndexOf('/');
+    let newURL = href.substring(0, index);
+    newURL = newURL + "/documents";
+    window.history.pushState({}, '', newURL);
+    window.location.reload();
 
   }
 
@@ -187,8 +184,10 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
 
   return (
     <div>
+      <Status statusString={statusString} userName={userName}></Status>
+      <button onClick={returnToLoginPage}>Return to Login Page</button>
       <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
-      <Status statusString={statusString}></Status>
+
       {<SheetHolder cellsValues={cells}
         onClick={onCellClick}
         currentCell={currentCell}
@@ -196,7 +195,6 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       <KeyPad onButtonClick={onButtonClick}
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
-      {getUserLogin()}
       <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
     </div>
   )

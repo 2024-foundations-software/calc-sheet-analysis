@@ -63,14 +63,14 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
         <tr>
           <th></th>
           {cellsValues[0].map((col, colIndex) => (
-            <th key={colIndex}>
+            <th className="column-label" key={colIndex}>
               {Cell.columnNumberToName(colIndex)}
             </th>
           ))}
         </tr>
         {cellsValues.map((row, rowIndex) => (
           <tr key={rowIndex}>
-            <td> {Cell.rowNumberToName(rowIndex)}</td>
+            <td className="row-label"> {Cell.rowNumberToName(rowIndex)}</td>
             {row.map((cell, colIndex) => (
               <td key={colIndex}>
                 <button

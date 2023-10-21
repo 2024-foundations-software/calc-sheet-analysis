@@ -1,0 +1,25 @@
+/** 
+  * Formula component styles
+  * @module src/Components/Formula.css
+  * text is right-aligned
+  * background color is black
+  * border color is dark gray
+  * text color is monitor green
+  * font size is 20px
+  * font is bold
+  * font is courier
+  */
+.status {
+    background-color: #282626;
+    border: 0px solid #121412;
+    color: #f3f9f3;
+    padding: 5px 32px;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-family: helvetica;
+    font-size: 20px;
+    font-weight: bold;
+    width: 250px;
+    height: 20px;
+}
