@@ -96,6 +96,26 @@ describe("SpreadSheetController", () => {
 
     });
 
+    it("should not allow a user who is not editing a cell to remove a token", () => {
+      const machine = new SpreadSheetController(5, 5);
+      machine.requestViewAccess("user1", "A1");
+      machine.requestEditAccess("user1", "A1");
+      machine.addToken("1", "user1");
+      machine.addToken("+", "user1");
+      machine.addToken("7", "user1");
+
+      machine.requestViewAccess("user2", "A1");
+      machine.requestEditAccess("user2", "A1");
+      machine.removeToken("user2");
+
+      const user1Formula = machine.getFormulaStringForUser("user1");
+      const user2Formula = machine.getFormulaStringForUser("user2");
+
+      expect(machine.getFormulaStringForUser("user1")).toEqual("1 + 7");
+      expect(machine.getFormulaStringForUser("user2")).toEqual("1 + 7");
+
+    });
+
     it("should add a cell to the user formula", () => {
       const machine = new SpreadSheetController(5, 5);
       let view = machine.requestViewAccess("user1", "A1");

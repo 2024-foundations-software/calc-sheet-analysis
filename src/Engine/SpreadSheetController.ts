@@ -233,6 +233,10 @@ export class SpreadSheetController {
   removeToken(user: string): void {
     const userEditing = this._contributingUsers.get(user);
 
+    if (!userEditing!.isEditing) {
+      return;
+    }
+
     userEditing!.formulaBuilder.removeToken();
     let cellBeingEdited = this._contributingUsers.get(user)?.cellLabel;
 

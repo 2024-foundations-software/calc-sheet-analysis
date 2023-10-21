@@ -1,1 +1,1 @@
-{"columns":2,"rows":2,"cells":{"A1":{"formula":[],"value":0,"error":"#EMPTY!"},"A2":{"formula":[],"value":0,"error":"#EMPTY!"},"B1":{"formula":[],"value":0,"error":"#EMPTY!"},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}
+{"columns":2,"rows":2,"cells":{"A1":{"formula":["5555","+","B1"],"value":72110,"error":""},"A2":{"formula":[],"value":0,"error":"#EMPTY!"},"B1":{"formula":["66555"],"value":66555,"error":""},"B2":{"formula":[],"value":0,"error":"#EMPTY!"}}}
