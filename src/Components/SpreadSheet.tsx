@@ -11,6 +11,7 @@ import ServerSelector from "./ServerSelector";
 
 interface SpreadSheetProps {
   documentName: string;
+  spreadSheetClient: SpreadSheetClient;
 }
 
 /**
@@ -20,9 +21,8 @@ interface SpreadSheetProps {
  * */
 
 // create the client that talks to the backend.
-const spreadSheetClient = new SpreadSheetClient('test', 'juancho');
 
-function SpreadSheet({ documentName }: SpreadSheetProps) {
+function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   const [formulaString, setFormulaString] = useState(spreadSheetClient.getFormulaString())
   const [resultString, setResultString] = useState(spreadSheetClient.getResultString())
   const [cells, setCells] = useState(spreadSheetClient.getSheetDisplayStringsForGUI());

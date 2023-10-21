@@ -1,12 +1,13 @@
 .cell {
+    position: relative;
     border: 1px solid black;
     width: 100px;
     height: 30px;
     text-align: center;
     vertical-align: middle;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: courier;
     background-color: #f2f2f2;
     color: black;
     cursor: pointer;
@@ -17,14 +18,15 @@
 }
 
 .cell-selected {
+    position: relative;
     border: 1px solid rgb(223, 11, 11);
     width: 100px;
     height: 30px;
     text-align: center;
     vertical-align: middle;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: courier;
     background-color: #908a17;
     color: black;
     cursor: pointer;
@@ -35,14 +37,15 @@
 }
 
 .cell-editing {
+    position: relative;
     border: 1px solid rgb(223, 11, 11);
     width: 100px;
     height: 30px;
     text-align: center;
     vertical-align: middle;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: courier;
     background-color: blue;
     color: yellow;
     cursor: pointer;
@@ -50,4 +53,11 @@
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+}
+
+.cell-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 8px;
 }

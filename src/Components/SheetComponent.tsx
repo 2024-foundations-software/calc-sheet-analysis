@@ -23,7 +23,7 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
 
   /**
    * 
-   * @param cell 
+   * @param cellLabel 
    * @returns the class name for the cell
    * 
    * if the cell is the current cell and the sheet is in edit mode
@@ -34,14 +34,26 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
    * 
    * otherwise the cell will be rendered with the class name "cell"
    */
-  function getCellClass(cell: string) {
-    if (cell === currentCell && currentlyEditing) {
+  function getCellClass(cellLabel: string) {
+
+    if (cellLabel === currentCell && currentlyEditing) {
       return "cell-editing";
     }
-    if (cell === currentCell) {
+    if (cellLabel === currentCell) {
       return "cell-selected";
     }
     return "cell";
+  }
+
+  // T
+
+  function getCellValue(cell: string) {
+    // split on | return the first part
+    return cell.split("|")[0];
+  }
+  function getCellEditor(cell: string) {
+    // split on | return the second part
+    return cell.split("|")[1];
   }
 
   return (
@@ -68,7 +80,8 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
                   data-testid={Cell.columnRowToCell(colIndex, rowIndex)}
                   className={(getCellClass(Cell.columnRowToCell(colIndex, rowIndex)))}
                 >
-                  {cell}
+                  {getCellValue(cell)}
+                  <label className="cell-label">{getCellEditor(cell)}</label>
                 </button>
 
               </td>

@@ -9,37 +9,23 @@
     },
     {
       "type": "node-terminal",
-      "name": "Start Calculator Local Server",
+      "name": "Start Calculator (production)",
       "request": "launch",
       "command": "NODE_ENV=production npm run start",
       "cwd": "${workspaceFolder}"
     },
     {
       "type": "node-terminal",
-      "name": "Start Calculator Render Server",
+      "name": "Start Calculator",
       "request": "launch",
       "command": "npm run start",
       "cwd": "${workspaceFolder}"
     },
     {
       "type": "node-terminal",
-      "name": "Build code",
-      "request": "launch",
-      "command": "npm run build",
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "type": "node-terminal",
-      "name": "Start Data Server",
+      "name": "Start Server",
       "request": "launch",
       "command": "npm run start-server",
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "type": "node-terminal",
-      "name": "Start Public Server",
-      "request": "launch",
-      "command": "HOST=0.0.0.0 npm run start-server",
       "cwd": "${workspaceFolder}"
     },
     {
@@ -131,6 +117,13 @@
       "name": "Jest coverage",
       "request": "launch",
       "command": "npx jest --coverage",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Build code",
+      "request": "launch",
+      "command": "npm run build",
       "cwd": "${workspaceFolder}"
     },
   ]

@@ -5,11 +5,14 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import SpreadSheet from './Components/SpreadSheet';
+import SpreadSheetClient from './Engine/SpreadSheetClient';
+import LoginPageComponent from './Components/LoginPageComponent';
 
 function App() {
 
 
   const [documentName, setDocumentName] = useState(getDocumentNameFromWindow());
+  const spreadSheetClient = new SpreadSheetClient('test', 'juancho');
   //const memoryUsage = process.memoryUsage();
   useEffect(() => {
     if (window.location.href) {
@@ -63,11 +66,20 @@ function App() {
     setDocumentName('test');
     resetURL('test');
   }
+  if (documentName === 'documents') {
+    return (
+      <div className="LoginPage">
+        <header className="Login-header">
+          <LoginPageComponent spreadSheetClient={spreadSheetClient} />
+        </header>
+      </div>
+    )
+  }
 
   return (
     <div className="App">
       <header className="App-header">
-        <SpreadSheet documentName={documentName} />
+        <SpreadSheet documentName={documentName} spreadSheetClient={spreadSheetClient} />
       </header>
 
     </div>
