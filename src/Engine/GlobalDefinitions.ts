@@ -36,6 +36,8 @@ export interface CellTransportMap {
   [key: string]: CellTransport;
 }
 
+
+
 export interface DocumentTransport {
   columns: number;
   rows: number;

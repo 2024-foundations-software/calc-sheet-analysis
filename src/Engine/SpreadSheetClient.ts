@@ -29,6 +29,7 @@ class SpreadSheetClient {
     private _documentName: string = 'test';
     private _document: DocumentTransport;
     private _server: string = '';
+    private _documentList: string[] = [];
 
     constructor(documentName: string, userName: string) {
         this._userName = userName;
@@ -40,6 +41,7 @@ class SpreadSheetClient {
         this._timedFetch();
 
         console.log(`process.env = ${JSON.stringify(process.env)}`);
+        this.getDocuments(this._userName);
 
     }
 
@@ -89,6 +91,7 @@ class SpreadSheetClient {
                 fetch(url, options)
                     .then(response => {
                         this.getDocument(this._documentName, this._userName);
+                        this.getDocuments(this._userName);
                         this._timedFetch();
                         resolve(response);
                     })
@@ -146,6 +149,10 @@ class SpreadSheetClient {
         } else {
             return cellTransport.error;
         }
+    }
+
+    getSheets(): string[] {
+        return this._documentList;
     }
 
 
@@ -367,6 +374,26 @@ class SpreadSheetClient {
 
     }
 
+    /**
+     * get the document list from the server
+     * 
+     * @param user the user name
+     * 
+     * this is client side so we use fetch
+     */
+    public getDocuments(user: string) {
+        // put the user name in the body
+        const userName = user;
+        const fetchURL = `${this._baseURL}/documents/`;
+        fetch(fetchURL)
+            .then(response => {
+                return response.json() as Promise<string[]>;
+            }).then((documents: string[]) => {
+                this._updateDocumentList(documents);
+            });
+
+    }
+
     private _getEditorString(contributingUsers: UserEditing[], cellLabel: string): string {
         for (let user of contributingUsers) {
             if (user.cell === cellLabel) {
@@ -374,6 +401,10 @@ class SpreadSheetClient {
             }
         }
         return '';
+    }
+
+    private _updateDocumentList(documents: string[]): void {
+        this._documentList = documents;
     }
 
 
