@@ -25,8 +25,8 @@ class SpreadSheetClient {
 
     private _serverPort: number = PortsGlobal.serverPort;
     private _baseURL: string = `${LOCAL_SERVER_URL}:${this._serverPort}`;
-    private _userName: string = 'juancho';
-    private _documentName: string = 'test';
+    private _userName: string = '';
+    private _documentName: string = '';
     private _document: DocumentTransport;
     private _server: string = '';
     private _documentList: string[] = [];
@@ -38,8 +38,10 @@ class SpreadSheetClient {
         const isProduction = process.env.NODE_ENV === 'production';
         if (isProduction) {
             this.setServerSelector('renderhost');
+            console.log(' Running production client')
         } else {
             this.setServerSelector('localhost');  // change this to renderhost if you want to default to renderhost
+            console.log(' Running development client')
         }
 
         this._document = this._initializeBlankDocument();

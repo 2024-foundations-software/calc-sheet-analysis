@@ -62,10 +62,12 @@ function App() {
     window.location.reload();
   }
 
+  // If there is no document name point this thing at /document
   if (documentName === '') {
-    setDocumentName('test');
-    resetURL('test');
+    setDocumentName('documents');
+    resetURL('documents');
   }
+
   if (documentName === 'documents') {
     return (
       <div className="LoginPage">
