@@ -30,9 +30,10 @@ class SpreadSheetClient {
     private _document: DocumentTransport;
     private _server: string = '';
     private _documentList: string[] = [];
+    private _errorCallback: (error: string) => void = (error: string) => { };
 
 
-    constructor(documentName: string, userName: string) {
+    constructor(documentName: string, userName: string, errorCallback: (error: string) => void) {
         this._userName = userName;
         this._documentName = documentName;
 
@@ -47,6 +48,8 @@ class SpreadSheetClient {
 
         this._document = this._initializeBlankDocument();
         this._timedFetch();
+
+        this._errorCallback = errorCallback;
 
         console.log(`process.env = ${JSON.stringify(process.env)}`);
         this.getDocuments(this._userName);
@@ -401,12 +404,6 @@ class SpreadSheetClient {
 
     }
 
-    public getErrorOccurred(): string {
-        if (!this._document) {
-            return '';
-        }
-        return this._document.errorOccurred;
-    }
 
     private _getEditorString(contributingUsers: UserEditing[], cellLabel: string): string {
         for (let user of contributingUsers) {
@@ -462,7 +459,7 @@ class SpreadSheetClient {
             this._document!.cells.set(cellName, cell);
         }
         if (errorOccurred !== '') {
-            console.log(`error occurred: ${errorOccurred}`);
+            this._errorCallback(errorOccurred)
         }
 
     }

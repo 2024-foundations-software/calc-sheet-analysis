@@ -217,6 +217,18 @@ function checkCell(document: any, cell: string, value: number, formula: string[]
     return true;
 }
 
+function checkErrorOccured(document: any, expectedError: string) {
+    const error = document.errorOccurred;
+    if (error !== expectedError) {
+        console.log(`FAILURE: error is not ${expectedError}, found ${error} instead`);
+        return false;
+    }
+    else {
+        console.log(`SUCCESS: error is "${expectedError}", this succeeded`);
+    }
+    return true;
+}
+
 // this is the main function that runs the tests
 async function runTests() {
 
@@ -364,6 +376,20 @@ async function runTests() {
     resultDocument = await requestEditCell(testDocument1, cellA1, userJuancho);
     checkFormulaAndDisplay(resultDocument, '12 + B2 + 1', '16');
     checkIsEditing(resultDocument, false);
+    checkErrorOccured(resultDocument, 'Cell is being edited by yvonne');
+
+    // user Jose is going to try to make a loop in Document 3
+    resultDocument = await requestViewCell(testDocument3, cellA1, userJose);
+    resultDocument = await requestEditCell(testDocument3, cellA1, userJose);
+    resultDocument = await addCell(testDocument3, cellB2, userJose);
+    resultDocument = await requestViewCell(testDocument3, cellB2, userJose);
+    resultDocument = await requestEditCell(testDocument3, cellB2, userJose);
+    resultDocument = await addCell(testDocument3, cellA1, userJose);
+    checkErrorOccured(resultDocument, 'Circular dependency detected, A1 cannot depend on B2');
+
+
+
+
 
 
 

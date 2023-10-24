@@ -42,10 +42,6 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     setCells(spreadSheetClient.getSheetDisplayStringsForGUI());
     setCurrentCell(spreadSheetClient.getWorkingCellLabel());
     setCurrentlyEditing(spreadSheetClient.getEditStatus());
-    const errorOccurred = spreadSheetClient.getErrorOccurred();
-    if (errorOccurred !== "") {
-      alert(errorOccurred)
-    }
 
   }
 
@@ -79,6 +75,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       return false;
     }
     return true;
+  }
+
+  /** callback to display error message when client gets the message */
+  function displayErrorMessage(message: string) {
+    alert(message);
   }
 
   /**

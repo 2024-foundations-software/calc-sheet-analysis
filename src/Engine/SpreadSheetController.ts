@@ -175,6 +175,7 @@ export class SpreadSheetController {
    * if the current cell is in the dependsOn array then we have a circular referenceoutloo
    */
   addCell(cellReference: string, user: string): void {
+    this._errorOccurred = '';
 
     // is the user editing a cell
     const userEditing = this._contributingUsers.get(user)
@@ -201,7 +202,10 @@ export class SpreadSheetController {
     // if it does not then we can add the token to the formula
     if (okToAdd) {
       this.addToken(cellReference, user);
+      return;
     }
+    this._errorOccurred = `Circular dependency detected, ${currentLabel} cannot depend on ${cellReference}`;
+
   }
 
 

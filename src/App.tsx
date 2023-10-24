@@ -8,11 +8,16 @@ import SpreadSheet from './Components/SpreadSheet';
 import SpreadSheetClient from './Engine/SpreadSheetClient';
 import LoginPageComponent from './Components/LoginPageComponent';
 
+// callback for the error message
+function displayErrorMessage(message: string) {
+  alert(message);
+}
+
 function App() {
 
 
   const [documentName, setDocumentName] = useState(getDocumentNameFromWindow());
-  const spreadSheetClient = new SpreadSheetClient('documents', '');
+  const spreadSheetClient = new SpreadSheetClient('documents', '', displayErrorMessage);
   //const memoryUsage = process.memoryUsage();
   useEffect(() => {
     if (window.location.href) {
@@ -61,6 +66,8 @@ function App() {
     // now reload the page
     window.location.reload();
   }
+
+
 
   // If there is no document name point this thing at /document
   if (documentName === '') {
