@@ -31,6 +31,7 @@ class SpreadSheetClient {
     private _server: string = '';
     private _documentList: string[] = [];
 
+
     constructor(documentName: string, userName: string) {
         this._userName = userName;
         this._documentName = documentName;
@@ -62,6 +63,7 @@ class SpreadSheetClient {
             isEditing: false,
             cells: new Map<string, CellTransport>(),
             contributingUsers: [],
+            errorOccurred: ''
         };
         for (let row = 0; row < document.rows; row++) {
             for (let column = 0; column < document.columns; column++) {
@@ -399,6 +401,13 @@ class SpreadSheetClient {
 
     }
 
+    public getErrorOccurred(): string {
+        if (!this._document) {
+            return '';
+        }
+        return this._document.errorOccurred;
+    }
+
     private _getEditorString(contributingUsers: UserEditing[], cellLabel: string): string {
         for (let user of contributingUsers) {
             if (user.cell === cellLabel) {
@@ -421,6 +430,7 @@ class SpreadSheetClient {
         const rows = document.rows;
         const isEditing = document.isEditing;
         const contributingUsers = document.contributingUsers;
+        const errorOccurred = document.errorOccurred;
 
 
         // create the document
@@ -433,8 +443,8 @@ class SpreadSheetClient {
             rows: rows,
             isEditing: isEditing,
             cells: new Map<string, CellTransport>(),
-            contributingUsers: contributingUsers
-
+            contributingUsers: contributingUsers,
+            errorOccurred: errorOccurred
         };
         // create the cells
         const cells = document.cells as unknown as CellTransportMap;
@@ -450,6 +460,9 @@ class SpreadSheetClient {
                 editing: this._getEditorString(contributingUsers, cellName)
             };
             this._document!.cells.set(cellName, cell);
+        }
+        if (errorOccurred !== '') {
+            console.log(`error occurred: ${errorOccurred}`);
         }
 
     }

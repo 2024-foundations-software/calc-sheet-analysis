@@ -34,9 +34,6 @@ export class SpreadSheetController {
   /** the local storage for the document */
 
 
-  /** The current cell */
-  private _currentWorkingRow = 0;
-  private _currentWorkingColumn = 0;
 
   /** the users who are editing this sheet */
 
@@ -44,35 +41,19 @@ export class SpreadSheetController {
   private _cellsBeingEdited: Map<string, string> = new Map<string, string>();
 
 
-  /**
-   * The components that the SpreadSheetEngine uses to manage the sheet
-   * 
-   */
-
-  // The formula evaluator, this is used to evaluate the formula for the current cell
-  // it is only called for a cell when all cells it depends on have been evaluated
-  private _formulaEvaluator: FormulaEvaluator;
-
-  // The formula builder, this is used to build the formula for the current cell
-  // it is used when the user is editing the formula for the current cell
-  private _formulaBuilder: FormulaBuilder;
-
-  // The current cell is being edited
-  private _cellIsBeingEdited: boolean;;
-
   // The dependency manager, this is used to manage the dependencies between cells
   // The main job of this is to compute the order in which the cells should be evaluated
   private _calculationManager: CalculationManager;
+
+  // a per access error message
+  private _errorOccurred: string = '';
 
   /**
    * constructor
    * */
   constructor(columns: number, rows: number) {
     this._memory = new SheetMemory(columns, rows);
-    this._formulaEvaluator = new FormulaEvaluator(this._memory);
     this._calculationManager = new CalculationManager();
-    this._formulaBuilder = new FormulaBuilder();
-    this._cellIsBeingEdited = false;
   }
 
   requestViewAccess(user: string, cellLabel: string) {
@@ -96,6 +77,7 @@ export class SpreadSheetController {
 
 
   requestEditAccess(user: string, cellLabel: string): boolean {
+    this._errorOccurred = '';
 
     // is the user a contributingUser for this document. // this is for testing
     if (!this._contributingUsers.has(user)) {
@@ -127,7 +109,8 @@ export class SpreadSheetController {
     }
 
     // at this point we cannot assign the user as an editor
-
+    const otherUser = this._cellsBeingEdited.get(cellLabel);
+    this._errorOccurred = `Cell is being edited by ${otherUser}`;
     return false;
   }
 
@@ -342,6 +325,11 @@ export class SpreadSheetController {
     container.formula = this.getFormulaStringForUser(user);
     container.result = this.getResultStringForUser(user);
     container.isEditing = userData.isEditing;
+
+    // add the error message if there is one
+    container.errorOccurred = this._errorOccurred;
+    // reset the error since we only report it once
+    this._errorOccurred = '';
 
     container.contributingUsers = [];
     this._contributingUsers.forEach((value: ContributingUser, key: string) => {

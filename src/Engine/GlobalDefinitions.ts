@@ -47,6 +47,6 @@ export interface DocumentTransport {
   currentCell: string;
   isEditing: boolean;
   contributingUsers: UserEditing[];
-
+  errorOccurred: string;
 }
 

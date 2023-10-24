@@ -42,6 +42,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     setCells(spreadSheetClient.getSheetDisplayStringsForGUI());
     setCurrentCell(spreadSheetClient.getWorkingCellLabel());
     setCurrentlyEditing(spreadSheetClient.getEditStatus());
+    const errorOccurred = spreadSheetClient.getErrorOccurred();
+    if (errorOccurred !== "") {
+      alert(errorOccurred)
+    }
+
   }
 
   // useEffect to refetch the data every 1/20 of a second

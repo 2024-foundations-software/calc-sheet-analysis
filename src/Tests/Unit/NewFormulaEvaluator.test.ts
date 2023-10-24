@@ -6,7 +6,7 @@
 // // Recalc.ts
 // export class Recalc {
 //   private machine: Machine;
-//   private errorOccured: boolean = false;
+
 
 import FormulaEvaluator from "../../Engine/NewFormulaEvaluator";
 import SheetMemory from "../../Engine/SheetMemory";

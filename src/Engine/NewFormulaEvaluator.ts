@@ -21,7 +21,7 @@ import SheetMemory from "./SheetMemory"
 import { ErrorMessages } from "./GlobalDefinitions";
 
 class FormulaEvaluator {
-    private _errorOccured: boolean = false;
+    private _errorOccurred: boolean = false;
     private _errorMessage: string = "";
     private _currentFormula: FormulaType = [];
     private _lastResult: number = 0;
@@ -34,7 +34,7 @@ class FormulaEvaluator {
     }
 
     evaluate(formula: FormulaType) {
-        this._errorOccured = false;
+        this._errorOccurred = false;
         // make a copy of the formula
         //
         // set the currentFormula to the copy of the formula
@@ -52,15 +52,15 @@ class FormulaEvaluator {
         let resultValue = this.expression();
         this._result = resultValue;
 
-        // if there are still tokens in the formula set the errorOccured flag
-        // if an error has occured then we dont update the error message
-        if (this._currentFormula.length > 0 && !this._errorOccured) {
-            this._errorOccured = true;
+        // if there are still tokens in the formula set the errorOccurred flag
+        // if an error has occurred then we dont update the error message
+        if (this._currentFormula.length > 0 && !this._errorOccurred) {
+            this._errorOccurred = true;
             this._errorMessage = ErrorMessages.invalidFormula;
         }
 
-        // if an error occured  and the message is PARTIAL return the last result
-        if (this._errorOccured) {
+        // if an error occurred  and the message is PARTIAL return the last result
+        if (this._errorOccurred) {
             this._result = this._lastResult;
         }
     }
@@ -104,7 +104,7 @@ class FormulaEvaluator {
             } else {
                 // check for divide by zero
                 if (factor === 0) {
-                    this._errorOccured = true;
+                    this._errorOccurred = true;
                     this._errorMessage = ErrorMessages.divideByZero;
                     this._lastResult = Infinity;
                     return Infinity;
@@ -124,11 +124,11 @@ class FormulaEvaluator {
    */
     private factor(): number {
         let result = 0;
-        // if the formula is empty set errorOccured to true 
+        // if the formula is empty set errorOccurred to true 
         // and set the errorMessage to "PARTIAL"
         // and return 0
         if (this._currentFormula.length === 0) {
-            this._errorOccured = true;
+            this._errorOccurred = true;
             this._errorMessage = ErrorMessages.partial;
             return result;
         }
@@ -148,7 +148,7 @@ class FormulaEvaluator {
         } else if (token === "(") {
             result = this.expression();
             if (this._currentFormula.length === 0 || this._currentFormula.shift() !== ")") {
-                this._errorOccured = true;
+                this._errorOccurred = true;
                 this._errorMessage = ErrorMessages.missingParentheses;
                 this._lastResult = result
             }
@@ -159,7 +159,7 @@ class FormulaEvaluator {
 
             // if the cell value is a number set the result to the number
             if (this._errorMessage !== "") {
-                this._errorOccured = true;
+                this._errorOccurred = true;
                 this._lastResult = result;
             }
 
@@ -170,7 +170,7 @@ class FormulaEvaluator {
         } else if (token === "+") {
             result = this.factor();
         } else {
-            this._errorOccured = true;
+            this._errorOccurred = true;
             this._errorMessage = ErrorMessages.invalidFormula;
         }
 
@@ -234,7 +234,7 @@ class FormulaEvaluator {
             result = Math.pow(currentValue, 3);
         } else if (token === "1/x") {
             if (currentValue === 0) {
-                this._errorOccured = true;
+                this._errorOccurred = true;
                 this._errorMessage = ErrorMessages.divideByZero;
                 this._lastResult = Infinity;
                 return Infinity;
