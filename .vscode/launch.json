@@ -121,6 +121,20 @@
     },
     {
       "type": "node-terminal",
+      "name": "Coverage Token",
+      "request": "launch",
+      "command": "npx jest --coverage TokenProcessor",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Coverage Cell",
+      "request": "launch",
+      "command": "npx jest --coverage Cell",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
       "name": "Build code",
       "request": "launch",
       "command": "npm run build",

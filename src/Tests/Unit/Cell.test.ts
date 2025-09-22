@@ -128,6 +128,7 @@ describe("Cell", () => {
       cell.setFormula(formula);
       cell.setError(ErrorMessages.invalidFormula);
       expect(cell.getDisplayString()).toEqual(ErrorMessages.invalidFormula);
+      expect(cell.getError()).toEqual(ErrorMessages.invalidFormula);
     });
   }
   );
